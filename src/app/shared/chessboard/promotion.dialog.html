@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{'chessboard.promotion.title' | translate}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="select('q')" color="light" size="large" expand="full">
+                    <img slot="start" src="../../assets/icon/{{turn}}Q.png" class="thumbnail" />
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button (click)="select('n')" color="light" size="large" expand="full">
+                    <img slot="start" src="../../assets/icon/{{turn}}N.png" class="thumbnail" />
+                </ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="select('r')" color="light" size="large" expand="full">
+                    <img slot="start" src="../../assets/icon/{{turn}}R.png" class="thumbnail" />
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button (click)="select('b')" color="light" size="large" expand="full">
+                    <img slot="start" src="../../assets/icon/{{turn}}B.png" class="thumbnail" />
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

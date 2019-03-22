@@ -1,0 +1,78 @@
+{
+    "app": {
+        "menu": "Menu",
+        "home": "Home",
+        "preferences": "Preferences",
+        "about": "About",
+        "exit": "Exit"
+    },
+    "home": {
+        "title": "Chess Endgame Training",
+        "get-started": "Get Started",
+        "presentation": "Presentation",
+        "description": "Practice a variety of well organized set of endgames. From elementary to the most complex endgames, you can practice until you learn how to face all of them."
+    },
+    "category": {
+        "Basic": "Basic",
+        "Pawn": "Pawn", 
+        "Bishop": "Bishop",
+        "Knight": "Knight"
+    },
+    "position": {
+        "white": "white",
+        "black": "black",
+        "to": "to",
+        "checkmate": "checkmate",
+        "draw": "draw",
+        "personal-record": "Personal record",
+        "moves": "moves",
+        "your-turn": "Your turn",
+        "used-assistance": "You have used assistance",
+        "new-record": "New personal record !!!",
+        "goal-achieved": "Goal achieved",
+        "congratulations": "Contratulations",
+        "in": "in",
+        "ups": "Oooops!",
+        "keep-practicing": "keep practicing, you'll get it!",
+        "ok": "OK"
+    },
+    "chessboard": {
+        "stalemate": "Stalemate",
+        "insufficent-material": "Insufficent Material",
+        "three-repetition": "Three Repetition",
+        "rule-fifty": "Draw: fifty-move rule",
+        "game-over": "Game Over",
+        "mate-in": "Mate in",
+        "unfeasible-mate": "Unfeasible mate",
+        "white-advantage": "White advantage",
+        "black-advantage": "Black advantage",
+        "querying-syzygy": "Querying Syzygy...",
+        "syzygy-error": "Syzygy error. Switching to Stockfish",
+        "promotion": {
+            "title": "Select piece for promotion"
+        }
+    },
+    "preferences": {
+        "title": "Preferences",
+        "clean-database": "Clean local database",
+        "clean-dialog" : {
+            "title": "Are you sure?",
+            "subtitle": "Clean local database",
+            "message": "All your records will be lost !!!",
+            "cancel": "Cancel",
+            "continue": "Continue"
+        }
+    },
+    "about": {
+        "title": "About",
+        "description": "Chess Endgame Training is a free and open source project.",
+        "source-code": "Source code",
+        "third-party": "Following software and resources has been used:",
+        "eco-description": "Database of chess endgames",
+        "chessjs-description": "A Javascript chess library for chess move generation/validation, piece placement/movement, and check/checkmate/draw detection",
+        "chessboard-description": "A Javascript chess board",
+        "stockfish-description": "The strong open source chess engine Stockfish compiled to JavaScript using Emscripten",
+        "syzygy-description": "Online database with information for all endgame positions with up to 7 pieces",
+        "icons-from": "Icons from"
+    }
+}

@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'home.title' | translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-subtitle>{{ 'home.get-started' | translate }}</ion-card-subtitle>
+      <ion-card-title>{{ 'home.presentation' | translate }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ 'home.description' | translate }}</p>
+      <ion-grid *ngIf="(endgameDatabase$ | async) as endgameDatabase">
+          <ion-row *ngFor="let chunk of endgameDatabase.categories | chunks: 2; index as idxChunk">
+            <ion-col *ngFor="let category of chunk; index as idxCategory" size="6">
+              <ion-button color="light" size="default" expand="full" [routerLink]="'/list/' + (idxCategory + idxChunk * 2) + '/0'">
+                <img slot="start" src="../../assets/icon/{{category.icon}}" class="thumbnail" />
+              </ion-button>
+            </ion-col>
+          </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

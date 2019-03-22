@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{'preferences.title' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="cleanDatabase()" color="light" size="default" expand="full">
+                <ion-icon slot="start" name="trash"></ion-icon>
+              <ion-label>{{'preferences.clean-database' | translate}}</ion-label>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

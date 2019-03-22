@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{'about.title' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="welcome-card">
+    <ion-card-content>
+      <p>{{'about.description' | translate}}</p>
+    </ion-card-content>
+  </ion-card>
+  <ion-list>
+    <ion-item lines="none">
+      <a style="cursor: pointer" (click)="openLink('http://google.es')">
+        {{'about.source-code' | translate}}</a>
+    </ion-item>
+    <ion-item>
+      <p>{{'about.third-party' | translate}}</p>
+    </ion-item>
+    <!-- ECO -->
+    <ion-item lines="none">
+      <a style="cursor: pointer"
+        (click)="openLink('http://ecochessopeningcodes.blogspot.com.es/2016/01/play-chess-endgame-positions-with.html')">
+        ECO Chess Opening Codes</a>
+    </ion-item>
+    <ion-item>
+      <p>{{'about.eco-description' | translate}}</p>
+    </ion-item>
+    <!-- chess.js -->
+    <ion-item lines="none">
+      <a style="cursor: pointer" (click)="openLink('https://github.com/jhlywa/chess.js')">chess.js</a>
+    </ion-item>
+    <ion-item>
+      <p>{{'about.chessjs-description' | translate}}</p>
+    </ion-item>
+    <!-- chessboard.js -->
+    <ion-item lines="none">
+      <a style="cursor: pointer" (click)="openLink('http://chessboardjs.com')">chessboard.js</a>
+    </ion-item>
+    <ion-item>
+      <p>{{'about.chessboard-description' | translate}}</p>
+    </ion-item>
+    <!-- stockfish.js -->
+    <ion-item lines="none">
+      <a style="cursor: pointer" (click)="openLink('https://github.com/niklasf/stockfish.js')">stockfish.js</a>
+    </ion-item>
+    <ion-item>
+      <p>{{'about.stockfish-description' | translate}}</p>
+    </ion-item>
+    <!-- syzygy-->
+    <ion-item lines="none">
+      <a style="cursor: pointer" (click)="openLink('https://github.com/niklasf/lila-tablebase')">Syzygy endgame
+        tablebases</a>
+    </ion-item>
+    <ion-item>
+      <p>{{'about.syzygy-description' | translate}}</p>
+    </ion-item>
+    <!-- icons -->
+    <ion-item lines="none">
+      <p>{{'about.icons-from' | translate}} :</p>
+    </ion-item>
+    <ion-item>
+      <p>pacifier: designed by Smashicons from Flaticon</p>
+    </ion-item>
+    <ion-item>
+      <p>logo: designed by Inipagi from Iconfinder</p>
+    </ion-item>
+    <ion-item>
+      <p>chess pieces: from Wikimedia Commons, by user Cburnett</p>
+    </ion-item>
+  </ion-list>
+</ion-content>

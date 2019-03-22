@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title text-center *ngIf="(category$ | async) as category">
+        {{'category.' + category.name | translate}} [ {{idxSubcategory + 1}} / {{idxLastSubcategory + 1}} ]
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-toolbar color="light">
+  <ion-buttons slot="start" *ngIf="showNavPrev" (click)="gotoPrev()">
+    <ion-button>
+      <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-buttons slot="end" *ngIf="showNavNext" (click)="gotoNext()">
+    <ion-button>
+      <ion-icon slot="icon-only" name="arrow-round-forward"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+  <ion-title text-center *ngIf="(subcategory$ | async) as subcategory">
+      <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="responsive-thumbnail" />
+  </ion-title>
+</ion-toolbar>
+<ion-content>
+    <ion-grid *ngIf="(subcategory$ | async) as subcategory">
+        <ion-row *ngFor="let chunk of subcategory.games | chunks: 6; index as idxChunk">
+          <ion-col *ngFor="let game of chunk; index as idxGame" size="2">
+            <ion-button [color]="!game.record ? 'light' : game.record < 0 ? 'warning' : 'success' " expand="block" (click)="showPosition(idxGame + idxChunk * 6)">{{1 + idxGame + idxChunk * 6}}</ion-button>
+          </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="start" *ngIf="showNavPrev" (click)="gotoPrev()" class="">
+      <ion-button>
+        <ion-icon slot="icon-only" name="arrow-round-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="showNavNext" (click)="gotoNext()" class="">
+      <ion-button>
+        <ion-icon slot="icon-only" name="arrow-round-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title text-center class="padding-0" *ngIf="(subcategory$ | async) as subcategory"
+      routerLink="/list/{{idxCategory}}/{{idxSubcategory}}">
+      <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="responsive-thumbnail" />
+      &nbsp;<span class="responsive-text">[ {{idxPosition + 1}} / {{idxLastPosition + 1}} ]</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="container">
+    <div class="board_wrapper" id="board-wrapper">
+      <chessboard #chessboard (engineReady)="onEngineReady()" (engineStartThinking)="onEngineStartThinking()"
+        (engineEndThinking)="onEngineEndThinking()" (engineInfo)="onEngineInfo($event)" (playerMoved)="onPlayerMoved()"
+        (gameOver)="onGameOver($event)">
+      </chessboard>
+    </div>
+    <div class="info_wrapper">
+      <div class="info">
+        <div class="innerinfo" *ngIf="(position$ | async) as position">
+          <p class="text-centered">
+            <img *ngIf="targetImage" src="../../assets/icon/{{targetImage}}" class="thumbnail" /> {{('position.' + position.move) | translate}} {{'position.to' | translate}}
+            {{('position.' + position.target) | translate}}
+          </p>
+          <p class="text-centered">{{infotext}}</p>
+          <p *ngIf="position.record > 0" class="text-centered">{{'position.personal-record' | translate}}: {{position.record}} {{'position.moves' | translate}}</p>
+        </div>
+      </div>
+      <div class="action_buttons">
+        <ion-grid>
+          <ion-row *ngIf="!engineThinking && !gameOver">
+            <ion-col>
+              <ion-button [disabled]="!btnRewindEnabled" (click)="btnRewindClick()" size="small" fill="clear"
+                color="dark">
+                <ion-icon slot="icon-only" name="rewind"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button [disabled]="!btnUndoEnabled" (click)="btnUndoClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="skip-backward"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button [disabled]="!btnFlipEnabled" (click)="btnFlipClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="sync"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button [disabled]="!btnSolveEnabled" (click)="btnSolveClick()" size="small" fill="clear"
+                color="dark">
+                <ion-icon slot="icon-only" name="color-wand"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="engineThinking && !gameOver">
+            <ion-col>
+              <ion-button (click)="btnStopEngineClick()" size="small" expand="full" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="square"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="gameOver">
+            <ion-col>
+              <ion-button (click)="btnShowFirstPositionClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="rewind"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="btnShowPreviousPositionClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="skip-backward"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="btnShowNextPositionClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="skip-forward"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="btnShowLatestPositionClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="fastforward"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="btnRewindClick()" size="small" fill="clear" color="dark">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+  </div>
+</ion-content>
