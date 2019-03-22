@@ -4,6 +4,16 @@
 Chess Endgame Training is a [ionic](https://ionicframework.com/) / [cordova](https://cordova.apache.org/) application. It is written
 in [TypeScript](http://www.typescriptlang.org/) and [Angular](https://angular.io/).
 
+## Screenshots
+<div style="display:flex;" >
+<img  src="resources/01_home.png" width="15%" >
+<img style="margin-left:10px;" src="resources/02_menu.png" width="15%" >
+<img style="margin-left:10px;" src="resources/03_menu.png" width="15%" >
+<img style="margin-left:10px;" src="resources/04_list.png" width="15%" >
+<img style="margin-left:10px;" src="resources/05_position.png" width="15%" >
+<img style="margin-left:10px;" src="resources/06_record.png" width="15%" >
+</div>
+
 Following software and resources has been used:
 
 * [chess.js](https://github.com/jhlywa/chess.js): A Javascript chess library for chess move generation/validation, piece placement/movement, and check/checkmate/draw detection
