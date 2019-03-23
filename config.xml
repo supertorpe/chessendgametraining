@@ -84,4 +84,5 @@
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-globalization" spec="1.11.0" />
     <engine name="android" spec="7.1.4" />
+    <plugin name="cordova-plugin-nativeaudio" spec="3.0.9" />
 </widget>
