@@ -107,6 +107,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.cleanHighlights();
         this.board.position(this.originalFen);
         this.chess.load(this.originalFen);
+        this.fenHistory = [this.originalFen];
         this.player = this.chess.turn();
     }
 
