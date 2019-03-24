@@ -4,7 +4,8 @@
         "home": "Home",
         "preferences": "Preferences",
         "about": "About",
-        "exit": "Exit"
+        "exit": "Exit",
+        "back-to-exit": "Press back again to exit"
     },
     "home": {
         "title": "Chess Endgame Training",

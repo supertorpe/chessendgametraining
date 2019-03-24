@@ -4,7 +4,8 @@
         "home": "Inicio",
         "preferences": "Configuración",
         "about": "Acerca de",
-        "exit": "Salir"
+        "exit": "Salir",
+        "back-to-exit": "Pulse 'atrás' de nuevo para salir"
     },
     "home": {
         "title": "Chess Endgame Training",
