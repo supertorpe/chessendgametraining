@@ -52,15 +52,15 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-        this.route.params.subscribe(params => {
-          this.idxCategory = +params.idxcategory;
-          this.idxSubcategory = +params.idxsubcategory;
-          this.idxPosition = +params.idxposition;
-          this.endgameDatabaseService.initialize().then(result => {
-            this.endgameDatabase = this.endgameDatabaseService.getDatabase();
-            this.load();
-          });
-        });
+    this.route.params.subscribe(params => {
+      this.idxCategory = +params.idxcategory;
+      this.idxSubcategory = +params.idxsubcategory;
+      this.idxPosition = +params.idxposition;
+      this.endgameDatabaseService.initialize().then(result => {
+        this.endgameDatabase = this.endgameDatabaseService.getDatabase();
+        this.load();
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -117,19 +117,21 @@ export class PositionPage implements OnInit, OnDestroy {
       'position.new-record',
       'position.goal-achieved',
       'position.congratulations',
+      'position.review',
+      'position.next-puzzle',
       'position.in',
       'position.moves',
       'position.ups',
       'position.keep-practicing',
       'position.ok'
-      ]).subscribe(async res => {
-        this.literales = res;
-        this.infotext = this.literales['position.your-turn'];
+    ]).subscribe(async res => {
+      this.literales = res;
+      this.infotext = this.literales['position.your-turn'];
     });
   }
 
   onEngineReady() {
-    
+
   }
 
   onEngineStartThinking() {
@@ -160,6 +162,7 @@ export class PositionPage implements OnInit, OnDestroy {
       this.autosolve = false;
       return;
     }
+    let buttons;
     if ((message === 'Checkmate' && this.chessboard.winner() === this.position.move) || (this.position.target !== 'checkmate' && message !== 'Checkmate')) {
       const totalMoves = this.chessboard.history().length;
       let playerMoves;
@@ -170,6 +173,7 @@ export class PositionPage implements OnInit, OnDestroy {
       }
       if (this.autosolveUsed) {
         header = this.literales['position.used-assistance'];
+        buttons = [this.literales['position.ok']];
       } else {
         if (!this.position.record || this.position.record < 0 || playerMoves < this.position.record) {
           subHeader = this.literales['position.new-record']
@@ -179,6 +183,19 @@ export class PositionPage implements OnInit, OnDestroy {
           subHeader = this.literales['position.goal-achieved'];
         }
         header = this.literales['position.congratulations'];
+        if (this.showNavNext) {
+          buttons = [
+            {
+              text: this.literales['position.review'],
+            },
+            {
+              text: this.literales['position.next-puzzle'],
+              handler: () => { this.gotoNext(); }
+            }
+          ];
+        } else {
+          buttons = [this.literales['position.ok']];
+        }
       }
       text = this.infotext + ' ' + this.literales['position.in'] + ' ' + playerMoves + ' ' + this.literales['position.moves'];
     } else {
@@ -189,12 +206,13 @@ export class PositionPage implements OnInit, OnDestroy {
       header = this.literales['position.ups'];
       subHeader = message;
       text = this.literales['position.keep-practicing'];
+      buttons = [this.literales['position.ok']];
     }
     const alert = await this.alertController.create({
       header: header,
       subHeader: subHeader,
       message: text,
-      buttons: [this.literales['position.ok']]
+      buttons: buttons
     });
     await alert.present();
   }
