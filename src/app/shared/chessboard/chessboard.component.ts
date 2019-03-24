@@ -67,7 +67,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.originalFen = fen;
         this.fenHistory = [fen];
         if (this.board) {
-            this.board.destroy;
+            this.board.destroy();
         }
         this.board = ChessBoard('__chessboard__', {
             position: fen,
