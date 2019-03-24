@@ -1,18 +1,17 @@
 [Chess Endgame Training](https://github.com/supertorpe/chessendgametraining)
---------------------
 <a style="margin-bottom: 0;" href='https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="80px"/></a>
+--------------------
 
 Chess Endgame Training is a [ionic](https://ionicframework.com/) / [cordova](https://cordova.apache.org/) application. It is written
 in [TypeScript](http://www.typescriptlang.org/) and [Angular](https://angular.io/).
 
 ## Screenshots
 <div style="display:flex;" >
-<img  src="resources/01_home.png" width="15%" >
-<img style="margin-left:10px;" src="resources/screenshots/01_home-en.png" width="15%" >
-<img style="margin-left:10px;" src="resources/screenshots/02_menu-en.png" width="15%" >
-<img style="margin-left:10px;" src="resources/screenshots/03_menu-en.png" width="15%" >
-<img style="margin-left:10px;" src="resources/screenshots/04_list-en.png" width="15%" >
-<img style="margin-left:10px;" src="resources/screenshots/05_position-en.png" width="15%" >
+<img style="margin-left:10px;" src="resources/screenshots/01_home-en.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/02_menu-en.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/03_menu-en.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/04_list-en.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/05_position-en.png" width="19%" >
 </div>
 
 Following software and resources has been used:
