@@ -154,27 +154,47 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     showFirstPosition() {
+        if (this.fenPointer === 0) {
+            return;
+        }
         this.fenPointer = 0;
         this.showFenPointer();
     }
 
     showPreviousPosition() {
+        if (this.fenPointer === 0) {
+            return;
+        }
         this.fenPointer--;
         this.showFenPointer();
     }
 
     showNextPosition() {
+        if (this.fenPointer === this.fenHistory.length - 1) {
+            return;
+        }
         this.fenPointer++;
         this.showFenPointer();
     }
 
     showLatestPosition() {
+        if (this.fenPointer === this.fenHistory.length - 1) {
+            return;
+        }
         this.fenPointer = this.fenHistory.length - 1;
         this.showFenPointer();
     }
 
+    isShowingFirstPosition() {
+        return (this.fenPointer === 0);
+    }
+
+    isShowingLatestPosition() {
+        return (this.fenPointer === this.fenHistory.length - 1);
+    }
     private showFenPointer() {
         this.cleanHighlights();
+        this.audio.play();
         this.board.position(this.fenHistory[this.fenPointer], true);
     }
 

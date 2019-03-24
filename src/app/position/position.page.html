@@ -74,22 +74,22 @@
           </ion-row>
           <ion-row *ngIf="gameOver">
             <ion-col>
-              <ion-button (click)="btnShowFirstPositionClick()" size="small" fill="clear" color="dark">
+              <ion-button [disabled]="chessboard.isShowingFirstPosition()" (click)="btnShowFirstPositionClick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="rewind"></ion-icon>
               </ion-button>
             </ion-col>
             <ion-col>
-              <ion-button (click)="btnShowPreviousPositionClick()" size="small" fill="clear" color="dark">
+              <ion-button [disabled]="chessboard.isShowingFirstPosition()" (click)="btnShowPreviousPositionClick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="skip-backward"></ion-icon>
               </ion-button>
             </ion-col>
             <ion-col>
-              <ion-button (click)="btnShowNextPositionClick()" size="small" fill="clear" color="dark">
+              <ion-button [disabled]="chessboard.isShowingLatestPosition()" (click)="btnShowNextPositionClick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="skip-forward"></ion-icon>
               </ion-button>
             </ion-col>
             <ion-col>
-              <ion-button (click)="btnShowLatestPositionClick()" size="small" fill="clear" color="dark">
+              <ion-button [disabled]="chessboard.isShowingLatestPosition()" (click)="btnShowLatestPositionClick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="fastforward"></ion-icon>
               </ion-button>
             </ion-col>
