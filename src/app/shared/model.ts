@@ -20,5 +20,6 @@ export interface Category {
 }
 
 export interface EndgameDatabase {
+    version: string,
     categories: Category[];
 }

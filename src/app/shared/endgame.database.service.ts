@@ -15,20 +15,47 @@ export class EndgameDatabaseService {
 
   initialize(): Promise<boolean> {
     return new Promise(resolve => {
-      this.getLocalDatabase().then(localDatabase => {
-        if (localDatabase == null) {
-          this.getRemoteDatabase().then(remoteDatabase => {
-            this.endgameDatabase = remoteDatabase;
-            this.saveDatabase().then(saved => {
-              resolve(true);
-            });
-          });
-        } else {
-          this.endgameDatabase = localDatabase;
-          resolve(true);
-        }
+      if (this.endgameDatabase) {
+        resolve(true);
+        return;
+      }
+      Promise.all([
+        this.getLocalDatabase(),
+        this.getRemoteDatabase()
+      ]).then((values: EndgameDatabase[]) => {
+        const localDatabase = values[0];
+        const remoteDatabase = values[1];
+        this.endgameDatabase = this.reconcileDatabases(localDatabase, remoteDatabase);
+        resolve(true);
       });
     });
+  }
+
+  private reconcileDatabases(localDatabase: EndgameDatabase, remoteDatabase: EndgameDatabase) : EndgameDatabase {
+    if (!localDatabase) {
+          return remoteDatabase;
+    }
+    if (localDatabase.version && localDatabase.version === remoteDatabase.version) {
+      return localDatabase;
+    }
+    // recover records
+    remoteDatabase.categories.forEach(category => {
+      category.subcategories.forEach(subcategory => {
+        subcategory.games.forEach(game => {
+          const localCategory = localDatabase.categories.find(x => x.name === category.name);
+          if (localCategory) {
+            const localSubcategory = localCategory.subcategories.find(x => x.name === subcategory.name);
+            if (localSubcategory) {
+              const localGame = localSubcategory.games.find(x => x.fen === game.fen);
+              if (localGame && localGame.record) {
+                game.record = localGame.record;
+              }
+            }
+          }
+        });
+      });
+    });
+    return remoteDatabase;
   }
 
   getLocalDatabase(): Promise<EndgameDatabase> {
