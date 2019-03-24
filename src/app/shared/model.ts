@@ -14,7 +14,7 @@ export interface Subcategory {
 
 export interface Category {
     name: string;
-    icon: string;
+    icons: string[];
     selected: boolean;
     subcategories: Subcategory[];
 }

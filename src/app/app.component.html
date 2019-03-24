@@ -18,14 +18,17 @@
             <ng-container *ngFor="let category of endgameDatabase.categories; index as idxCategory">
               <ion-item (click)="$event.stopPropagation();toggleCategory(category)" lines="full"
                 style="cursor: pointer">
-                <img slot="start" src="../../assets/icon/{{category.icon}}" class="thumbnail" />
+                <div slot="start">
+                  <img *ngFor="let icon of category.icons" src="../../assets/icon/{{icon}}" class="thumbnail" />
+                </div>
+                
                 <ion-label>
                   {{'category.' + category.name | translate}}
                 </ion-label>
                 <ion-icon slot="end" [name]="category.selected ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
               </ion-item>
                 <ion-item [ngClass]="{'ion-hide': !category.selected}" *ngFor="let subcategory of category.subcategories; index as idxSubcategory" style="cursor: pointer" (click)="showList(idxCategory, idxSubcategory)">
-                  <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="thumbnail" />
+                  <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="medium-thumbnail" />
                 </ion-item>
             </ng-container>
             <ion-item *ngFor="let p of postPages" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">

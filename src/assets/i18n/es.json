@@ -16,7 +16,11 @@
         "Basic": "Básicos",
         "Pawn": "Peones", 
         "Bishop": "Alfiles",
-        "Knight": "Caballos"
+        "Knight": "Caballos",
+        "Knight-Bishop": "Caballos y Alfiles",
+        "Rook-Pawn": "Torres y Peones",
+        "Rook-Pieces": "Torres y Piezas menores",
+        "Queen": "Dama"
     },
     "position": {
         "white": "blancas",

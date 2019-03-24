@@ -16,7 +16,11 @@
     vertical-align: middle;
     max-width: 32px;
 }
-
+.medium-thumbnail {
+    height: auto;
+    vertical-align: middle;
+    max-width: 28px;
+}
 .responsive-thumbnail {
     height: auto;
     vertical-align: middle;
@@ -25,14 +29,12 @@
         max-width: 18px;
     }
 }
-
 .responsive-text {
     font-size: 17px;
     @media (max-width: 400px) {
         font-size: 10px;
     }
 }
-
 .highlight-square {
     -webkit-box-shadow: inset 0 0 3px 3px goldenRod !important;
     -moz-box-shadow: inset 0 0 3px 3px goldenRod !important;

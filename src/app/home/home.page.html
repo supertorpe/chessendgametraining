@@ -20,7 +20,7 @@
           <ion-row *ngFor="let chunk of endgameDatabase.categories | chunks: 2; index as idxChunk">
             <ion-col *ngFor="let category of chunk; index as idxCategory" size="6">
               <ion-button color="light" size="default" expand="full" [routerLink]="'/list/' + (idxCategory + idxChunk * 2) + '/0'">
-                <img slot="start" src="../../assets/icon/{{category.icon}}" class="thumbnail" />
+                <img slot="start" *ngFor="let icon of category.icons" src="../../assets/icon/{{icon}}" class="thumbnail" />
               </ion-button>
             </ion-col>
           </ion-row>

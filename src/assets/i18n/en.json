@@ -16,7 +16,11 @@
         "Basic": "Basic",
         "Pawn": "Pawn", 
         "Bishop": "Bishop",
-        "Knight": "Knight"
+        "Knight": "Knight",
+        "Knight-Bishop": "Knight and Bishop",
+        "Rook-Pawn": "Rook and Pawn",
+        "Rook-Pieces": "Rook and minor Pieces",
+        "Queen": "Queen"
     },
     "position": {
         "white": "white",

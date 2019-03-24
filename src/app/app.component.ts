@@ -13,6 +13,7 @@ import { EndgameDatabaseService, MiscService, EndgameDatabase, Category } from '
 export class AppComponent {
 
   public endgameDatabase: EndgameDatabase = {
+    version: null,
     categories: null
   };
   public prePages = [
