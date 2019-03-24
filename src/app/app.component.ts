@@ -121,7 +121,7 @@ export class AppComponent {
     this.navCtrl.navigateRoot('/list/' + idxCategory + '/' + idxSubcategory);
   }
 
-  private exit() {
+  exit() {
     navigator['app'].exitApp();
   }
 
