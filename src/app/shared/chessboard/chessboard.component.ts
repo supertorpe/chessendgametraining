@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 import { PromotionDialog } from './promotion.dialog';
 import * as Chess from 'chess.js';
 import { TranslateService } from '@ngx-translate/core';
-import { AudioService } from '../audio.service';
 
 declare var ChessBoard: any;
 declare var $: any;
@@ -32,6 +31,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private squareSelected;
     private onStockfishMessageSubscription: Subscription;
     public literales: any;
+    private audio: HTMLAudioElement = new Audio();
 
     @Output() engineReady: EventEmitter<void> = new EventEmitter<void>();
     @Output() engineStartThinking: EventEmitter<void> = new EventEmitter<void>();
@@ -44,12 +44,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         private stockfish: StockfishService,
         public translate: TranslateService,
         public modalController: ModalController,
-        private http: HttpClient,
-        private audio: AudioService) { }
+        private http: HttpClient) { }
 
     ngOnInit() {
         this.onStockfishMessageSubscription = this.stockfish.onMessage$.subscribe(event => this.messageReceived(event));
-        this.audio.preload('move', '/assets/audio/move.wav');
+        this.audio.src = '/assets/audio/move.mp3';
     }
 
     ngOnDestroy() {
@@ -189,7 +188,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         let match;
         if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
-            this.audio.play('move');
+            this.audio.play();
             this.board.position(this.chess.fen(), false);
             this.fenHistory.push(this.chess.fen());
             this.highlightSquares(match[1], match[2]);
@@ -305,7 +304,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             to: target,
             promotion: promotion
         });
-        this.audio.play('move');
+        this.audio.play();
         this.fenHistory.push(this.chess.fen());
         this.playerMoved.emit();
         this.prepareMove();

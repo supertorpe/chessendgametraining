@@ -3,16 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { EndgameDatabaseService } from './endgame.database.service';
 import { MiscService } from './misc.service';
 import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
 import { ChessboardComponent } from './chessboard';
 import { PromotionDialog } from './chessboard';
-import { AudioService } from './audio.service';
 
-const providers = [EndgameDatabaseService, MiscService, StockfishService, NativeAudio, AudioService];
+const providers = [EndgameDatabaseService, MiscService, StockfishService];
 
 @NgModule({
     imports: [

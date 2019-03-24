@@ -319,13 +319,6 @@
   dependencies:
     "@types/cordova" latest
 
-"@ionic-native/native-audio@^5.3.0":
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/native-audio/-/native-audio-5.3.0.tgz#8c3c216351f545495565f9aabf7639721942853c"
-  integrity sha512-sbCN8HW5vUg4yz0fudnFcmSOL3i5Cjn1oE7girZ2tZy3Xes58Afde6/RrguA78OjS1F6hSsdEV77Ey2zvcdIQQ==
-  dependencies:
-    "@types/cordova" latest
-
 "@ionic-native/splash-screen@^5.0.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-5.2.0.tgz#4b065f42660fe19291e1b96f425a43eef070a04b"
@@ -420,11 +413,6 @@
     rxjs "6.3.3"
     semver "5.6.0"
     semver-intersect "1.4.0"
-
-"@types/chessboardjs@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@types/chessboardjs/-/chessboardjs-0.3.1.tgz#8032a325b55d534931e68b69b79cab830f2d0baf"
-  integrity sha512-dNsKwjJ1uRP82vstvDO3tfq7wTB3AAv+SJphveu+MOUZW6/0etK73/fENRNLG55MVF1LyfXAMotxxnX4FMQNDQ==
 
 "@types/cordova@latest":
   version "0.0.34"
@@ -1957,11 +1945,6 @@ cordova-plugin-ionic-webview@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-ionic-webview/-/cordova-plugin-ionic-webview-3.1.2.tgz#80fe1e82067ad8dcbc5ecf00cad2f8dfa0d0e10f"
   integrity sha512-i4hFMMebCPDe0KCNbwWhtYcxNIDdbUEfwuo+HBubfaRL/b5xjti/K5KdaJk5x/zB2pqDkY1E9ggZEt1+6j6iIg==
-
-cordova-plugin-nativeaudio@3.0.9:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-nativeaudio/-/cordova-plugin-nativeaudio-3.0.9.tgz#16cebfdaee24beb23c05f49713cb8773bc78536c"
-  integrity sha1-Fs6/2u4kvrI8BfSXE8uHc7x4U2w=
 
 cordova-plugin-splashscreen@^5.0.2:
   version "5.0.2"
