@@ -100,6 +100,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         ]).subscribe(async res => {
             this.literales = res;
         });
+        window.setTimeout(function() {window.dispatchEvent(new Event('resize'));}, 100);
     }
 
     rewind() {
@@ -360,6 +361,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     //('draw' === this.target ? data.moves[data.moves.length - 1].uci : data.moves[0].uci)
                     ;
                 let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
+                this.audio.play();
                 this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
                 this.board.position(this.chess.fen(), false);
                 this.fenHistory.push(this.chess.fen());

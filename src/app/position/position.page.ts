@@ -105,7 +105,6 @@ export class PositionPage implements OnInit, OnDestroy {
       this.targetImage = 'bK.png';
     }
     this.chessboard.build(this.position.fen, this.position.target);
-    window.dispatchEvent(new Event('resize'));
     this.engineThinking = false;
     this.gameOver = false;
     this.btnRewindEnabled = false;
@@ -126,7 +125,7 @@ export class PositionPage implements OnInit, OnDestroy {
       ]).subscribe(async res => {
         this.literales = res;
         this.infotext = this.literales['position.your-turn'];
-		});
+    });
   }
 
   onEngineReady() {
