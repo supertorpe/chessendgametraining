@@ -16,6 +16,7 @@
     </ion-card-header>
     <ion-card-content>
       <p>{{ 'home.description' | translate }}</p>
+      <ion-spinner *ngIf="!endgameDatabase" name="dots"></ion-spinner>
       <ion-grid *ngIf="(endgameDatabase$ | async) as endgameDatabase">
           <ion-row *ngFor="let chunk of endgameDatabase.categories | chunks: 2; index as idxChunk">
             <ion-col *ngFor="let category of chunk; index as idxCategory" size="6">

@@ -1,5 +1,6 @@
 export * from './shared.module';
 export * from './model';
 export * from './endgame.database.service';
+export * from './stockfish.service';
 export * from './misc.service';
-export * from './chessboard';
+export * from './configuration.service';

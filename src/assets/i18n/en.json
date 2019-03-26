@@ -20,7 +20,7 @@
         "Knight": "Knight",
         "Knight-Bishop": "Knight and Bishop",
         "Rook-Pawn": "Rook and Pawn",
-        "Rook-Pieces": "Rook and minor Pieces",
+        "Rook-Pieces": "Rook and Pieces",
         "Queen": "Queen"
     },
     "position": {
@@ -61,10 +61,15 @@
     },
     "preferences": {
         "title": "Preferences",
-        "clean-database": "Clean local database",
+        "clean-database": "Reset records",
+        "records-removed": "Records removed",
+        "save-changes": "Save changes",
+        "changes-saved": "Changes saved",
+        "use-syzygy": "Use Syzygy tables",
+        "stockfish-depth": "Stockfish depth",
         "clean-dialog" : {
             "title": "Are you sure?",
-            "subtitle": "Clean local database",
+            "subtitle": "Reset records",
             "message": "All your records will be lost !!!",
             "cancel": "Cancel",
             "continue": "Continue"

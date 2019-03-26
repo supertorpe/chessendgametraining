@@ -8,7 +8,7 @@
         "back-to-exit": "Pulse 'atrás' de nuevo para salir"
     },
     "home": {
-        "title": "Chess Endgame Training",
+        "title": "Finales de Ajedrez",
         "get-started": "Inicio",
         "presentation": "Presentación",
         "description": "Practica una variedad, bien organizada, de finales de juego. Desde los más elementales a los más complejos, puedes practicar hasta dominar todos los finales."
@@ -20,7 +20,7 @@
         "Knight": "Caballos",
         "Knight-Bishop": "Caballos y Alfiles",
         "Rook-Pawn": "Torres y Peones",
-        "Rook-Pieces": "Torres y Piezas menores",
+        "Rook-Pieces": "Torres y Piezas",
         "Queen": "Dama"
     },
     "position": {
@@ -61,10 +61,15 @@
     },
     "preferences": {
         "title": "Configuración",
-        "clean-database": "Vaciar base de datos",
+        "clean-database": "Eliminar records",
+        "records-removed": "Records eliminados",
+        "save-changes": "Guardar cambios",
+        "changes-saved": "Cambios guardados",
+        "use-syzygy": "Usar tablas Syzygy",
+        "stockfish-depth": "Stockfish profundidad",
         "clean-dialog" : {
             "title": "¿Está seguro?",
-            "subtitle": "Vaciar base de datos",
+            "subtitle": "Eliminar records",
             "message": "¡Se perderán todos tus records!",
             "cancel": "Cancelar",
             "continue": "Continuar"

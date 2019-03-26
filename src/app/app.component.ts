@@ -55,6 +55,7 @@ export class AppComponent {
     private endgameDatabaseService: EndgameDatabaseService
   ) {
     this.translate.setDefaultLang('en');
+    this.translate.use(this.translate.getBrowserLang());
     this.initializeApp();
   }
 
@@ -68,8 +69,6 @@ export class AppComponent {
       this.endgameDatabaseService.initialize(),
       this.platform.ready()
     ]).then((values: any[]) => {
-      //this.translate.use(navigator.language);
-      this.translate.use(this.translate.getBrowserLang());
       this.translate.get(['app.back-to-exit']).subscribe(async res => {
         this.literals = res;
       });

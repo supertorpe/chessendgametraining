@@ -5,12 +5,11 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { EndgameDatabaseService } from './endgame.database.service';
 import { MiscService } from './misc.service';
+import { ConfigurationService } from './configuration.service';
 import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
-import { ChessboardComponent } from './chessboard';
-import { PromotionDialog } from './chessboard';
 
-const providers = [EndgameDatabaseService, MiscService, StockfishService];
+const providers = [EndgameDatabaseService, MiscService, ConfigurationService, StockfishService];
 
 @NgModule({
     imports: [
@@ -19,22 +18,15 @@ const providers = [EndgameDatabaseService, MiscService, StockfishService];
         IonicModule,
         TranslateModule.forChild()
     ],
-    declarations: [
-        ChunksPipe,
-        ChessboardComponent,
-        PromotionDialog
-    ],
+    declarations: [ChunksPipe],
     providers: [
     ],
-    entryComponents: [PromotionDialog],
     exports: [
         CommonModule,
         FormsModule,
         IonicModule,
         TranslateModule,
-        ChunksPipe,
-        ChessboardComponent,
-        PromotionDialog
+        ChunksPipe
     ]
 })
 export class SharedModule {

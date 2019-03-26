@@ -9,14 +9,26 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-button (click)="cleanDatabase()" color="light" size="default" expand="full">
-                <ion-icon slot="start" name="trash"></ion-icon>
-              <ion-label>{{'preferences.clean-database' | translate}}</ion-label>
-            </ion-button>
-          </ion-col>
-        </ion-row>
-    </ion-grid>
+  <ion-list *ngIf="configuration">
+    <ion-item button="true" (click)="cleanDatabase()">
+      <ion-label>{{'preferences.clean-database' | translate}}</ion-label>
+      <ion-icon slot="end" name="trash"></ion-icon>
+    </ion-item>
+    <ion-item>
+        <ion-label>{{'preferences.use-syzygy' | translate}}</ion-label>
+        <ion-toggle slot="end" [(ngModel)]="configuration.useSyzygy"></ion-toggle>
+    </ion-item>
+    <ion-item>
+        <ion-label>{{'preferences.stockfish-depth' | translate}}: {{configuration.stockfishDepth}}</ion-label>
+    </ion-item>
+    <ion-item>
+        <ion-range min="20" max="40" [(ngModel)]="configuration.stockfishDepth"></ion-range>
+    </ion-item>
+  </ion-list>
 </ion-content>
+<ion-footer>
+  <ion-button *ngIf="configuration" (click)="save()" color="primary" size="default" expand="full">
+    <ion-icon slot="start" name="save"></ion-icon>
+    <ion-label>{{'preferences.save-changes' | translate}}</ion-label>
+  </ion-button>
+</ion-footer>

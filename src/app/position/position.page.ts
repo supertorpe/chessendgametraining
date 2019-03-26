@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService, ChessboardComponent } from '../shared';
+import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService } from '../shared';
 import { Observable, of } from 'rxjs';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { ChessboardComponent } from '../chessboard';
 
 @Component({
   selector: 'app-position',

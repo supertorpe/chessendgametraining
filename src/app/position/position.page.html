@@ -35,7 +35,8 @@
             <img *ngIf="targetImage" src="../../assets/icon/{{targetImage}}" class="thumbnail" /> {{('position.' + position.move) | translate}} {{'position.to' | translate}}
             {{('position.' + position.target) | translate}}
           </p>
-          <p class="text-centered">{{infotext}}</p>
+          <p *ngIf="engineThinking" class="text-centered"><ion-spinner name="dots"></ion-spinner></p>
+          <p *ngIf="!engineThinking" class="text-centered">{{infotext}}</p>
           <p *ngIf="position.record > 0" class="text-centered">{{'position.personal-record' | translate}}: {{position.record}} {{'position.moves' | translate}}</p>
         </div>
       </div>

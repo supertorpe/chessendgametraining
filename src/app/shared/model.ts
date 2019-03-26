@@ -23,3 +23,8 @@ export interface EndgameDatabase {
     version: string,
     categories: Category[];
 }
+
+export interface Configuration {
+    useSyzygy: boolean
+    stockfishDepth: number
+}

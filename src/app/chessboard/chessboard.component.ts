@@ -1,11 +1,12 @@
 import { Component, HostListener, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
-import { StockfishService } from '../stockfish.service';
+import { StockfishService } from '../shared';
 import { Subscription } from 'rxjs';
 import { PromotionDialog } from './promotion.dialog';
 import * as Chess from 'chess.js';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfigurationService, Configuration } from '../shared';
 
 declare var ChessBoard: any;
 declare var $: any;
@@ -17,6 +18,7 @@ declare var $: any;
 })
 export class ChessboardComponent implements OnInit, OnDestroy {
 
+    private configuration: Configuration;
     private board: any;
     private chess: Chess = new Chess();
     private originalFen: string;
@@ -27,7 +29,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private player: string;
     private autosolve = false;
     private initializing = false;
-    private syzygyBroken = false;
+    private useSyzygy = false;
     private squareSelected;
     private onStockfishMessageSubscription: Subscription;
     public literales: any;
@@ -41,6 +43,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     @Output() gameOver: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(
+        private configurationService: ConfigurationService,
         private stockfish: StockfishService,
         public translate: TranslateService,
         public modalController: ModalController,
@@ -49,6 +52,10 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.onStockfishMessageSubscription = this.stockfish.onMessage$.subscribe(event => this.messageReceived(event));
         this.audio.src = '/assets/audio/move.mp3';
+        this.configurationService.initialize().then(config => {
+            this.configuration = config;
+            this.useSyzygy = this.configuration.useSyzygy;
+          });
     }
 
     ngOnDestroy() {
@@ -253,7 +260,8 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 engineScore = (score / 100.0).toFixed(2);
                 /// Did it find a mate?
             } else if (match[1] == 'mate') {
-                engineScore = this.literales['chessboard.mate-in'] + ' ' + Math.abs(score);
+                this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs(score));
+                return;
             }
             /// Is the score bounded?
             let bound = '';
@@ -369,7 +377,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
 
     private getStockfishMove() {
         this.stockfish.postMessage('position fen ' + this.chess.fen());
-        this.stockfish.postMessage('go depth 28');
+        this.stockfish.postMessage('go depth ' + this.configuration.stockfishDepth);
     }
 
     private getSyzygyMove() {
@@ -425,7 +433,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     this.engineEndThinking.emit();
                 }
             }, error => {
-                this.syzygyBroken = true;
+                this.useSyzygy = false;
                 this.engineInfo.emit(this.literales['syzygy-error']);
                 this.getStockfishMove();
             }
@@ -437,7 +445,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     private getEngineMove() {
-        if (!this.syzygyBroken && this.numberOfPieces(this.chess.fen()) <= 7) {
+        if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
             this.getSyzygyMove();
         } else {
             this.getStockfishMove();
