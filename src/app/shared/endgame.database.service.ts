@@ -33,6 +33,7 @@ export class EndgameDatabaseService {
 
   private reconcileDatabases(localDatabase: EndgameDatabase, remoteDatabase: EndgameDatabase) : EndgameDatabase {
     if (!localDatabase) {
+          this.storage.set('ENDGAME_DATABASE', remoteDatabase);
           return remoteDatabase;
     }
     if (localDatabase.version && localDatabase.version === remoteDatabase.version) {
@@ -55,6 +56,7 @@ export class EndgameDatabaseService {
         });
       });
     });
+	this.storage.set('ENDGAME_DATABASE', remoteDatabase);
     return remoteDatabase;
   }
 
