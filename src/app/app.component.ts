@@ -3,7 +3,7 @@ import { Platform, NavController, IonRouterOutlet, ToastController } from '@ioni
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { EndgameDatabaseService, MiscService, EndgameDatabase, Category } from './shared';
+import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService } from './shared';
 import { Router } from '@angular/router';
 
 @Component({
@@ -50,6 +50,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private translate: TranslateService,
+    private configurationService: ConfigurationService,
     private miscService: MiscService,
     private navCtrl: NavController,
     private endgameDatabaseService: EndgameDatabaseService
@@ -66,18 +67,31 @@ export class AppComponent {
       });
     });
     Promise.all([
+      this.configurationService.initialize(),
       this.endgameDatabaseService.initialize(),
       this.platform.ready()
     ]).then((values: any[]) => {
       this.translate.get(['app.back-to-exit']).subscribe(async res => {
         this.literals = res;
       });
+      const automaticShowFirstPosition = values[0].automaticShowFirstPosition;
+      let goCategory = -1, goSubcategory, goGame;
       this.endgameDatabase = this.endgameDatabaseService.getDatabase();
-      this.endgameDatabase.categories.forEach(category => {
+      this.endgameDatabase.categories.forEach((category, idxCategory) => {
         category.selected = false;
-        category.subcategories.forEach(subcategory => {
+        category.subcategories.forEach((subcategory, idxSubcategory) => {
           subcategory.images = this.miscService.textToImages(subcategory.name);
+          subcategory.games.forEach((game, idxGame) => {
+            if (automaticShowFirstPosition && goCategory == -1 && (!game.record || game.record <= 0)) {
+              goCategory = idxCategory;
+              goSubcategory = idxSubcategory;
+              goGame = idxGame;
+            }
+          });
         });
+        if (goGame) {
+          this.navCtrl.navigateRoot('/position/' + goCategory + '/' + goSubcategory + '/' + goGame);
+        }
         this.statusBar.styleDefault();
         this.splashScreen.hide();
       });

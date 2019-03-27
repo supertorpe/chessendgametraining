@@ -66,6 +66,7 @@
         "records-removed": "Records eliminados",
         "save-changes": "Guardar cambios",
         "changes-saved": "Cambios guardados",
+        "goto-position": "Mostrar puzzle al iniciar",
         "use-syzygy": "Usar tablas Syzygy",
         "stockfish-depth": "Stockfish profundidad",
         "clean-dialog" : {

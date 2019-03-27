@@ -11,7 +11,8 @@ export class ConfigurationService {
 
     private DEFAULT_CONFIG : Configuration = {
         useSyzygy: true,
-        stockfishDepth: 28
+        stockfishDepth: 28,
+        automaticShowFirstPosition: true
     };
 
     constructor(private storage: Storage) {
@@ -25,6 +26,9 @@ export class ConfigurationService {
             }
             this.storage.get('CONFIGURATION').then(config => {
                 if (config) {
+                    if (config.useSyzygy === undefined) config.useSyzygy = this.DEFAULT_CONFIG.useSyzygy;
+                    if (config.stockfishDepth === undefined) config.stockfishDepth = this.DEFAULT_CONFIG.stockfishDepth;
+                    if (config.automaticShowFirstPosition === undefined) config.automaticShowFirstPosition = this.DEFAULT_CONFIG.automaticShowFirstPosition;
                     this.configuration = config;
                     resolve(this.configuration);
                 } else {
