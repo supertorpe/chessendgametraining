@@ -99,6 +99,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             'chessboard.rule-fifty',
             'chessboard.game-over',
             'chessboard.mate-in',
+            'chessboard.receive-mate-in',
             'chessboard.unfeasible-mate',
             'chessboard.white-advantage',
             'chessboard.black-advantage',
@@ -218,6 +219,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
             this.audio.play();
             this.board.position(this.chess.fen(), false);
+            if (this.originalPlayer !== this.player) {
+                this.playerMoved.emit();
+            }
             this.fenHistory.push(this.chess.fen());
             this.highlightSquares(match[1], match[2]);
             if (this.chess.game_over()) {
@@ -260,7 +264,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 engineScore = (score / 100.0).toFixed(2);
                 /// Did it find a mate?
             } else if (match[1] == 'mate') {
-                this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs(score));
+                if (this.originalPlayer === 'w' && score > 0 || this.originalPlayer === 'b' && score < 0) {
+                    this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs(score));
+                } else {
+                    this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
+                }
                 return;
             }
             /// Is the score bounded?
@@ -392,6 +400,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 this.audio.play();
                 this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
                 this.board.position(this.chess.fen(), false);
+                if (this.originalPlayer !== this.player) {
+                    this.playerMoved.emit();
+                }
                 this.fenHistory.push(this.chess.fen());
                 this.highlightSquares(match[1], match[2]);
                 if (this.chess.game_over()) {
@@ -414,7 +425,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     return;
                 } else {
                     if (data.dtm) {
-                        this.engineInfo.emit(`${this.literales['chessboard.mate-in']} ${Math.abs(data.dtm / 2)}`);
+                        if (data.dtm < 0) {
+                            this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs(data.dtm / 2));
+                        } else {
+                            this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
+                        }
                     } else {
                         this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
                     }
