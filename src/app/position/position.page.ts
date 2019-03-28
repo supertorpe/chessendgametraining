@@ -39,6 +39,8 @@ export class PositionPage implements OnInit, OnDestroy {
   public autosolveUsed = false;
   public engineThinking = false;
   public gameOver = false;
+  public autoplaying = false;
+  public intervalPlay;
   public literales: any;
 
   @ViewChild('chessboard') chessboard: ChessboardComponent;
@@ -279,6 +281,32 @@ export class PositionPage implements OnInit, OnDestroy {
 
   btnShowLatestPositionClick() {
     this.chessboard.showLatestPosition();
+  }
+
+  btnPlayClick() {
+    const self = this;
+    this.autoplaying = true;
+    if (this.internalPlay()) {
+      this.intervalPlay = setInterval(function () {
+        if (!self.internalPlay()) {
+          clearInterval(self.intervalPlay);
+        }
+      }, 1000);
+    }
+  }
+
+  internalPlay() {
+    this.chessboard.showNextPosition();
+    if (this.chessboard.isShowingLatestPosition()) {
+      this.autoplaying = false;
+      return false;
+    }
+    return true;
+  }
+
+  btnPauseClick() {
+    this.autoplaying = false;
+    clearInterval(this.intervalPlay);
   }
 
   gotoPrev() {
