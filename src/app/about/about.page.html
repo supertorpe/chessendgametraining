@@ -10,23 +10,19 @@
 </ion-header>
 
 <ion-content>
-  <ion-card class="welcome-card">
-    <ion-card-content>
-      <p>{{'about.description' | translate}}</p>
-    </ion-card-content>
-  </ion-card>
   <ion-list>
     <ion-item lines="none">
-      <a style="cursor: pointer" (click)="openLink('https://github.com/supertorpe/chessendgametraining')">
-        {{'about.source-code' | translate}}</a>
+      <p>{{'about.description' | translate}}</p>
+    </ion-item>
+    <ion-item lines="none">
+      <a (click)="openLink('https://github.com/supertorpe/chessendgametraining')">{{'about.source-code' | translate}}</a>
     </ion-item>
     <ion-item>
       <p>{{'about.third-party' | translate}}</p>
     </ion-item>
     <!-- ECO -->
     <ion-item lines="none">
-      <a style="cursor: pointer"
-        (click)="openLink('http://ecochessopeningcodes.blogspot.com.es/2016/01/play-chess-endgame-positions-with.html')">
+      <a (click)="openLink('http://ecochessopeningcodes.blogspot.com.es/2016/01/play-chess-endgame-positions-with.html')">
         ECO Chess Opening Codes</a>
     </ion-item>
     <ion-item>
@@ -34,28 +30,28 @@
     </ion-item>
     <!-- chess.js -->
     <ion-item lines="none">
-      <a style="cursor: pointer" (click)="openLink('https://github.com/jhlywa/chess.js')">chess.js</a>
+      <a (click)="openLink('https://github.com/jhlywa/chess.js')">chess.js</a>
     </ion-item>
     <ion-item>
       <p>{{'about.chessjs-description' | translate}}</p>
     </ion-item>
     <!-- chessboard.js -->
     <ion-item lines="none">
-      <a style="cursor: pointer" (click)="openLink('http://chessboardjs.com')">chessboard.js</a>
+      <a (click)="openLink('http://chessboardjs.com')">chessboard.js</a>
     </ion-item>
     <ion-item>
       <p>{{'about.chessboard-description' | translate}}</p>
     </ion-item>
     <!-- stockfish.js -->
     <ion-item lines="none">
-      <a style="cursor: pointer" (click)="openLink('https://github.com/niklasf/stockfish.js')">stockfish.js</a>
+      <a (click)="openLink('https://github.com/niklasf/stockfish.js')">stockfish.js</a>
     </ion-item>
     <ion-item>
       <p>{{'about.stockfish-description' | translate}}</p>
     </ion-item>
     <!-- syzygy-->
     <ion-item lines="none">
-      <a style="cursor: pointer" (click)="openLink('https://github.com/niklasf/lila-tablebase')">Syzygy endgame
+      <a (click)="openLink('https://github.com/niklasf/lila-tablebase')">Syzygy endgame
         tablebases</a>
     </ion-item>
     <ion-item>

@@ -29,7 +29,7 @@ export class AppComponent {
     {
       title: 'preferences',
       url: '/preferences',
-      icon: 'cog'
+      icon: 'options'
     },
     {
       title: 'about',

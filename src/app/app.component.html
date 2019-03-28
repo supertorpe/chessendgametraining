@@ -10,35 +10,35 @@
         <ion-list>
           <ion-menu-toggle auto-hide="false">
             <ion-item *ngFor="let p of prePages" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-icon slot="start" [name]="p.icon" color="dark"></ion-icon>
               <ion-label>
                 {{'app.' + p.title | translate}}
               </ion-label>
             </ion-item>
             <ng-container *ngFor="let category of endgameDatabase.categories; index as idxCategory">
-              <ion-item (click)="$event.stopPropagation();toggleCategory(category)" lines="full"
-                style="cursor: pointer">
+              <ion-item (click)="$event.stopPropagation();toggleCategory(category)" lines="full">
                 <div slot="start">
                   <img *ngFor="let icon of category.icons" src="../../assets/icon/{{icon}}" class="thumbnail" />
                 </div>
-                
                 <ion-label>
                   {{'category.' + category.name | translate}}
                 </ion-label>
                 <ion-icon slot="end" [name]="category.selected ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
               </ion-item>
-                <ion-item [ngClass]="{'ion-hide': !category.selected}" *ngFor="let subcategory of category.subcategories; index as idxSubcategory" style="cursor: pointer" (click)="showList(idxCategory, idxSubcategory)">
-                  <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="medium-thumbnail" />
-                </ion-item>
+              <ion-item [ngClass]="{'ion-hide': !category.selected}" color="light"
+                *ngFor="let subcategory of category.subcategories; index as idxSubcategory"
+                (click)="showList(idxCategory, idxSubcategory)">
+                <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="medium-thumbnail" />
+              </ion-item>
             </ng-container>
             <ion-item *ngFor="let p of postPages" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-icon slot="start" [name]="p.icon" color="dark"></ion-icon>
               <ion-label>
                 {{'app.' + p.title | translate}}
               </ion-label>
             </ion-item>
             <ion-item lines="full" (click)="exit()">
-              <ion-icon slot="start" name="exit"></ion-icon>
+              <ion-icon slot="start" name="exit" color="dark"></ion-icon>
               <ion-label>
                 {{'app.exit' | translate}}
               </ion-label>

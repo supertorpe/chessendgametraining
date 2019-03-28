@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService } from '../shared';
 import { Observable, of } from 'rxjs';
-import { AlertController } from '@ionic/angular';
+import { AlertController, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ChessboardComponent } from '../chessboard';
 
@@ -46,6 +46,7 @@ export class PositionPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private location: Location,
+    private menuController: MenuController,
     public alertController: AlertController,
     public translate: TranslateService,
     private endgameDatabaseService: EndgameDatabaseService,
@@ -61,6 +62,18 @@ export class PositionPage implements OnInit, OnDestroy {
         this.endgameDatabase = this.endgameDatabaseService.getDatabase();
         this.load();
       });
+    });
+  }
+
+  ionViewWillEnter() {
+    this.menuController.get('mainMenu').then(function (menu) {
+      menu.swipeGesture = false;
+    });
+  }
+
+  ionViewWillLeave() {
+    this.menuController.get('mainMenu').then(function (menu) {
+      menu.swipeGesture = true;
     });
   }
 
