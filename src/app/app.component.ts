@@ -76,6 +76,7 @@ export class AppComponent {
       });
       const automaticShowFirstPosition = values[0].automaticShowFirstPosition;
       let goCategory = -1, goSubcategory = -1, goGame = -1;
+      let gotoNextPosition = false;
       this.endgameDatabase = this.endgameDatabaseService.getDatabase();
       this.endgameDatabase.categories.forEach((category, idxCategory) => {
         category.selected = false;
@@ -86,10 +87,11 @@ export class AppComponent {
               goCategory = idxCategory;
               goSubcategory = idxSubcategory;
               goGame = idxGame;
+              gotoNextPosition = (goCategory > 0 || goSubcategory > 0 || goGame > 0 || (game.record && game.record <= 0));
             }
           });
         });
-        if (goCategory > 0 || goSubcategory > 0 || goGame > 0) {
+        if (gotoNextPosition) {
           this.navCtrl.navigateRoot('/position/' + goCategory + '/' + goSubcategory + '/' + goGame);
         }
         this.statusBar.styleDefault();
