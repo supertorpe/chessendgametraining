@@ -74,6 +74,7 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   ionViewWillLeave() {
+    this.stopAutoplay();
     this.menuController.get('mainMenu').then(function (menu) {
       menu.swipeGesture = true;
     });
@@ -290,6 +291,7 @@ export class PositionPage implements OnInit, OnDestroy {
       this.intervalPlay = setInterval(function () {
         if (!self.internalPlay()) {
           clearInterval(self.intervalPlay);
+          self.intervalPlay = null;
         }
       }, 1000);
     }
@@ -309,7 +311,16 @@ export class PositionPage implements OnInit, OnDestroy {
     clearInterval(this.intervalPlay);
   }
 
+  private stopAutoplay() {
+    if (this.intervalPlay) {
+      clearInterval(this.intervalPlay);
+      this.intervalPlay = null;
+      this.autoplaying = false;
+    }
+  }
+
   gotoPrev() {
+    this.stopAutoplay();
     let idxCat = this.idxCategory;
     let idxSub = this.idxSubcategory;
     let idxPos = this.idxPosition - 1;
@@ -330,6 +341,7 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   gotoNext() {
+    this.stopAutoplay();
     let idxCat = this.idxCategory;
     let idxSub = this.idxSubcategory;
     let idxPos = this.idxPosition + 1;

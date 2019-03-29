@@ -91,7 +91,6 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.cleanHighlights();
         this.originalPlayer = this.chess.turn();
         this.player = this.originalPlayer;
-        this.initializing = false;
         this.translate.get([
             'chessboard.stalemate',
             'chessboard.insufficent-material',
@@ -133,6 +132,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     solve() {
+        this.initializing = false;
         this.autosolve = true;
         if (this.player === 'w') {
             this.player = 'b';
@@ -344,6 +344,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.audio.play();
         this.fenHistory.push(this.chess.fen());
         this.playerMoved.emit();
+        this.initializing = false;
         this.prepareMove();
     }
 
@@ -392,6 +393,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.engineInfo.emit(this.literales['chessboard.querying-syzygy']);
         this.http.get<any>(`http://tablebase.lichess.ovh/standard?fen=${this.chess.fen()}`)
             .subscribe(data => {
+                if (this.initializing) {
+                    return;
+                }
                 const bestmove =
                     data.moves[0].uci
                     //('draw' === this.target ? data.moves[data.moves.length - 1].uci : data.moves[0].uci)
