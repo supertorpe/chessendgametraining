@@ -435,6 +435,15 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     ;
                 let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
                 if (this.hinting) {
+                    if (data.dtm) {
+                        if (data.dtm > 0) {
+                            this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs((data.dtm % 2 === 0 ? data.dtm : data.dtm + 1) / 2));
+                        } else {
+                            this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
+                        }
+                    } else {
+                        this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
+                    }
                     this.showHint(match[1], match[2],  match[3], 2);
                     return;
                 }
@@ -467,7 +476,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 } else {
                     if (data.dtm) {
                         if (data.dtm < 0) {
-                            this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs(data.dtm / 2));
+                            this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs((data.dtm % 2 === 0 ? data.dtm : data.dtm + 1) / 2));
                         } else {
                             this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                         }
