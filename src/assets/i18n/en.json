@@ -67,6 +67,7 @@
         "save-changes": "Save changes",
         "changes-saved": "Changes saved",
         "goto-position": "Show puzzle at the beginning",
+        "prevent-screen-off": "Keep screen on",
         "use-syzygy": "Use Syzygy tables",
         "stockfish-depth": "Stockfish depth",
         "clean-dialog" : {

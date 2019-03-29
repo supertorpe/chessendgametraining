@@ -27,5 +27,6 @@ export interface EndgameDatabase {
 export interface Configuration {
     useSyzygy: boolean
     stockfishDepth: number,
-    automaticShowFirstPosition: boolean
+    automaticShowFirstPosition: boolean,
+    preventScreenOff: boolean
 }

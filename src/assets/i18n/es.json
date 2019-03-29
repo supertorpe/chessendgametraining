@@ -67,6 +67,7 @@
         "save-changes": "Guardar cambios",
         "changes-saved": "Cambios guardados",
         "goto-position": "Mostrar puzzle al iniciar",
+        "prevent-screen-off": "Mantener pantalla encendida",
         "use-syzygy": "Usar tablas Syzygy",
         "stockfish-depth": "Stockfish profundidad",
         "clean-dialog" : {

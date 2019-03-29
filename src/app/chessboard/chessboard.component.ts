@@ -56,7 +56,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.configurationService.initialize().then(config => {
             this.configuration = config;
             this.useSyzygy = this.configuration.useSyzygy;
-          });
+        });
     }
 
     ngOnDestroy() {
@@ -108,7 +108,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         ]).subscribe(async res => {
             this.literales = res;
         });
-        window.setTimeout(function() {window.dispatchEvent(new Event('resize'));}, 100);
+        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 100);
     }
 
     rewind() {
@@ -225,7 +225,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         let match;
         if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
             if (this.hinting) {
-                this.showHint(match[1], match[2],  match[3], 2);
+                this.showHint(match[1], match[2], match[3], 2);
                 return;
             }
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
@@ -366,12 +366,12 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.audio.play();
         this.chess.move({ from: from, to: to, promotion: promotion });
         this.board.position(this.chess.fen(), true);
-        setTimeout(function() {
+        setTimeout(function () {
             self.chess.undo();
             self.board.position(currentFen, true);
             count--;
             if (count >= 0) {
-                setTimeout(function() {
+                setTimeout(function () {
                     self.showHint(from, to, promotion, count - 1);
                 }, 500);
             } else {
@@ -444,7 +444,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     } else {
                         this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
                     }
-                    this.showHint(match[1], match[2],  match[3], 2);
+                    this.showHint(match[1], match[2], match[3], 2);
                     return;
                 }
                 this.audio.play();
@@ -568,11 +568,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             background = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANElEQVQYlWPY2pH8nxBmIKTgw82t+BV9uLmVOJNwKoKZgFMRugLSrcNmAooifAq2diT/BwD7VtmENkc+eQAAAABJRU5ErkJggg==) repeat';
         }
         */
-       let background = '#e5d8c2'; // claro #f0d9b5
-       if (squareEl.hasClass('black-3c85d') === true) {
-         background = '#9d8b7b'; // oscuro #b58863
-       }
-     
+        let background = '#e5d8c2'; // claro #f0d9b5
+        if (squareEl.hasClass('black-3c85d') === true) {
+            background = '#9d8b7b'; // oscuro #b58863
+        }
+
         squareEl.css('background', background);
     };
 

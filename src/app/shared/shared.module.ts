@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { EndgameDatabaseService } from './endgame.database.service';
 import { MiscService } from './misc.service';
 import { ConfigurationService } from './configuration.service';
 import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
 
-const providers = [EndgameDatabaseService, MiscService, ConfigurationService, StockfishService];
+const providers = [EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, Insomnia];
 
 @NgModule({
     imports: [

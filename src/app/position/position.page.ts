@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService } from '../shared';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService, ConfigurationService, Configuration } from '../shared';
 import { Observable, of } from 'rxjs';
 import { AlertController, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +15,7 @@ import { ChessboardComponent } from '../chessboard';
 })
 export class PositionPage implements OnInit, OnDestroy {
 
+  private configuration: Configuration;
   public endgameDatabase: EndgameDatabase;
   public idxCategory: number;
   public idxSubcategory: number;
@@ -51,8 +53,10 @@ export class PositionPage implements OnInit, OnDestroy {
     private menuController: MenuController,
     public alertController: AlertController,
     public translate: TranslateService,
+    private configurationService: ConfigurationService,
     private endgameDatabaseService: EndgameDatabaseService,
-    private miscService: MiscService) {
+    private miscService: MiscService,
+    private insomnia: Insomnia) {
   }
 
   ngOnInit() {
@@ -68,12 +72,21 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.configurationService.initialize().then(config => {
+      this.configuration = config;
+      if (config.preventScreenOff) {
+        this.insomnia.keepAwake();
+      }
+    });
     this.menuController.get('mainMenu').then(function (menu) {
       menu.swipeGesture = false;
     });
   }
 
   ionViewWillLeave() {
+    if (this.configuration && this.configuration.preventScreenOff) {
+      this.insomnia.allowSleepAgain();
+    }
     this.stopAutoplay();
     this.menuController.get('mainMenu').then(function (menu) {
       menu.swipeGesture = true;
