@@ -28,6 +28,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private originalPlayer: string;
     private player: string;
     private autosolve = false;
+    private hinting = false;
     private initializing = false;
     private useSyzygy = false;
     private squareSelected;
@@ -142,6 +143,13 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.prepareMove();
     }
 
+    hint() {
+        this.initializing = false;
+        this.hinting = true;
+        this.getEngineMove();
+        this.engineStartThinking.emit();
+    }
+
     flip() {
         this.board.flip();
     }
@@ -216,6 +224,10 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         }
         let match;
         if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
+            if (this.hinting) {
+                this.showHint(match[1], match[2],  match[3], 2);
+                return;
+            }
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
             this.audio.play();
             this.board.position(this.chess.fen(), false);
@@ -348,6 +360,27 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.prepareMove();
     }
 
+    private showHint(from, to, promotion, count) {
+        const self = this;
+        const currentFen = this.chess.fen();
+        this.audio.play();
+        this.chess.move({ from: from, to: to, promotion: promotion });
+        this.board.position(this.chess.fen(), true);
+        setTimeout(function() {
+            self.chess.undo();
+            self.board.position(currentFen, true);
+            count--;
+            if (count >= 0) {
+                setTimeout(function() {
+                    self.showHint(from, to, promotion, count - 1);
+                }, 500);
+            } else {
+                self.hinting = false;
+                self.engineEndThinking.emit();
+            }
+        }, 500);
+    }
+
     private onMoveEnd(source, target) {
     };
 
@@ -401,6 +434,10 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     //('draw' === this.target ? data.moves[data.moves.length - 1].uci : data.moves[0].uci)
                     ;
                 let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
+                if (this.hinting) {
+                    this.showHint(match[1], match[2],  match[3], 2);
+                    return;
+                }
                 this.audio.play();
                 this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
                 this.board.position(this.chess.fen(), false);

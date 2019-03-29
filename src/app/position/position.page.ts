@@ -261,6 +261,11 @@ export class PositionPage implements OnInit, OnDestroy {
     this.chessboard.solve();
   }
 
+  btnHintlick() {
+    this.autosolveUsed = true;
+    this.chessboard.hint();
+  }
+
   btnStopEngineClick() {
     this.chessboard.stop();
     if (this.autosolve) {
