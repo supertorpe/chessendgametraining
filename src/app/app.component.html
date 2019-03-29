@@ -1,4 +1,4 @@
-<ion-app>
+<ion-app [ngClass]="{'ion-hide': !initialized}">
   <ion-split-pane when="false">
     <ion-menu menuId="mainMenu">
       <ion-header>
@@ -23,7 +23,7 @@
                 <ion-label>
                   {{'category.' + category.name | translate}}
                 </ion-label>
-                <ion-icon slot="end" [name]="category.selected ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
+                <ion-icon slot="end" color="medium" [name]="category.selected ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
               </ion-item>
               <ion-item [ngClass]="{'ion-hide': !category.selected}" color="light"
                 *ngFor="let subcategory of category.subcategories; index as idxSubcategory"

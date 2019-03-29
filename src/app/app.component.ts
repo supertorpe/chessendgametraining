@@ -3,7 +3,7 @@ import { Platform, NavController, IonRouterOutlet, ToastController } from '@ioni
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService } from './shared';
+import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, ThemeSwitcherService } from './shared';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
 
+  public initialized = false;
   public endgameDatabase: EndgameDatabase = {
     version: null,
     categories: null
@@ -53,7 +54,8 @@ export class AppComponent {
     private configurationService: ConfigurationService,
     private miscService: MiscService,
     private navCtrl: NavController,
-    private endgameDatabaseService: EndgameDatabaseService
+    private endgameDatabaseService: EndgameDatabaseService,
+    private themeSwitcherService: ThemeSwitcherService
   ) {
     this.translate.setDefaultLang('en');
     this.translate.use(this.translate.getBrowserLang());
@@ -71,10 +73,12 @@ export class AppComponent {
       this.endgameDatabaseService.initialize(),
       this.platform.ready()
     ]).then((values: any[]) => {
+      const config = values[0];
+      this.themeSwitcherService.setTheme(config.colorTheme);
       this.translate.get(['app.back-to-exit']).subscribe(async res => {
         this.literals = res;
       });
-      const automaticShowFirstPosition = values[0].automaticShowFirstPosition;
+      const automaticShowFirstPosition = config.automaticShowFirstPosition;
       let goCategory = -1, goSubcategory = -1, goGame = -1;
       let gotoNextPosition = false;
       this.endgameDatabase = this.endgameDatabaseService.getDatabase();
@@ -94,7 +98,7 @@ export class AppComponent {
         if (gotoNextPosition) {
           this.navCtrl.navigateRoot('/position/' + goCategory + '/' + goSubcategory + '/' + goGame);
         }
-        this.statusBar.styleDefault();
+        this.initialized = true;
         this.splashScreen.hide();
       });
     });

@@ -203,7 +203,10 @@ export class PositionPage implements OnInit, OnDestroy {
       }
       if (this.autosolveUsed) {
         header = this.literales['position.used-assistance'];
-        buttons = [this.literales['position.ok']];
+        buttons = [{
+          test: this.literales['position.ok'],
+          cssClass: 'overlay-button'
+        }];
       } else {
         if (!this.position.record || this.position.record < 0 || playerMoves < this.position.record) {
           subHeader = this.literales['position.new-record']
@@ -217,14 +220,19 @@ export class PositionPage implements OnInit, OnDestroy {
           buttons = [
             {
               text: this.literales['position.review'],
+              cssClass: 'overlay-button'
             },
             {
               text: this.literales['position.next-puzzle'],
+              cssClass: 'overlay-button',
               handler: () => { this.gotoNext(); }
             }
           ];
         } else {
-          buttons = [this.literales['position.ok']];
+          buttons = [{
+            text: this.literales['position.ok'],
+            cssClass: 'overlay-button'
+          }];
         }
       }
       text = this.infotext + ' ' + this.literales['position.in'] + ' ' + playerMoves + ' ' + this.literales['position.moves'];
@@ -236,7 +244,10 @@ export class PositionPage implements OnInit, OnDestroy {
       header = this.literales['position.ups'];
       subHeader = message;
       text = this.literales['position.keep-practicing'];
-      buttons = [this.literales['position.ok']];
+      buttons = [{
+        text: this.literales['position.ok'],
+        cssClass: 'overlay-button'
+      }];
     }
     const alert = await this.alertController.create({
       header: header,

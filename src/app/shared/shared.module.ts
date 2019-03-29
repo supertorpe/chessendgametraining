@@ -9,8 +9,11 @@ import { MiscService } from './misc.service';
 import { ConfigurationService } from './configuration.service';
 import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
+import { ThemeSwitcherService } from './theme-switcher.service';
 
-const providers = [EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, Insomnia];
+const providers = [
+    EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, 
+    ThemeSwitcherService, Insomnia];
 
 @NgModule({
     imports: [

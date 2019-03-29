@@ -28,5 +28,6 @@ export interface Configuration {
     useSyzygy: boolean
     stockfishDepth: number,
     automaticShowFirstPosition: boolean,
-    preventScreenOff: boolean
+    preventScreenOff: boolean,
+    colorTheme: string
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EndgameDatabaseService, ConfigurationService, Configuration } from '../shared';
+import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService } from '../shared';
 import { AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class PreferencesPage {
 
   public configuration: Configuration;
+  public showThemes = false;
   private literals: any;
 
   constructor(
@@ -18,7 +19,8 @@ export class PreferencesPage {
     private configurationService: ConfigurationService,
     private toast: ToastController,
     public alertController: AlertController,
-    public translate: TranslateService) {
+    public translate: TranslateService,
+    private themeSwitcherService: ThemeSwitcherService) {
     this.configurationService.initialize().then(config => {
       this.configuration = config;
     });
@@ -34,6 +36,15 @@ export class PreferencesPage {
       });
   }
 
+  toggleThemes() {
+    this.showThemes = !this.showThemes;
+  }
+  
+  selectTheme(theme) {
+    this.configuration.colorTheme = theme;
+    this.themeSwitcherService.setTheme(theme);
+  }
+
   async cleanDatabase() {
     const alert = await this.alertController.create({
       header: this.literals['preferences.clean-dialog.title'],
@@ -43,11 +54,12 @@ export class PreferencesPage {
         {
           text: this.literals['preferences.clean-dialog.cancel'],
           role: 'cancel',
-          cssClass: 'secondary',
+          cssClass: 'overlay-button',
           handler: () => {
           }
         }, {
           text: this.literals['preferences.clean-dialog.continue'],
+          cssClass: 'overlay-button',
           handler: () => {
             this.endgameDatabaseService.cleanDatabase().then(async () => {
               const toast = await this.toast.create({

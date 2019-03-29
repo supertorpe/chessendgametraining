@@ -13,7 +13,8 @@ export class ConfigurationService {
         useSyzygy: true,
         stockfishDepth: 28,
         automaticShowFirstPosition: true,
-        preventScreenOff: true
+        preventScreenOff: true,
+        colorTheme: 'dark'
     };
 
     constructor(private storage: Storage) {
@@ -31,6 +32,7 @@ export class ConfigurationService {
                     if (config.stockfishDepth === undefined) config.stockfishDepth = this.DEFAULT_CONFIG.stockfishDepth;
                     if (config.automaticShowFirstPosition === undefined) config.automaticShowFirstPosition = this.DEFAULT_CONFIG.automaticShowFirstPosition;
                     if (config.preventScreenOff === undefined) config.preventScreenOff = this.DEFAULT_CONFIG.preventScreenOff;
+                    if (config.colorTheme === undefined) config.colorTheme = this.DEFAULT_CONFIG.colorTheme;
                     this.configuration = config;
                     resolve(this.configuration);
                 } else {

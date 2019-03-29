@@ -64,6 +64,7 @@
         "title": "Configuración",
         "clean-database": "Eliminar records",
         "records-removed": "Records eliminados",
+        "color-theme": "Apariencia",
         "save-changes": "Guardar cambios",
         "changes-saved": "Cambios guardados",
         "goto-position": "Mostrar puzzle al iniciar",
