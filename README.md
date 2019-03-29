@@ -7,13 +7,19 @@ in [TypeScript](http://www.typescriptlang.org/) and [Angular](https://angular.io
 
 ## Screenshots
 <div style="display:flex;" >
-<img style="margin-left:10px;" src="resources/screenshots/01_home-en.png" width="19%" >
-<img style="margin-left:10px;" src="resources/screenshots/02_menu-en.png" width="19%" >
-<img style="margin-left:10px;" src="resources/screenshots/03_menu-en.png" width="19%" >
-<img style="margin-left:10px;" src="resources/screenshots/04_list-en.png" width="19%" >
-<img style="margin-left:10px;" src="resources/screenshots/05_position-en.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/01_home-dark.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/03_menu-dark.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/04_list-dark.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/05_position-dark.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/06_config-dark.png" width="19%" >
 </div>
-
+<div style="display:flex;" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/01_home-light.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/03_menu-light.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/04_list-light.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/05_position-light.png" width="19%" >
+<img style="margin-left:10px;" src="resources/screenshots/phone/en/06_config-light.png" width="19%" >
+</div>
 Following software and resources has been used:
 
 * [chess.js](https://github.com/jhlywa/chess.js): A Javascript chess library for chess move generation/validation, piece placement/movement, and check/checkmate/draw detection
