@@ -210,7 +210,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
     private showFenPointer() {
         this.cleanHighlights();
-        this.audio.play();
+        if (this.configuration.playSounds) {
+            this.audio.play();
+        }
         this.board.position(this.fenHistory[this.fenPointer], true);
     }
 
@@ -229,7 +231,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 return;
             }
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
-            this.audio.play();
+            if (this.configuration.playSounds) {
+                this.audio.play();
+            }
             this.board.position(this.chess.fen(), false);
             if (this.originalPlayer !== this.player) {
                 this.playerMoved.emit();
@@ -353,7 +357,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             to: target,
             promotion: promotion
         });
-        this.audio.play();
+        if (this.configuration.playSounds) {
+            this.audio.play();
+        }
         this.fenHistory.push(this.chess.fen());
         this.playerMoved.emit();
         this.initializing = false;
@@ -363,7 +369,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private showHint(from, to, promotion, count) {
         const self = this;
         const currentFen = this.chess.fen();
-        this.audio.play();
+        if (this.configuration.playSounds) {
+            this.audio.play();
+        }
         this.chess.move({ from: from, to: to, promotion: promotion });
         this.board.position(this.chess.fen(), true);
         setTimeout(function () {
@@ -447,7 +455,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     this.showHint(match[1], match[2], match[3], 2);
                     return;
                 }
-                this.audio.play();
+                if (this.configuration.playSounds) {
+                    this.audio.play();
+                }
                 this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
                 this.board.position(this.chess.fen(), false);
                 if (this.originalPlayer !== this.player) {

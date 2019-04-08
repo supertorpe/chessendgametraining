@@ -27,6 +27,10 @@
       <ion-toggle slot="end" [(ngModel)]="configuration.automaticShowFirstPosition" color="medium"></ion-toggle>
     </ion-item>
     <ion-item>
+      <ion-label>{{'preferences.play-sounds' | translate}}</ion-label>
+      <ion-toggle slot="end" [(ngModel)]="configuration.playSounds" color="medium"></ion-toggle>
+    </ion-item>
+    <ion-item>
       <ion-label>{{'preferences.prevent-screen-off' | translate}}</ion-label>
       <ion-toggle slot="end" [(ngModel)]="configuration.preventScreenOff" color="medium"></ion-toggle>
     </ion-item>

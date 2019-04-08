@@ -29,5 +29,6 @@ export interface Configuration {
     stockfishDepth: number,
     automaticShowFirstPosition: boolean,
     preventScreenOff: boolean,
-    colorTheme: string
+    colorTheme: string,
+    playSounds: boolean
 }

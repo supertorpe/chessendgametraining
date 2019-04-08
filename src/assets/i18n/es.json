@@ -68,6 +68,7 @@
         "save-changes": "Guardar cambios",
         "changes-saved": "Cambios guardados",
         "goto-position": "Mostrar puzzle al iniciar",
+        "play-sounds": "Sonido",
         "prevent-screen-off": "Mantener pantalla encendida",
         "use-syzygy": "Usar tablas Syzygy",
         "stockfish-depth": "Stockfish profundidad",
