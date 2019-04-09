@@ -400,13 +400,13 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         if (this.chess.turn() !== this.player) {
             return;
         }
-        if (this.squareSelected) {
-            this.onDrop(this.squareSelected, square, piece, null, null, orientation);
-            this.board.position(this.chess.fen(), false);
-            this.squareSelected = square;
-        } else if (piece) {
+        //if (this.squareSelected) {
+        //    this.onDrop(this.squareSelected, square, piece, null, null, orientation);
+        //    this.board.position(this.chess.fen(), false);
+        //    this.squareSelected = square;
+        //} else if (piece) {
             this.drawGreySquares(square);
-        }
+        //}
     };
 
     private onSnapEnd(source, target, piece) {

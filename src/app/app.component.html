@@ -1,5 +1,5 @@
 <ion-app [ngClass]="{'ion-hide': !initialized}">
-  <ion-split-pane when="false">
+  <ion-split-pane>
     <ion-menu menuId="mainMenu">
       <ion-header>
         <ion-toolbar color="primary">
@@ -37,12 +37,12 @@
                 {{'app.' + p.title | translate}}
               </ion-label>
             </ion-item>
-            <ion-item lines="full" (click)="exit()">
+            <!--<ion-item lines="full" (click)="exit()">
               <ion-icon slot="start" name="exit" color="dark"></ion-icon>
               <ion-label>
                 {{'app.exit' | translate}}
               </ion-label>
-            </ion-item>
+            </ion-item>-->
           </ion-menu-toggle>
         </ion-list>
       </ion-content>
