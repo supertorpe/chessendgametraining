@@ -18,7 +18,7 @@
             <ng-container *ngFor="let category of endgameDatabase.categories; index as idxCategory">
               <ion-item (click)="$event.stopPropagation();toggleCategory(category)" lines="full">
                 <div slot="start">
-                  <img *ngFor="let icon of category.icons" src="../../assets/icon/{{icon}}" class="thumbnail" />
+                  <img *ngFor="let icon of category.icons" src="../../assets/icon/{{icon}}" alt="{{category.name}}" class="thumbnail" />
                 </div>
                 <ion-label>
                   {{'category.' + category.name | translate}}
@@ -28,7 +28,7 @@
               <ion-item [ngClass]="{'ion-hide': !category.selected}" color="light"
                 *ngFor="let subcategory of category.subcategories; index as idxSubcategory"
                 (click)="showList(idxCategory, idxSubcategory)">
-                <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="medium-thumbnail" />
+                <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" alt="{{subcategory.name}}" class="medium-thumbnail" />
               </ion-item>
             </ng-container>
             <ion-item *ngFor="let p of postPages" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
