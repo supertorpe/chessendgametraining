@@ -432,7 +432,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
 
     private getSyzygyMove() {
         this.engineInfo.emit(this.literales['chessboard.querying-syzygy']);
-        this.http.get<any>(`http://tablebase.lichess.ovh/standard?fen=${this.chess.fen()}`)
+        this.http.get<any>(`https://tablebase.lichess.ovh/standard?fen=${this.chess.fen()}`)
             .subscribe(data => {
                 if (this.initializing) {
                     return;
