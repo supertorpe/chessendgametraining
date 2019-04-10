@@ -90,6 +90,6 @@
         "chessboard-description": "A Javascript chess board",
         "stockfish-description": "The strong open source chess engine Stockfish compiled to JavaScript using Emscripten",
         "syzygy-description": "Online database with information for all endgame positions with up to 7 pieces",
-        "icons-from": "Icons from"
+        "multimedia-from": "Icons and Sounds from"
     }
 }

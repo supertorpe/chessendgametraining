@@ -90,6 +90,6 @@
         "chessboard-description": "Un tablero de ajedrez en Javascript",
         "stockfish-description": "El potente motor open source de ajedrez Stockfish compilado a JavaScript usando Emscripten",
         "syzygy-description": "Base de datos online con información de todos los finales con hasta 7 piezas",
-        "icons-from": "Iconos de"
+        "multimedia-from": "Iconos y Audio de"
     }
 }

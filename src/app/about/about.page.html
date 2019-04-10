@@ -15,7 +15,7 @@
       <p>{{'about.description' | translate}}</p>
     </ion-item>
     <ion-item lines="none">
-      <a (click)="openLink('https://github.com/supertorpe/chessendgametraining')">{{'about.source-code' | translate}}</a>
+      <a (click)="openLink('https://github.com/supertorpe/chessendgametraining')" class="dark">{{'about.source-code' | translate}}</a>
     </ion-item>
     <ion-item>
       <p>{{'about.third-party' | translate}}</p>
@@ -59,7 +59,7 @@
     </ion-item>
     <!-- icons -->
     <ion-item lines="none">
-      <p>{{'about.icons-from' | translate}} :</p>
+      <p>{{'about.multimedia-from' | translate}} :</p>
     </ion-item>
     <ion-item>
       <p>pacifier: designed by Smashicons from Flaticon</p>
@@ -69,6 +69,15 @@
     </ion-item>
     <ion-item>
       <p>chess pieces: from Wikimedia Commons, by user Cburnett</p>
+    </ion-item>
+    <ion-item>
+      <p>Move sound: from lichess static resources</p>
+    </ion-item>
+    <ion-item>
+      <p>Success sound: shinephoenixstormcrow from freesound.org</p>
+    </ion-item>
+    <ion-item>
+      <p>Fail sound: OwlStorm from freesound.org</p>
     </ion-item>
   </ion-list>
 </ion-content>
