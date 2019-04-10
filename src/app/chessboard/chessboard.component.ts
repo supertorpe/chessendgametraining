@@ -34,7 +34,10 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private squareSelected;
     private onStockfishMessageSubscription: Subscription;
     public literales: any;
-    private audio: HTMLAudioElement = new Audio();
+    private audioMove: HTMLAudioElement = new Audio();
+    private audioSuccess: HTMLAudioElement = new Audio();
+    private audioFail: HTMLAudioElement = new Audio();
+    private audioOoops: HTMLAudioElement = new Audio();
 
     @Output() engineReady: EventEmitter<void> = new EventEmitter<void>();
     @Output() engineStartThinking: EventEmitter<void> = new EventEmitter<void>();
@@ -52,7 +55,10 @@ export class ChessboardComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.onStockfishMessageSubscription = this.stockfish.onMessage$.subscribe(event => this.messageReceived(event));
-        this.audio.src = '/assets/audio/move.mp3';
+        this.audioMove.src = '/assets/audio/move.mp3';
+        this.audioSuccess.src = '/assets/audio/success.mp3';
+        this.audioFail.src = '/assets/audio/fail.mp3';
+        this.audioOoops.src = '/assets/audio/ooops.mp3';
         this.configurationService.initialize().then(config => {
             this.configuration = config;
             this.useSyzygy = this.configuration.useSyzygy;
@@ -211,7 +217,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private showFenPointer() {
         this.cleanHighlights();
         if (this.configuration.playSounds) {
-            this.audio.play();
+            this.audioMove.play();
         }
         this.board.position(this.fenHistory[this.fenPointer], true);
     }
@@ -232,7 +238,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             }
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
             if (this.configuration.playSounds) {
-                this.audio.play();
+                this.audioMove.play();
             }
             this.board.position(this.chess.fen(), false);
             if (this.originalPlayer !== this.player) {
@@ -256,6 +262,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     message = this.literales['chessboard.game-over'];
                 this.autosolve = false;
                 this.fenPointer = this.fenHistory.length - 1;
+                if (this.configuration.playSounds) {
+                    if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
+                        'checkmate' === this.target && this.chess.in_checkmate() && this.originalPlayer !== this.chess.turn()) {
+                        this.audioSuccess.play();
+                    } else {
+                        this.audioFail.play();
+                    }
+                }
                 this.gameOver.emit(message);
                 return;
             }
@@ -283,6 +297,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 if (this.originalPlayer === 'w' && score > 0 || this.originalPlayer === 'b' && score < 0) {
                     this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs(score));
                 } else {
+                    if (this.configuration.playSounds) {
+                        this.audioOoops.play();
+                    }
                     this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                 }
                 return;
@@ -293,6 +310,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 bound = ((match[1] == 'upper') == (this.chess.turn() == 'w') ? '<= ' : '>= ');
             }
             if ('0.00' === engineScore) {
+                if ('checkmate' === this.target && this.configuration.playSounds) {
+                    this.audioOoops.play();
+                }
                 this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
             } else if (parseFloat(engineScore) > 0) {
                 this.engineInfo.emit(this.literales['chessboard.white-advantage'] + ': ' + bound + engineScore);
@@ -364,7 +384,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             promotion: promotion
         });
         if (this.configuration.playSounds) {
-            this.audio.play();
+            this.audioMove.play();
         }
         this.fenHistory.push(this.chess.fen());
         this.playerMoved.emit();
@@ -376,7 +396,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         const self = this;
         const currentFen = this.chess.fen();
         if (this.configuration.playSounds) {
-            this.audio.play();
+            this.audioMove.play();
         }
         this.chess.move({ from: from, to: to, promotion: promotion });
         this.board.position(this.chess.fen(), true);
@@ -453,16 +473,22 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                         if (data.dtm > 0) {
                             this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs((data.dtm % 2 === 0 ? data.dtm : data.dtm + 1) / 2));
                         } else {
+                            if (this.configuration.playSounds) {
+                                this.audioOoops.play();
+                            }
                             this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                         }
                     } else {
+                        if ('checkmate' === this.target && this.configuration.playSounds) {
+                            this.audioOoops.play();
+                        }
                         this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
                     }
                     this.showHint(match[1], match[2], match[3], 2);
                     return;
                 }
                 if (this.configuration.playSounds) {
-                    this.audio.play();
+                    this.audioMove.play();
                 }
                 this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
                 this.board.position(this.chess.fen(), false);
@@ -487,6 +513,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                         message = this.literales['chessboard.game-over'];
                     this.autosolve = false;
                     this.fenPointer = this.fenHistory.length - 1;
+                    if (this.configuration.playSounds) {
+                        if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
+                            'checkmate' === this.target && this.chess.in_checkmate() && this.originalPlayer !== this.chess.turn()) {
+                            this.audioSuccess.play();
+                        } else {
+                            this.audioFail.play();
+                        }
+                    }
                     this.gameOver.emit(message);
                     return;
                 } else {
@@ -494,9 +528,15 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                         if (data.dtm < 0) {
                             this.engineInfo.emit(this.literales['chessboard.mate-in'] + ' ' + Math.abs((data.dtm % 2 === 0 ? data.dtm : data.dtm + 1) / 2));
                         } else {
+                            if (this.configuration.playSounds) {
+                                this.audioOoops.play();
+                            }
                             this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                         }
                     } else {
+                        if ('checkmate' === this.target && this.configuration.playSounds) {
+                            this.audioOoops.play();
+                        }
                         this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
                     }
                 }
@@ -556,6 +596,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 else
                     message = this.literales['chessboard.game-over'];
                 this.fenPointer = this.fenHistory.length - 1;
+                if (this.configuration.playSounds) {
+                    if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
+                        'checkmate' === this.target && this.chess.in_checkmate() && this.originalPlayer !== this.chess.turn()) {
+                        this.audioSuccess.play();
+                    } else {
+                        this.audioFail.play();
+                    }
+                }
                 this.gameOver.emit(message);
                 return;
             }
