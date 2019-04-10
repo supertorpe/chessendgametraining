@@ -312,7 +312,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             });
             modal.present();
             const { data } = await modal.onDidDismiss();
-            resolve(data.piece);
+            if (data == undefined) {
+                resolve(null);
+            } else {
+                resolve(data.piece);
+            }
         });
     }
 
@@ -343,7 +347,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         // check promotion
         if (this.chess.get(source).type == 'p' && (target.charAt(1) == '8' || target.charAt(1) == '1')) {
             this.promoteDialog().then(promotion => {
-                this.registerMove(source, target, promotion);
+                if (promotion) {
+                    this.registerMove(source, target, promotion);
+                }
                 this.board.position(this.chess.fen(), false);
             });
         } else {
