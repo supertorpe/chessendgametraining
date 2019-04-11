@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="010" id="com.supertorpe.chessendgametraining" version="1.7.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="011" id="com.supertorpe.chessendgametraining" version="1.7.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Chess Endgame Training</name>
     <description>Chess Endgame Training</description>
     <author email="supertorpe@hotmail.com" href="https://github.com/supertorpe/chessendgametraining">supertorpe</author>
@@ -12,7 +12,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-minSdkVersion" value="21" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
@@ -83,5 +83,6 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^3.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-insomnia" spec="4.3.0" />
+    <plugin name="cordova-plugin-nativeaudio" spec="https://github.com/wizpanda/cordova-plugin-nativeaudio.git" />
     <engine name="android" spec="7.1.4" />
 </widget>
