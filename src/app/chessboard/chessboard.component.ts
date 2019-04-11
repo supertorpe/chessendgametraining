@@ -1,6 +1,7 @@
 import { Component, HostListener, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { StockfishService } from '../shared';
 import { Subscription } from 'rxjs';
 import { PromotionDialog } from './promotion.dialog';
@@ -34,9 +35,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private squareSelected;
     private onStockfishMessageSubscription: Subscription;
     public literales: any;
-    private audioMove: HTMLAudioElement = new Audio();
-    private audioSuccess: HTMLAudioElement = new Audio();
-    private audioFail: HTMLAudioElement = new Audio();
+    private sounds = [];
     private ooopsPlayed = false;
 
     @Output() engineReady: EventEmitter<void> = new EventEmitter<void>();
@@ -51,16 +50,13 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         private stockfish: StockfishService,
         public translate: TranslateService,
         public modalController: ModalController,
-        private http: HttpClient) { }
+        private http: HttpClient,
+        private platform: Platform,
+        private nativeAudio: NativeAudio) { }
 
     ngOnInit() {
         this.onStockfishMessageSubscription = this.stockfish.onMessage$.subscribe(event => this.messageReceived(event));
-        this.audioMove.src = '/assets/audio/move.mp3';
-        this.audioMove.preload = 'auto';
-        this.audioSuccess.src = '/assets/audio/success.mp3';
-        this.audioSuccess.preload = 'auto';
-        this.audioFail.src = '/assets/audio/fail.mp3';
-        this.audioFail.preload = 'auto';
+        this.loadAudio();
         this.configurationService.initialize().then(config => {
             this.configuration = config;
             this.useSyzygy = this.configuration.useSyzygy;
@@ -69,6 +65,51 @@ export class ChessboardComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.onStockfishMessageSubscription.unsubscribe();
+        this.unloadAudio();
+    }
+
+    private loadAudio() {
+        if (this.platform.is('cordova')) {
+            this.nativeAudio.preloadSimple('move', 'assets/audio/move.mp3');
+            this.nativeAudio.preloadSimple('success', 'assets/audio/success.mp3');
+            this.nativeAudio.preloadSimple('fail', 'assets/audio/fail.mp3');
+        } else {
+            let audio = new Audio();
+            audio.src = '/assets/audio/move.mp3';
+            audio.preload = 'auto';
+            this.sounds.push({key: 'move', audio: audio});
+            audio = new Audio();
+            audio.src = '/assets/audio/success.mp3';
+            audio.preload = 'auto';
+            this.sounds.push({key: 'success', audio: audio});
+            audio = new Audio();
+            audio.src = '/assets/audio/fail.mp3';
+            audio.preload = 'auto';
+            this.sounds.push({key: 'fail', audio: audio});
+        }
+    }
+
+    private unloadAudio() {
+        if (this.platform.is('cordova')) {
+            this.nativeAudio.unload('move');
+            this.nativeAudio.unload('success');
+            this.nativeAudio.unload('fail');
+        } else {
+            this.sounds.forEach(sound => {
+                sound.audio.src = '';
+                sound.audio.load();
+            });
+            this.sounds = [];
+        }
+    }
+
+    private playAudio(sound) {
+        if (this.platform.is('cordova')) {
+            this.nativeAudio.play(sound);
+        } else {
+            const soundToPlay = this.sounds.find((item) => { return item.key === sound; });
+            soundToPlay.audio.play();
+        }
     }
 
     @HostListener('window:resize', ['$event']) onResize(event) {
@@ -222,7 +263,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private showFenPointer() {
         this.cleanHighlights();
         if (this.configuration.playSounds) {
-            this.audioMove.play();
+            this.playAudio('move');
         }
         this.board.position(this.fenHistory[this.fenPointer], true);
     }
@@ -243,7 +284,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             }
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
             if (this.configuration.playSounds) {
-                this.audioMove.play();
+                this.playAudio('move');
             }
             this.board.position(this.chess.fen(), false);
             if (this.originalPlayer !== this.player) {
@@ -270,9 +311,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 if (this.configuration.playSounds) {
                     if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
                         'checkmate' === this.target && this.chess.in_checkmate() && this.originalPlayer !== this.chess.turn()) {
-                        this.audioSuccess.play();
+                        this.playAudio('success');
                     } else {
-                        this.audioFail.play();
+                        this.playAudio('fail');
                     }
                 }
                 this.gameOver.emit(message);
@@ -304,7 +345,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 } else {
                     if (this.configuration.playSounds && !this.ooopsPlayed && !this.autosolve) {
                         this.ooopsPlayed = true;
-                        this.audioFail.play();
+                        this.playAudio('fail');
                     }
                     this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                 }
@@ -318,7 +359,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             if ('0.00' === engineScore) {
                 if ('checkmate' === this.target && this.configuration.playSounds && !this.ooopsPlayed && !this.autosolve) {
                     this.ooopsPlayed = true;
-                    this.audioFail.play();
+                    this.playAudio('fail');
                 }
                 this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
             } else if (parseFloat(engineScore) > 0) {
@@ -391,7 +432,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             promotion: promotion
         });
         if (this.configuration.playSounds) {
-            this.audioMove.play();
+            this.playAudio('move');
         }
         this.fenHistory.push(this.chess.fen());
         this.playerMoved.emit();
@@ -403,7 +444,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         const self = this;
         const currentFen = this.chess.fen();
         if (this.configuration.playSounds) {
-            this.audioMove.play();
+            this.playAudio('move');
         }
         this.chess.move({ from: from, to: to, promotion: promotion });
         this.board.position(this.chess.fen(), true);
@@ -482,14 +523,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                         } else {
                             if (this.configuration.playSounds && !this.ooopsPlayed && !this.autosolve) {
                                 this.ooopsPlayed = true;
-                                this.audioFail.play();
+                                this.playAudio('fail');
                             }
                             this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                         }
                     } else {
                         if ('checkmate' === this.target && this.configuration.playSounds && !this.ooopsPlayed && !this.autosolve) {
                             this.ooopsPlayed = true;
-                            this.audioFail.play();
+                            this.playAudio('fail');
                         }
                         this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
                     }
@@ -497,7 +538,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     return;
                 }
                 if (this.configuration.playSounds) {
-                    this.audioMove.play();
+                    this.playAudio('move');
                 }
                 this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
                 this.board.position(this.chess.fen(), false);
@@ -525,9 +566,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     if (this.configuration.playSounds) {
                         if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
                             'checkmate' === this.target && this.chess.in_checkmate() && this.originalPlayer !== this.chess.turn()) {
-                            this.audioSuccess.play();
+                            this.playAudio('success');
                         } else {
-                            this.audioFail.play();
+                            this.playAudio('fail');
                         }
                     }
                     this.gameOver.emit(message);
@@ -539,14 +580,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                         } else {
                             if (this.configuration.playSounds && !this.ooopsPlayed && !this.autosolve) {
                                 this.ooopsPlayed = true;
-                                this.audioFail.play();
+                                this.playAudio('fail');
                             }
                             this.engineInfo.emit(this.literales['chessboard.receive-mate-in']);
                         }
                     } else {
                         if ('checkmate' === this.target && this.configuration.playSounds && !this.ooopsPlayed && !this.autosolve) {
                             this.ooopsPlayed = true;
-                            this.audioFail.play();
+                            this.playAudio('fail');
                         }
                         this.engineInfo.emit(this.literales['chessboard.unfeasible-mate']);
                     }
@@ -610,9 +651,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 if (this.configuration.playSounds) {
                     if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
                         'checkmate' === this.target && this.chess.in_checkmate() && this.originalPlayer !== this.chess.turn()) {
-                        this.audioSuccess.play();
+                        this.playAudio('success');
                     } else {
-                        this.audioFail.play();
+                        this.playAudio('fail');
                     }
                 }
                 this.gameOver.emit(message);

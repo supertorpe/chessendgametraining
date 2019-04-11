@@ -1,7 +1,6 @@
 import { Component, ViewChildren, QueryList } from '@angular/core';
 import { Platform, NavController, IonRouterOutlet, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, ThemeSwitcherService } from './shared';
 import { Router } from '@angular/router';
@@ -49,7 +48,6 @@ export class AppComponent {
     private router: Router,
     private toast: ToastController,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
     private translate: TranslateService,
     private configurationService: ConfigurationService,
     private miscService: MiscService,
