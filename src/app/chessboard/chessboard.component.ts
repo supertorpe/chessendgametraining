@@ -1,4 +1,4 @@
-import { Component, HostListener, Output, EventEmitter, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
+import { Component, HostListener, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ModalController, Platform } from '@ionic/angular';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
@@ -17,7 +17,7 @@ declare var $: any;
     templateUrl: 'chessboard.component.html',
     styleUrls: ['chessboard.component.scss'],
 })
-export class ChessboardComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class ChessboardComponent implements OnInit, OnDestroy {
 
     private configuration: Configuration;
     private board: any;
@@ -158,10 +158,8 @@ export class ChessboardComponent implements OnInit, OnDestroy, AfterViewChecked 
         ]).subscribe(async res => {
             this.literales = res;
         });
-    }
-
-    ngAfterViewChecked() {
-        window.dispatchEvent(new Event('resize'));
+        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 100);
+        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 1000);
     }
 
     rewind() {
