@@ -18,6 +18,9 @@
       <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="responsive-thumbnail" />
       &nbsp;<span class="responsive-text">[ {{idxPosition + 1}} / {{idxLastPosition + 1}} ]</span>
     </ion-title>
+    <ion-title text-center class="padding-0" *ngIf="fen">
+        <span class="responsive-text">{{fen}}</span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
