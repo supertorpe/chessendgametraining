@@ -186,6 +186,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     solve() {
+        this.removeGreySquares();
         this.initializing = false;
         this.autosolve = true;
         if (this.player === 'w') {
@@ -197,6 +198,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     hint() {
+        this.removeGreySquares();
         this.initializing = false;
         this.hinting = true;
         this.getEngineMove();
