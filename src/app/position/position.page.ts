@@ -7,6 +7,7 @@ import { Observable, of } from 'rxjs';
 import { AlertController, MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ChessboardComponent } from '../chessboard';
+import * as Chess from 'chess.js';
 
 @Component({
   selector: 'app-position',
@@ -64,10 +65,14 @@ export class PositionPage implements OnInit, OnDestroy {
       this.idxCategory = +params.idxcategory;
       this.idxSubcategory = +params.idxsubcategory;
       this.idxPosition = +params.idxposition;
-      this.endgameDatabaseService.initialize().then(result => {
-        this.endgameDatabase = this.endgameDatabaseService.getDatabase();
-        this.load();
-      });
+      if (this.idxPosition) {
+        this.endgameDatabaseService.initialize().then(result => {
+          this.endgameDatabase = this.endgameDatabaseService.getDatabase();
+          this.load();
+        });
+      } else if (params.fen) {
+        this.loadFen(params.fen, params.target ? params.target: 'checkmate');
+      }
     });
   }
 
@@ -115,6 +120,26 @@ export class PositionPage implements OnInit, OnDestroy {
     }
   }
 
+  initLocales() {
+    this.translate.get([
+      'position.your-turn',
+      'position.used-assistance',
+      'position.new-record',
+      'position.goal-achieved',
+      'position.congratulations',
+      'position.review',
+      'position.next-puzzle',
+      'position.in',
+      'position.moves',
+      'position.ups',
+      'position.keep-practicing',
+      'position.ok'
+    ]).subscribe(async res => {
+      this.literales = res;
+      this.infotext = this.literales['position.your-turn'];
+    });
+  }
+
   load() {
     this.category = this.endgameDatabase.categories[this.idxCategory];
     this.subcategory = this.category.subcategories[this.idxSubcategory];
@@ -141,23 +166,28 @@ export class PositionPage implements OnInit, OnDestroy {
     this.btnUndoEnabled = false;
     this.btnFlipEnabled = true;
     this.btnSolveEnabled = true;
-    this.translate.get([
-      'position.your-turn',
-      'position.used-assistance',
-      'position.new-record',
-      'position.goal-achieved',
-      'position.congratulations',
-      'position.review',
-      'position.next-puzzle',
-      'position.in',
-      'position.moves',
-      'position.ups',
-      'position.keep-practicing',
-      'position.ok'
-    ]).subscribe(async res => {
-      this.literales = res;
-      this.infotext = this.literales['position.your-turn'];
-    });
+    this.initLocales();
+  }
+
+  loadFen(fen: string, target: string) {
+    const chess: Chess = new Chess();
+    chess.load(fen);
+    if (chess.turn() == 'w') {
+      this.position = {"move":"white","target":target,"fen":fen, record: -1};
+      this.targetImage = 'wK.png';
+    } else {
+      this.position = {"move":"black","target":target,"fen":fen, record: -1};
+      this.targetImage = 'bK.png';
+    }
+    this.position$ = of(this.position);
+    this.chessboard.build(fen, 'checkmate');
+    this.engineThinking = false;
+    this.gameOver = false;
+    this.btnRewindEnabled = false;
+    this.btnUndoEnabled = false;
+    this.btnFlipEnabled = true;
+    this.btnSolveEnabled = true;
+    this.initLocales();
   }
 
   onEngineReady() {
