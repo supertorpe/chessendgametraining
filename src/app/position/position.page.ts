@@ -65,7 +65,7 @@ export class PositionPage implements OnInit, OnDestroy {
       this.idxCategory = +params.idxcategory;
       this.idxSubcategory = +params.idxsubcategory;
       this.idxPosition = +params.idxposition;
-      if (this.idxPosition) {
+      if (params.idxposition) {
         this.endgameDatabaseService.initialize().then(result => {
           this.endgameDatabase = this.endgameDatabaseService.getDatabase();
           this.load();
