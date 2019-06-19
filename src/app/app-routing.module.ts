@@ -28,11 +28,11 @@ const routes: Routes = [
     loadChildren: './position/position.module#PositionPageModule'
   },
   {
-    path: 'position/:fen/:target',
+    path: 'fen/:fen1/:fen2/:fen3/:fen4/:fen5/:fen6/:fen7/:fen8/:target',
     loadChildren: './position/position.module#PositionPageModule'
   },
   {
-    path: 'position/:fen',
+    path: 'fen/:fen1/:fen2/:fen3/:fen4/:fen5/:fen6/:fen7/:fen8',
     loadChildren: './position/position.module#PositionPageModule'
   }
 ];

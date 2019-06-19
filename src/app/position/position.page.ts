@@ -31,6 +31,7 @@ export class PositionPage implements OnInit, OnDestroy {
   public category: Category;
   public subcategory: Subcategory;
   public position: Position;
+  public fen: string;
   public idx = 1;
   public targetImage = '';
   public infotext = '';
@@ -70,8 +71,8 @@ export class PositionPage implements OnInit, OnDestroy {
           this.endgameDatabase = this.endgameDatabaseService.getDatabase();
           this.load();
         });
-      } else if (params.fen) {
-        this.loadFen(params.fen, params.target ? params.target: 'checkmate');
+      } else if (params.fen1) {
+        this.loadFen(`${params.fen1}/${params.fen2}/${params.fen3}/${params.fen4}/${params.fen5}/${params.fen6}/${params.fen7}/${params.fen8}`, params.target ? params.target: 'checkmate');
       }
     });
   }
@@ -170,6 +171,7 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   loadFen(fen: string, target: string) {
+    this.fen = fen;
     const chess: Chess = new Chess();
     chess.load(fen);
     if (chess.turn() == 'w') {
@@ -180,7 +182,7 @@ export class PositionPage implements OnInit, OnDestroy {
       this.targetImage = 'bK.png';
     }
     this.position$ = of(this.position);
-    this.chessboard.build(fen, 'checkmate');
+    this.chessboard.build(fen, target);
     this.engineThinking = false;
     this.gameOver = false;
     this.btnRewindEnabled = false;
