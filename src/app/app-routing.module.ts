@@ -26,6 +26,14 @@ const routes: Routes = [
   {
     path: 'position/:idxcategory/:idxsubcategory/:idxposition',
     loadChildren: './position/position.module#PositionPageModule'
+  },
+  {
+    path: 'position/:fen/:target',
+    loadChildren: './position/position.module#PositionPageModule'
+  },
+  {
+    path: 'position/:fen',
+    loadChildren: './position/position.module#PositionPageModule'
   }
 ];
 
