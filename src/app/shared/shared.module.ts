@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
 import { TranslateModule } from '@ngx-translate/core';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { EndgameDatabaseService } from './endgame.database.service';
@@ -25,6 +26,7 @@ const providers = [
     ],
     declarations: [ChunksPipe],
     providers: [
+        AndroidFullScreen
     ],
     exports: [
         CommonModule,

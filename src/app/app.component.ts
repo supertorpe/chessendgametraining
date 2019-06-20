@@ -2,6 +2,7 @@ import { Component, ViewChildren, QueryList } from '@angular/core';
 import { Platform, NavController, IonRouterOutlet, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { TranslateService } from '@ngx-translate/core';
+import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
 import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, ThemeSwitcherService } from './shared';
 import { Router } from '@angular/router';
 
@@ -49,12 +50,17 @@ export class AppComponent {
     private toast: ToastController,
     private splashScreen: SplashScreen,
     private translate: TranslateService,
+    private androidFullScreen: AndroidFullScreen,
     private configurationService: ConfigurationService,
     private miscService: MiscService,
     private navCtrl: NavController,
     private endgameDatabaseService: EndgameDatabaseService,
     private themeSwitcherService: ThemeSwitcherService
   ) {
+    if (this.platform.is('cordova')) {
+      this.androidFullScreen.isImmersiveModeSupported()
+        .then(() => this.androidFullScreen.immersiveMode());
+    }
     this.translate.setDefaultLang('en');
     this.translate.use(this.translate.getBrowserLang());
     this.initializeApp();
