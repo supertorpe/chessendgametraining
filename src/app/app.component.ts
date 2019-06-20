@@ -99,7 +99,7 @@ export class AppComponent {
             }
           });
         });
-        if (gotoNextPosition) {
+        if (gotoNextPosition && this.router.url === '/home') {
           this.navCtrl.navigateRoot('/position/' + goCategory + '/' + goSubcategory + '/' + goGame);
         }
         this.initialized = true;
