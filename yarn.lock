@@ -285,6 +285,13 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
+"@ionic-native/android-full-screen@^5.8.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/android-full-screen/-/android-full-screen-5.8.0.tgz#b579969eea62258968c6fa70464e140912f09af2"
+  integrity sha512-/KgFwArEtt95JPBIE3Tqen6BZ9kwjJEgqg8z6o7/YV5MTVxC5ZDHJnhBX8P1161eTDp7MxdgH5krF6P6eB5M9w==
+  dependencies:
+    "@types/cordova" latest
+
 "@ionic-native/core@^5.0.0":
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-5.8.0.tgz#3db441a3683df00ddd61f879dd74496e6b02dac1"
@@ -1918,6 +1925,11 @@ cordova-plugin-device@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-device/-/cordova-plugin-device-2.0.2.tgz#fc08f3722e67eef7b6c67bfc99a83df6add0baba"
   integrity sha1-/Ajzci5n7ve2xnv8mag99q3Quro=
+
+cordova-plugin-fullscreen@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-fullscreen/-/cordova-plugin-fullscreen-1.2.0.tgz#482b38e881715e1fc812d6c35bea1072efb424a7"
+  integrity sha512-cl8mE1MoTjv4JlwV6dw3nOc7Qj18WuNJLf2jHWUmRTYzCI/SW9ym/ghSVvonTVnaoECuHrOpmAfUoFzbb8kf2Q==
 
 cordova-plugin-insomnia@4.3.0:
   version "4.3.0"

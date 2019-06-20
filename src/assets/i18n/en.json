@@ -70,6 +70,7 @@
         "goto-position": "Show puzzle at the beginning",
         "play-sounds": "Sound",
         "prevent-screen-off": "Keep screen on",
+        "full-screen": "Full screen mode",
         "use-syzygy": "Use Syzygy tables",
         "stockfish-depth": "Stockfish depth",
         "clean-dialog" : {

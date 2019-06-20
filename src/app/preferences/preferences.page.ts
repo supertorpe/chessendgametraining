@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService } from '../shared';
-import { AlertController, ToastController } from '@ionic/angular';
+import { Platform, AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
 
 @Component({
   selector: 'app-preferences',
@@ -15,6 +16,8 @@ export class PreferencesPage {
   private literals: any;
 
   constructor(
+    private platform: Platform,
+    private androidFullScreen: AndroidFullScreen,
     private endgameDatabaseService: EndgameDatabaseService,
     private configurationService: ConfigurationService,
     private toast: ToastController,
@@ -75,6 +78,15 @@ export class PreferencesPage {
       ]
     });
     await alert.present();
+  }
+
+  changeFullScreen(event) {
+    if (event) {
+      this.androidFullScreen.isImmersiveModeSupported()
+      .then(() => this.androidFullScreen.immersiveMode());
+    } else {
+      this.androidFullScreen.showSystemUI();
+    }
   }
 
   save() {

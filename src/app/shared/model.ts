@@ -30,5 +30,6 @@ export interface Configuration {
     automaticShowFirstPosition: boolean,
     preventScreenOff: boolean,
     colorTheme: string,
-    playSounds: boolean
+    playSounds: boolean,
+    fullScreen: boolean
 }
