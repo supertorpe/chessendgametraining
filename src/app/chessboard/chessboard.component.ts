@@ -37,6 +37,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     public literales: any;
     private sounds = [];
     private ooopsPlayed = false;
+    private isMobileBrowser = false;
 
     @Output() engineReady: EventEmitter<void> = new EventEmitter<void>();
     @Output() engineStartThinking: EventEmitter<void> = new EventEmitter<void>();
@@ -55,6 +56,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         private nativeAudio: NativeAudio) { }
 
     ngOnInit() {
+        this.isMobileBrowser = (null !== navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/));
         this.onStockfishMessageSubscription = this.stockfish.onMessage$.subscribe(event => this.messageReceived(event));
         this.loadAudio();
         this.configurationService.initialize().then(config => {
@@ -477,13 +479,13 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         if (this.chess.turn() !== this.player) {
             return;
         }
-        //if (this.squareSelected) {
-        //    this.onDrop(this.squareSelected, square, piece, null, null, orientation);
-        //    this.board.position(this.chess.fen(), false);
-        //    this.squareSelected = square;
-        //} else if (piece) {
+        if (this.isMobileBrowser && this.squareSelected) {
+            this.onDrop(this.squareSelected, square, piece, null, null, orientation);
+            this.board.position(this.chess.fen(), false);
+            this.squareSelected = square;
+        } else if (piece) {
             this.drawGreySquares(square);
-        //}
+        }
     };
 
     private onSnapEnd(source, target, piece) {
