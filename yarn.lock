@@ -306,13 +306,6 @@
   dependencies:
     "@types/cordova" latest
 
-"@ionic-native/native-audio@^5.4.0":
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/native-audio/-/native-audio-5.8.0.tgz#07e67e1c760dc069088a025770f501f3b4c2a6d5"
-  integrity sha512-7JeBbTN59sh76HlTmU2H92gJwP4FMfvQ/Ts6SaWhv91QmXiniZGG2Hywf2jG3m6WtsEc00yqeeNSHsAalP6H1w==
-  dependencies:
-    "@types/cordova" latest
-
 "@ionic-native/splash-screen@^5.0.0":
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-5.8.0.tgz#80922e97b99917d538ebc2a78bc1122c46fa62b3"
@@ -1946,10 +1939,6 @@ cordova-plugin-ionic-webview@^3.1.2:
   resolved "https://registry.yarnpkg.com/cordova-plugin-ionic-webview/-/cordova-plugin-ionic-webview-3.1.2.tgz#80fe1e82067ad8dcbc5ecf00cad2f8dfa0d0e10f"
   integrity sha512-i4hFMMebCPDe0KCNbwWhtYcxNIDdbUEfwuo+HBubfaRL/b5xjti/K5KdaJk5x/zB2pqDkY1E9ggZEt1+6j6iIg==
 
-"cordova-plugin-nativeaudio@git+https://github.com/wizpanda/cordova-plugin-nativeaudio.git":
-  version "3.1.1"
-  resolved "git+https://github.com/wizpanda/cordova-plugin-nativeaudio.git#6f53515778b6b00c3b930e16fe11a2a89c3bd116"
-
 cordova-plugin-splashscreen@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-5.0.2.tgz#747e74f56e201cd585bc62d14bca19f6867ff1ed"
@@ -3281,6 +3270,11 @@ hosted-git-info@^2.1.4, hosted-git-info@^2.6.0:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
   integrity sha512-7T/BxH19zbcCTa8XkMlbK5lTo1WtgkFi3GvdWEyNuc4Vex7/9Dqbnpsf4JMydcfj9HCg4zUWFTL3Za6lapg5/w==
+
+howler@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/howler/-/howler-2.1.2.tgz#8433a09d8fe84132a3e726e05cb2bd352ef8bd49"
+  integrity sha512-oKrTFaVXsDRoB/jik7cEpWKTj7VieoiuzMYJ7E/EU5ayvmpRhumCv3YQ3823zi9VTJkSWAhbryHnlZAionGAJg==
 
 hpack.js@^2.1.6:
   version "2.1.6"
