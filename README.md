@@ -2,8 +2,15 @@
 <a style="margin-bottom: 0;" href='https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="80px"/></a>
 --------------------
 
-Chess Endgame Training is a [ionic](https://ionicframework.com/) / [cordova](https://cordova.apache.org/) application. It is written
+Chess Endgame Training is an [ionic](https://ionicframework.com/) / [cordova](https://cordova.apache.org/) application. It is written
 in [TypeScript](http://www.typescriptlang.org/) and [Angular](https://angular.io/).
+
+It is distributed in both [Android App](https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining) and [Progressive Web App](https://chess-endgame-trainer.web.app). The Web App allows to open an arbitrary position from a FEN string indicating the objective to achieve (checkmate or draw) : https://chess-endgame-trainer.web.app/fen/FEN_STRING/TARGET
+
+TARGET is checkmate by default. Examples:
+
+[https://chess-endgame-trainer.web.app/fen/8/4p1p1/8/7k/2qN3B/4P1P1/2B4K/8 w - - 0 1](https://chess-endgame-trainer.web.app/fen/8/4p1p1/8/7k/2qN3B/4P1P1/2B4K/8%20w%20-%20-%200%201)
+[https://chess-endgame-trainer.web.app/fen/8/5qpB/5P2/4B2N/8/p7/P2k4/K7 w - - 0 1/draw](https://chess-endgame-trainer.web.app/fen/8/5qpB/5P2/4B2N/8/p7/P2k4/K7%20w%20-%20-%200%201/draw)
 
 ## Screenshots
 <div style="display:flex;" >

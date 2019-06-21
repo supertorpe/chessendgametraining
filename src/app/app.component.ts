@@ -57,10 +57,6 @@ export class AppComponent {
     private endgameDatabaseService: EndgameDatabaseService,
     private themeSwitcherService: ThemeSwitcherService
   ) {
-    if (this.platform.is('cordova')) {
-      this.androidFullScreen.isImmersiveModeSupported()
-        .then(() => this.androidFullScreen.immersiveMode());
-    }
     this.translate.setDefaultLang('en');
     this.translate.use(this.translate.getBrowserLang());
     this.initializeApp();
@@ -79,6 +75,10 @@ export class AppComponent {
     ]).then((values: any[]) => {
       const config = values[0];
       this.themeSwitcherService.setTheme(config.colorTheme);
+      if (config.fullScreen && this.platform.is('cordova')) {
+        this.androidFullScreen.isImmersiveModeSupported()
+          .then(() => this.androidFullScreen.immersiveMode());
+      }
       this.translate.get(['app.back-to-exit']).subscribe(async res => {
         this.literals = res;
       });

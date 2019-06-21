@@ -1,7 +1,7 @@
 import { Component, HostListener, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ModalController, Platform } from '@ionic/angular';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { Howl, Howler } from 'howler';
 import { StockfishService } from '../shared';
 import { Subscription } from 'rxjs';
 import { PromotionDialog } from './promotion.dialog';
@@ -52,8 +52,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         public translate: TranslateService,
         public modalController: ModalController,
         private http: HttpClient,
-        private platform: Platform,
-        private nativeAudio: NativeAudio) { }
+        private platform: Platform) { }
 
     ngOnInit() {
         this.isMobileBrowser = (null !== navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/));
@@ -71,45 +70,21 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     private loadAudio() {
-        if (this.platform.is('cordova')) {
-            this.nativeAudio.preloadSimple('move', 'assets/audio/move.mp3');
-            this.nativeAudio.preloadSimple('success', 'assets/audio/success.mp3');
-            this.nativeAudio.preloadSimple('fail', 'assets/audio/fail.mp3');
-        } else {
-            let audio = new Audio();
-            audio.src = '/assets/audio/move.mp3';
-            audio.preload = 'auto';
-            this.sounds.push({key: 'move', audio: audio});
-            audio = new Audio();
-            audio.src = '/assets/audio/success.mp3';
-            audio.preload = 'auto';
-            this.sounds.push({key: 'success', audio: audio});
-            audio = new Audio();
-            audio.src = '/assets/audio/fail.mp3';
-            audio.preload = 'auto';
-            this.sounds.push({key: 'fail', audio: audio});
-        }
+        this.sounds.push({key: 'move', audio: new Howl({src:['/assets/audio/move.mp3']})});
+        this.sounds.push({key: 'success', audio: new Howl({src:['/assets/audio/success.mp3']})});
+        this.sounds.push({key: 'fail', audio: new Howl({src:['/assets/audio/fail.mp3']})});
     }
 
     private unloadAudio() {
-        if (this.platform.is('cordova')) {
-            this.nativeAudio.unload('move');
-            this.nativeAudio.unload('success');
-            this.nativeAudio.unload('fail');
-        } else {
-            this.sounds.forEach(sound => {
-                sound.audio.src = '';
-                sound.audio.load();
-            });
-            this.sounds = [];
-        }
+        this.sounds.forEach(sound => {
+            sound.audio.unload();
+        });
+        this.sounds = [];
     }
 
     private playAudio(sound) {
-        if (this.platform.is('cordova')) {
-            this.nativeAudio.play(sound);
-        } else {
-            const soundToPlay = this.sounds.find((item) => { return item.key === sound; });
+        const soundToPlay = this.sounds.find((item) => { return item.key === sound; });
+        if (sound !== 'fail' || !soundToPlay.audio.playing()) {
             soundToPlay.audio.play();
         }
     }
@@ -288,9 +263,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 return;
             }
             this.chess.move({ from: match[1], to: match[2], promotion: match[3] });
-            if (this.configuration.playSounds) {
-                this.playAudio('move');
-            }
+            
             this.board.position(this.chess.fen(), false);
             if (this.originalPlayer !== this.player) {
                 this.playerMoved.emit();
@@ -323,6 +296,8 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 }
                 this.gameOver.emit(message);
                 return;
+            } else if (this.configuration.playSounds) {
+                this.playAudio('move');
             }
             if (this.autosolve || this.player !== this.originalPlayer) {
                 if (this.player === 'w') {
