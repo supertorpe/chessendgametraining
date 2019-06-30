@@ -204,6 +204,9 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   onEngineStartThinking() {
+    if (this.gameOver) {
+      return;
+    }
     this.engineThinking = true;
   }
 
