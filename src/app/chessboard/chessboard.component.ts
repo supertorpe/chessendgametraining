@@ -238,6 +238,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     isShowingLatestPosition() {
         return (this.fenPointer === this.fenHistory.length - 1);
     }
+
+    fen() {
+        return this.chess.fen();
+    }
+
     private showFenPointer() {
         this.cleanHighlights();
         if (this.configuration.playSounds) {

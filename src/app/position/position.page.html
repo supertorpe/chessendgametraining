@@ -50,32 +50,38 @@
       <div class="action_buttons">
         <ion-grid>
           <ion-row *ngIf="!engineThinking && !gameOver">
-            <ion-col>
+            <ion-col size="2">
               <ion-button [disabled]="!btnRewindEnabled" (click)="btnRewindClick()" size="small" fill="clear"
                 color="dark">
                 <ion-icon slot="icon-only" name="rewind"></ion-icon>
               </ion-button>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-button [disabled]="!btnUndoEnabled" (click)="btnUndoClick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="skip-backward"></ion-icon>
               </ion-button>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-button [disabled]="!btnFlipEnabled" (click)="btnFlipClick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="sync"></ion-icon>
               </ion-button>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-button [disabled]="!btnSolveEnabled" (click)="btnHintlick()" size="small" fill="clear"
                 color="dark">
                 <ion-icon slot="icon-only" name="bulb"></ion-icon>
               </ion-button>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-button [disabled]="!btnSolveEnabled" (click)="btnSolveClick()" size="small" fill="clear"
                 color="dark">
                 <ion-icon slot="icon-only" name="color-wand"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col size="2">
+              <ion-button [disabled]="!btnSolveEnabled" (click)="btnCopyClipboardClick()" size="small" fill="clear"
+                color="dark">
+                <ion-icon slot="icon-only" name="clipboard"></ion-icon>
               </ion-button>
             </ion-col>
           </ion-row>
