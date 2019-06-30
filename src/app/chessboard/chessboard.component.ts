@@ -606,8 +606,8 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private prepareMove() {
         if (!this.chess.game_over()) {
             if (this.chess.turn() !== this.player) {
-                this.getEngineMove();
                 this.engineStartThinking.emit();
+                this.getEngineMove();
             }
         } else {
             this.autosolve = false;
