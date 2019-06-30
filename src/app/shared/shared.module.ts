@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
 import { TranslateModule } from '@ngx-translate/core';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { EndgameDatabaseService } from './endgame.database.service';
 import { MiscService } from './misc.service';
 import { ConfigurationService } from './configuration.service';
@@ -14,7 +15,7 @@ import { ThemeSwitcherService } from './theme-switcher.service';
 
 const providers = [
     EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, 
-    ThemeSwitcherService, Insomnia];
+    ThemeSwitcherService, Insomnia, Clipboard];
 
 @NgModule({
     imports: [

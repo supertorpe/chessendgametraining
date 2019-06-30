@@ -240,6 +240,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     isShowingLatestPosition() {
         return (this.fenPointer === this.fenHistory.length - 1);
     }
+
+    fen() {
+        return this.chess.fen();
+    }
+
     private showFenPointer() {
         this.cleanHighlights();
         if (this.configuration.playSounds) {
@@ -608,8 +613,8 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private prepareMove() {
         if (!this.chess.game_over()) {
             if (this.chess.turn() !== this.player) {
-                this.getEngineMove();
                 this.engineStartThinking.emit();
+                this.getEngineMove();
             }
         } else {
             this.autosolve = false;

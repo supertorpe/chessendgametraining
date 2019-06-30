@@ -299,6 +299,13 @@
   dependencies:
     "@types/cordova" latest
 
+"@ionic-native/clipboard@^5.8.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/clipboard/-/clipboard-5.8.0.tgz#89e511dfa03c23d79d84f8ca5e7b5be098674c64"
+  integrity sha512-+d/s5DlAXWJybxzGGMWqtJS2oXL9S4sIv46zMD+jrxd3IUT96P0SB2ucOdmmBjH2FWTDNVnjf+heX2jwhTvw5Q==
+  dependencies:
+    "@types/cordova" latest
+
 "@ionic-native/core@^5.0.0":
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-5.8.0.tgz#3db441a3683df00ddd61f879dd74496e6b02dac1"
@@ -1903,6 +1910,11 @@ cordova-android@7.1.4:
     semver "5.5.0"
     shelljs "0.5.3"
     xmlbuilder "8.2.2"
+
+cordova-clipboard@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/cordova-clipboard/-/cordova-clipboard-1.3.0.tgz#0911da4cbdea5df2e3a769f5b3aab00e0be0e679"
+  integrity sha512-IGk4LZm/DJ0Xk/jgakHm4wa+A/lrRP3QfzMAHDG7oWLJS4ISOpfI32Wez4ndnENItRslGyBVyJyKD83CxELCAw==
 
 cordova-common@2.2.5:
   version "2.2.5"

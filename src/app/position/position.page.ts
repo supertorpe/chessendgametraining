@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild, HostListener, OnDestroy } from '@angular/
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService, ConfigurationService, Configuration } from '../shared';
 import { Observable, of } from 'rxjs';
-import { AlertController, MenuController } from '@ionic/angular';
+import { AlertController, MenuController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ChessboardComponent } from '../chessboard';
 import * as Chess from 'chess.js';
@@ -51,6 +52,7 @@ export class PositionPage implements OnInit, OnDestroy {
   @ViewChild('chessboard') chessboard: ChessboardComponent;
 
   constructor(
+    private platform: Platform,
     private route: ActivatedRoute,
     private location: Location,
     private menuController: MenuController,
@@ -59,7 +61,9 @@ export class PositionPage implements OnInit, OnDestroy {
     private configurationService: ConfigurationService,
     private endgameDatabaseService: EndgameDatabaseService,
     private miscService: MiscService,
-    private insomnia: Insomnia) {
+    private insomnia: Insomnia,
+    private clipboard: Clipboard,
+    private toast: ToastController) {
   }
 
   ngOnInit() {
@@ -131,6 +135,7 @@ export class PositionPage implements OnInit, OnDestroy {
       'position.congratulations',
       'position.review',
       'position.next-puzzle',
+      'position.fen-clipboard',
       'position.in',
       'position.moves',
       'position.ups',
@@ -325,6 +330,34 @@ export class PositionPage implements OnInit, OnDestroy {
     this.autosolve = true;
     this.autosolveUsed = true;
     this.chessboard.solve();
+  }
+
+  btnCopyClipboardClick() {
+    const self = this;
+    if (this.platform.is('cordova')) {
+      this.clipboard.copy(this.chessboard.fen()).then(() => self.showToastClipboard() );
+    } else {
+      const el = document.createElement('textarea');
+      el.value = this.chessboard.fen();
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.showToastClipboard();
+    }
+  }
+
+  private async showToastClipboard() {
+    const toast = await this.toast.create({
+      message: this.literales['position.fen-clipboard'],
+      position: 'middle',
+      color: 'success',
+      duration: 1000
+    });
+    toast.present();
   }
 
   btnHintlick() {
