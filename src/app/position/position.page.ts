@@ -32,6 +32,7 @@ export class PositionPage implements OnInit, OnDestroy {
   public subcategory: Subcategory;
   public position: Position;
   public fen: string;
+  public move: string;
   public idx = 1;
   public targetImage = '';
   public infotext = '';
@@ -155,9 +156,13 @@ export class PositionPage implements OnInit, OnDestroy {
     this.showNavNext = !(this.idxCategory === this.endgameDatabase.categories.length - 1
       && this.idxSubcategory === this.idxLastSubcategory
       && this.idxPosition === this.idxLastPosition);
-    if ('white' === this.position.move) {
+    const chess: Chess = new Chess();
+    chess.load(this.position.fen);
+    if (chess.turn() == 'w') {
+      this.move = 'white';
       this.targetImage = 'wK.png';
     } else {
+      this.move = 'black';
       this.targetImage = 'bK.png';
     }
     this.chessboard.build(this.position.fen, this.position.target);
@@ -175,10 +180,12 @@ export class PositionPage implements OnInit, OnDestroy {
     const chess: Chess = new Chess();
     chess.load(fen);
     if (chess.turn() == 'w') {
-      this.position = {"move":"white","target":target,"fen":fen, record: -1};
+      this.move = 'white';
+      this.position = {"target":target,"fen":fen, record: -1};
       this.targetImage = 'wK.png';
     } else {
-      this.position = {"move":"black","target":target,"fen":fen, record: -1};
+      this.move = 'black';
+      this.position = {"target":target,"fen":fen, record: -1};
       this.targetImage = 'bK.png';
     }
     this.position$ = of(this.position);
@@ -225,7 +232,7 @@ export class PositionPage implements OnInit, OnDestroy {
       return;
     }
     let buttons;
-    if ((message === 'Checkmate' && this.chessboard.winner() === this.position.move) || (this.position.target !== 'checkmate' && message !== 'Checkmate')) {
+    if ((message === 'Checkmate' && this.chessboard.winner() === this.move) || (this.position.target !== 'checkmate' && message !== 'Checkmate')) {
       const totalMoves = this.chessboard.history().length;
       let playerMoves;
       if (totalMoves % 2 === 0) {

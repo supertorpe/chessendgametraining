@@ -1,6 +1,5 @@
 
 export interface Position {
-    move: string;
     target: string;
     fen: string;
     record: number;
