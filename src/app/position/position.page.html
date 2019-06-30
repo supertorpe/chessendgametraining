@@ -36,7 +36,7 @@
         <div class="innerinfo" *ngIf="(position$ | async) as position">
           <p class="text-centered">
             <img *ngIf="targetImage" src="../../assets/icon/{{targetImage}}" class="thumbnail" />
-            {{('position.' + position.move) | translate}} {{'position.to' | translate}}
+            {{('position.' + move) | translate}} {{'position.to' | translate}}
             {{('position.' + position.target) | translate}}
           </p>
           <p *ngIf="engineThinking" class="text-centered">
