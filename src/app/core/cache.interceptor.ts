@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { of, Observable } from 'rxjs';
-import { startWith, tap } from 'rxjs/operators';
+import { of, timer, Observable } from 'rxjs';
+import { startWith, tap, delay, delayWhen } from 'rxjs/operators';
 import { RequestCacheService } from './request-cache.service';
 
 @Injectable()
@@ -20,8 +20,10 @@ export class CacheInterceptor implements HttpInterceptor {
                 results$.pipe(startWith(cachedResponse)) :
                 results$;
         }
-        return cachedResponse ?
+
+        const result = cachedResponse ?
             of(cachedResponse) : this.sendRequest(req, next, this.cache);
+        return result.pipe(delayWhen(() => timer(250)));
     }
 
     sendRequest(
