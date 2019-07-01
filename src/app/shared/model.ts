@@ -30,5 +30,6 @@ export interface Configuration {
     preventScreenOff: boolean,
     colorTheme: string,
     playSounds: boolean,
-    fullScreen: boolean
+    fullScreen: boolean,
+    highlightSquares: boolean
 }

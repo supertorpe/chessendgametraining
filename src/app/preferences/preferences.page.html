@@ -30,6 +30,10 @@
       <ion-label>{{'preferences.play-sounds' | translate}}</ion-label>
       <ion-toggle slot="end" [(ngModel)]="configuration.playSounds" color="medium"></ion-toggle>
     </ion-item>
+    <ion-item>
+      <ion-label>{{'preferences.highlight-squares' | translate}}</ion-label>
+      <ion-toggle slot="end" [(ngModel)]="configuration.highlightSquares" color="medium"></ion-toggle>
+    </ion-item>
     <ion-item *ngIf="platform.is('cordova')">
       <ion-label>{{'preferences.prevent-screen-off' | translate}}</ion-label>
       <ion-toggle slot="end" [(ngModel)]="configuration.preventScreenOff" color="medium"></ion-toggle>

@@ -70,6 +70,7 @@
         "changes-saved": "Cambios guardados",
         "goto-position": "Mostrar puzzle al iniciar",
         "play-sounds": "Sonido",
+        "highlight-squares": "Iluminar casillas",
         "prevent-screen-off": "Mantener pantalla encendida",
         "full-screen": "Ocupar toda la pantalla",
         "use-syzygy": "Usar tablas Syzygy",

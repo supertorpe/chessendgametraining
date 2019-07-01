@@ -70,6 +70,7 @@
         "changes-saved": "Changes saved",
         "goto-position": "Show puzzle at the beginning",
         "play-sounds": "Sound",
+        "highlight-squares": "Highlight squares",
         "prevent-screen-off": "Keep screen on",
         "full-screen": "Full screen mode",
         "use-syzygy": "Use Syzygy tables",

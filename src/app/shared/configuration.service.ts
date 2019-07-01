@@ -16,7 +16,8 @@ export class ConfigurationService {
         preventScreenOff: true,
         colorTheme: 'dark',
         playSounds: true,
-        fullScreen: true
+        fullScreen: true,
+        highlightSquares: true
     };
 
     constructor(private storage: Storage) {
@@ -37,6 +38,7 @@ export class ConfigurationService {
                     if (config.colorTheme === undefined) config.colorTheme = this.DEFAULT_CONFIG.colorTheme;
                     if (config.playSounds === undefined) config.playSounds = this.DEFAULT_CONFIG.playSounds;
                     if (config.fullScreen === undefined) config.fullScreen = this.DEFAULT_CONFIG.fullScreen;
+                    if (config.highlightSquares === undefined) config.highlightSquares = this.DEFAULT_CONFIG.highlightSquares;
                     this.configuration = config;
                     resolve(this.configuration);
                 } else {
