@@ -646,6 +646,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     private drawGreySquares(square) {
+        if (!this.configuration.highlightSquares) {
+            return;
+        }
         // get list of possible moves for this square
         const moves = this.chess.moves({ square: square, verbose: true });
         // exit if there are no moves available for this square
@@ -660,6 +663,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     private greySquare(square) {
+        if (!this.configuration.highlightSquares) {
+            return;
+        }
         const squareEl = $('#__chessboard__ .square-' + square);
         /*
         let background = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANElEQVQYlWP4cHPrf0KYgZCCrR3J+BVt7UgmziScimAm4FSEroB067CZgKIIn4IPN7f+BwDVaRVpspCjIQAAAABJRU5ErkJggg==) repeat';
@@ -676,6 +682,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     };
 
     private removeGreySquares() {
+        if (!this.configuration.highlightSquares) {
+            return;
+        }
         $('#__chessboard__ .square-55d63').css('background', '');
     };
 }
