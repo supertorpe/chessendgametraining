@@ -9,7 +9,7 @@
         "start": "ionic serve",
         "start-web": "ng serve",
         "build-icons": "ionic cordova resources",
-        "build-web": "ng build --prod",
+        "build-web": "ionic build --prod --engine=browser",
         "build-android-debug": "ionic cordova build android",
         "build-android-prod": "ionic cordova build android --prod --release",
         "emul-android": "ionic cordova emulate android",
