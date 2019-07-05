@@ -66,6 +66,7 @@
         "clean-database": "Reset records",
         "records-removed": "Records removed",
         "color-theme": "Color theme",
+        "piece-theme": "Pieces style",
         "save-changes": "Save changes",
         "changes-saved": "Changes saved",
         "goto-position": "Show puzzle at the beginning",

@@ -3,7 +3,7 @@ import { Platform, NavController, IonRouterOutlet, ToastController } from '@ioni
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
-import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, ThemeSwitcherService } from './shared';
+import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, Configuration, ThemeSwitcherService } from './shared';
 import { Router } from '@angular/router';
 
 @Component({
@@ -43,6 +43,7 @@ export class AppComponent {
   private lastTimeBackPress = 0;
   private timePeriodToExit = 2000;
   private literals: any;
+  private config: Configuration;
 
   constructor(
     private platform: Platform,
@@ -73,16 +74,16 @@ export class AppComponent {
       this.endgameDatabaseService.initialize(),
       this.platform.ready()
     ]).then((values: any[]) => {
-      const config = values[0];
-      this.themeSwitcherService.setTheme(config.colorTheme);
-      if (config.fullScreen && this.platform.is('cordova')) {
+      this.config = values[0];
+      this.themeSwitcherService.setTheme(this.config.colorTheme);
+      if (this.config.fullScreen && this.platform.is('cordova')) {
         this.androidFullScreen.isImmersiveModeSupported()
           .then(() => this.androidFullScreen.immersiveMode());
       }
       this.translate.get(['app.back-to-exit']).subscribe(async res => {
         this.literals = res;
       });
-      const automaticShowFirstPosition = config.automaticShowFirstPosition;
+      const automaticShowFirstPosition = this.config.automaticShowFirstPosition;
       let goCategory = -1, goSubcategory = -1, goGame = -1;
       let gotoNextPosition = false;
       this.endgameDatabase = this.endgameDatabaseService.getDatabase();

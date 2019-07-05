@@ -66,6 +66,7 @@
         "clean-database": "Eliminar records",
         "records-removed": "Records eliminados",
         "color-theme": "Apariencia",
+        "piece-theme": "Estilo de piezas",
         "save-changes": "Guardar cambios",
         "changes-saved": "Cambios guardados",
         "goto-position": "Mostrar puzzle al iniciar",

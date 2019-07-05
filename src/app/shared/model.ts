@@ -31,5 +31,6 @@ export interface Configuration {
     colorTheme: string,
     playSounds: boolean,
     fullScreen: boolean,
-    highlightSquares: boolean
+    highlightSquares: boolean,
+    pieceTheme: string
 }

@@ -17,7 +17,8 @@ export class ConfigurationService {
         colorTheme: 'dark',
         playSounds: true,
         fullScreen: true,
-        highlightSquares: true
+        highlightSquares: true,
+        pieceTheme: 'cburnett'
     };
 
     constructor(private storage: Storage) {
@@ -39,6 +40,7 @@ export class ConfigurationService {
                     if (config.playSounds === undefined) config.playSounds = this.DEFAULT_CONFIG.playSounds;
                     if (config.fullScreen === undefined) config.fullScreen = this.DEFAULT_CONFIG.fullScreen;
                     if (config.highlightSquares === undefined) config.highlightSquares = this.DEFAULT_CONFIG.highlightSquares;
+                    if (config.pieceTheme === undefined) config.pieceTheme = this.DEFAULT_CONFIG.pieceTheme;
                     this.configuration = config;
                     resolve(this.configuration);
                 } else {

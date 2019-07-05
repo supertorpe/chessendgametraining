@@ -13,7 +13,9 @@ export class PreferencesPage {
 
   public configuration: Configuration;
   public showThemes = false;
+  public showPieceThemes = false;
   private literals: any;
+  public pieceThemes = ['alpha', 'cburnett', 'chess7', 'chessnut', 'companion', 'fantasy', 'leipzig', 'letter', 'merida', 'mono', 'pirouetti', 'reilly', 'riohacha', 'shapes', 'spatial', 'symmetric'];
 
   constructor(
     private platform: Platform,
@@ -46,6 +48,14 @@ export class PreferencesPage {
   selectTheme(theme) {
     this.configuration.colorTheme = theme;
     this.themeSwitcherService.setTheme(theme);
+  }
+
+  togglePieceThemes() {
+    this.showPieceThemes = !this.showPieceThemes;
+  }
+  
+  selectPieceTheme(theme) {
+    this.configuration.pieceTheme = theme;
   }
 
   async cleanDatabase() {

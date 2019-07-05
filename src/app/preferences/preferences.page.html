@@ -18,6 +18,14 @@
       <div slot="start" class="dot" [ngStyle]="{'background-color': theme.mainColor}"></div>
       <ion-label text-centered>{{theme.name}}</ion-label>
     </ion-item>
+    <ion-item (click)="togglePieceThemes()">
+      <ion-label>{{'preferences.piece-theme' | translate}}</ion-label>
+      <ion-icon slot="end" [name]="showPieceThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
+    </ion-item>
+    <ion-item [ngClass]="{'ion-hide': !showPieceThemes}" *ngFor="let theme of pieceThemes" button="true" (click)="selectPieceTheme(theme)">
+      <img slot="start" class="big-thumbnail" src="/assets/pieces/{{theme}}/wN.svg" />
+      <ion-label text-centered>{{theme}}</ion-label>
+    </ion-item>
     <ion-item button="true" (click)="cleanDatabase()">
       <ion-label>{{'preferences.clean-database' | translate}}</ion-label>
       <ion-icon slot="end" name="trash" color="medium"></ion-icon>
