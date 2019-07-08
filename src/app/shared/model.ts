@@ -8,12 +8,14 @@ export interface Position {
 export interface Subcategory {
     name: string;
     images: string[];
+    imageUrls: string[];
     games: Position[];
 }
 
 export interface Category {
     name: string;
     icons: string[];
+    iconUrls: string[];
     selected: boolean;
     subcategories: Subcategory[];
 }
@@ -31,5 +33,7 @@ export interface Configuration {
     colorTheme: string,
     playSounds: boolean,
     fullScreen: boolean,
-    highlightSquares: boolean
+    highlightSquares: boolean,
+    pieceTheme: string,
+    boardTheme: string
 }

@@ -64,6 +64,9 @@ export class PositionPage implements OnInit, OnDestroy {
     private insomnia: Insomnia,
     private clipboard: Clipboard,
     private toast: ToastController) {
+      this.configurationService.initialize().then(config => {
+        this.configuration = config;
+      });
   }
 
   ngOnInit() {
@@ -83,12 +86,9 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    this.configurationService.initialize().then(config => {
-      this.configuration = config;
-      if (config.preventScreenOff) {
-        this.insomnia.keepAwake();
-      }
-    });
+    if (this.configuration.preventScreenOff) {
+      this.insomnia.keepAwake();
+    }
     this.menuController.get('mainMenu').then(function (menu) {
       menu.swipeGesture = false;
     });

@@ -1,17 +1,18 @@
-import { Component, ViewChildren, QueryList } from '@angular/core';
+import { Component, ViewChildren, QueryList, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Platform, NavController, IonRouterOutlet, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
-import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, ThemeSwitcherService } from './shared';
+import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, Configuration, ThemeSwitcherService, BoardThemeSwitcherService } from './shared';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
 
   public initialized = false;
   public endgameDatabase: EndgameDatabase = {
@@ -43,8 +44,13 @@ export class AppComponent {
   private lastTimeBackPress = 0;
   private timePeriodToExit = 2000;
   private literals: any;
+  private config: Configuration;
+  public pieceTheme: string;
+  private onConfigChangeSubscription: Subscription;
 
   constructor(
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
     private platform: Platform,
     private router: Router,
     private toast: ToastController,
@@ -55,11 +61,36 @@ export class AppComponent {
     private miscService: MiscService,
     private navCtrl: NavController,
     private endgameDatabaseService: EndgameDatabaseService,
-    private themeSwitcherService: ThemeSwitcherService
+    private themeSwitcherService: ThemeSwitcherService,
+    private boardThemeSwitcherService: BoardThemeSwitcherService
   ) {
     this.translate.setDefaultLang('en');
     this.translate.use(this.translate.getBrowserLang());
     this.initializeApp();
+  }
+
+  ngOnInit(): void {
+    this.onConfigChangeSubscription = this.configurationService.onChange$.subscribe(event => this.configurationChanged(event));
+  }
+
+  ngOnDestroy(): void {
+    this.onConfigChangeSubscription.unsubscribe();
+  }
+
+  private configurationChanged(event) {
+    // force change detection to reload piece images
+    if (this.config) {
+      this.endgameDatabase.categories.forEach(category => {
+        category.iconUrls = [];
+        category.icons.forEach(icon => category.iconUrls.push(this.miscService.urlIcon(icon, this.config.pieceTheme)));
+        category.subcategories.forEach(subcategory => {
+          subcategory.images = this.miscService.textToImages(subcategory.name);
+          subcategory.imageUrls = [];
+          subcategory.images.forEach(image => subcategory.imageUrls.push(this.miscService.urlIcon(image, this.config.pieceTheme)));
+        });
+      });
+      //this.cdr.detectChanges();
+    }
   }
 
   private initializeApp() {
@@ -73,23 +104,29 @@ export class AppComponent {
       this.endgameDatabaseService.initialize(),
       this.platform.ready()
     ]).then((values: any[]) => {
-      const config = values[0];
-      this.themeSwitcherService.setTheme(config.colorTheme);
-      if (config.fullScreen && this.platform.is('cordova')) {
+      this.config = values[0];
+      this.pieceTheme = this.config.pieceTheme;
+      this.themeSwitcherService.setTheme(this.config.colorTheme);
+      this.boardThemeSwitcherService.setTheme(this.config.boardTheme);
+      if (this.config.fullScreen && this.platform.is('cordova')) {
         this.androidFullScreen.isImmersiveModeSupported()
           .then(() => this.androidFullScreen.immersiveMode());
       }
       this.translate.get(['app.back-to-exit']).subscribe(async res => {
         this.literals = res;
       });
-      const automaticShowFirstPosition = config.automaticShowFirstPosition;
+      const automaticShowFirstPosition = this.config.automaticShowFirstPosition;
       let goCategory = -1, goSubcategory = -1, goGame = -1;
       let gotoNextPosition = false;
       this.endgameDatabase = this.endgameDatabaseService.getDatabase();
       this.endgameDatabase.categories.forEach((category, idxCategory) => {
         category.selected = false;
+        category.iconUrls = [];
+        category.icons.forEach(icon => category.iconUrls.push(this.miscService.urlIcon(icon, this.config.pieceTheme)));
         category.subcategories.forEach((subcategory, idxSubcategory) => {
           subcategory.images = this.miscService.textToImages(subcategory.name);
+          subcategory.imageUrls = [];
+          subcategory.images.forEach(image => subcategory.imageUrls.push(this.miscService.urlIcon(image, this.config.pieceTheme)));
           subcategory.games.forEach((game, idxGame) => {
             if (automaticShowFirstPosition && goCategory == -1 && (!game.record || game.record <= 0)) {
               goCategory = idxCategory;

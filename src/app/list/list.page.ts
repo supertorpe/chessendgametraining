@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, MiscService } from '../shared';
+import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, ConfigurationService, Configuration, MiscService } from '../shared';
 import { Observable, of } from 'rxjs';
 import { NavController } from '@ionic/angular';
 
@@ -12,6 +12,7 @@ import { NavController } from '@ionic/angular';
 })
 export class ListPage implements OnInit {
 
+  private config: Configuration;
   public endgameDatabase: EndgameDatabase;
   public idxCategory: number;
   public idxSubcategory: number;
@@ -27,7 +28,11 @@ export class ListPage implements OnInit {
     private location: Location,
     private navCtrl: NavController,
     private endgameDatabaseService: EndgameDatabaseService,
+    private configurationService: ConfigurationService,
     private miscService: MiscService) {
+      this.configurationService.initialize().then(config => {
+        this.config = config;
+      });
   }
 
   ngOnInit() {

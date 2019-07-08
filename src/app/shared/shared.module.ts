@@ -12,10 +12,11 @@ import { ConfigurationService } from './configuration.service';
 import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
 import { ThemeSwitcherService } from './theme-switcher.service';
+import { BoardThemeSwitcherService } from './board-theme-switcher.service';
 
 const providers = [
     EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, 
-    ThemeSwitcherService, Insomnia, Clipboard];
+    ThemeSwitcherService, BoardThemeSwitcherService, Insomnia, Clipboard];
 
 @NgModule({
     imports: [

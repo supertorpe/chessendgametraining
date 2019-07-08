@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { EndgameDatabaseService, EndgameDatabase } from '../shared';
+import { EndgameDatabaseService, EndgameDatabase, ConfigurationService, Configuration, MiscService } from '../shared';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -9,11 +9,17 @@ import { Observable, of } from 'rxjs';
 })
 export class HomePage {
 
+  private config: Configuration;
   public endgameDatabase$: Observable<EndgameDatabase>;
   public endgameDatabase: EndgameDatabase;
 
   constructor(
+    private configurationService: ConfigurationService,
+    private miscService: MiscService,
     private endgameDatabaseService: EndgameDatabaseService) {
+      this.configurationService.initialize().then(config => {
+        this.config = config;
+      });
   }
 
   ngOnInit() {

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService } from '../shared';
-import { Platform, AlertController, ToastController } from '@ionic/angular';
+import { Component, Inject } from '@angular/core';
+import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService, BoardThemeSwitcherService } from '../shared';
+import { Platform, AlertController, ToastController, DomController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-preferences',
@@ -13,17 +14,22 @@ export class PreferencesPage {
 
   public configuration: Configuration;
   public showThemes = false;
+  public showPieceThemes = false;
+  public showBoardThemes = false;
   private literals: any;
+  public pieceThemes = ['alpha', 'cburnett', 'chess7', 'chessnut', 'companion', 'fantasy', 'leipzig', 'letter', 'merida', 'mono', 'pirouetti', 'reilly', 'riohacha', 'shapes', 'spatial', 'symmetric'];
 
   constructor(
     private platform: Platform,
+    private domCtrl: DomController, @Inject(DOCUMENT) private document,
     private androidFullScreen: AndroidFullScreen,
     private endgameDatabaseService: EndgameDatabaseService,
     private configurationService: ConfigurationService,
     private toast: ToastController,
     public alertController: AlertController,
     public translate: TranslateService,
-    private themeSwitcherService: ThemeSwitcherService) {
+    private themeSwitcherService: ThemeSwitcherService,
+    private boardThemeSwitcherService: BoardThemeSwitcherService) {
     this.configurationService.initialize().then(config => {
       this.configuration = config;
     });
@@ -46,6 +52,24 @@ export class PreferencesPage {
   selectTheme(theme) {
     this.configuration.colorTheme = theme;
     this.themeSwitcherService.setTheme(theme);
+  }
+
+  togglePieceThemes() {
+    this.showPieceThemes = !this.showPieceThemes;
+  }
+  
+  selectPieceTheme(theme) {
+    this.configuration.pieceTheme = theme;
+    this.configurationService.notifyChanges();
+  }
+
+  toggleBoardThemes() {
+    this.showBoardThemes = !this.showBoardThemes;
+  }
+  
+  selectBoardTheme(theme) {
+    this.configuration.boardTheme = theme.name;
+    this.boardThemeSwitcherService.setTheme(theme.name);
   }
 
   async cleanDatabase() {

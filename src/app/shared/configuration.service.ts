@@ -1,6 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Configuration } from './model';
+import { Subject, Observable } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
+import { DomController } from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +12,10 @@ export class ConfigurationService {
 
     private configuration: Configuration;
 
-    private DEFAULT_CONFIG : Configuration = {
+    private onChange: Subject<boolean>;
+    public onChange$: Observable<boolean>;
+
+    private DEFAULT_CONFIG: Configuration = {
         useSyzygy: true,
         stockfishDepth: 28,
         automaticShowFirstPosition: true,
@@ -17,17 +23,21 @@ export class ConfigurationService {
         colorTheme: 'dark',
         playSounds: true,
         fullScreen: true,
-        highlightSquares: true
+        highlightSquares: true,
+        pieceTheme: 'cburnett',
+        boardTheme: 'brown'
     };
 
-    constructor(private storage: Storage) {
+    constructor(private storage: Storage, private domCtrl: DomController, @Inject(DOCUMENT) private document,) {
+        this.onChange = new Subject<boolean>();
+        this.onChange$ = this.onChange.asObservable();
     }
 
     initialize(): Promise<Configuration> {
         return new Promise(resolve => {
             if (this.configuration) {
-              resolve(this.configuration);
-              return;
+                resolve(this.configuration);
+                return;
             }
             this.storage.get('CONFIGURATION').then(config => {
                 if (config) {
@@ -39,6 +49,8 @@ export class ConfigurationService {
                     if (config.playSounds === undefined) config.playSounds = this.DEFAULT_CONFIG.playSounds;
                     if (config.fullScreen === undefined) config.fullScreen = this.DEFAULT_CONFIG.fullScreen;
                     if (config.highlightSquares === undefined) config.highlightSquares = this.DEFAULT_CONFIG.highlightSquares;
+                    if (config.pieceTheme === undefined) config.pieceTheme = this.DEFAULT_CONFIG.pieceTheme;
+                    if (config.boardTheme === undefined) config.boardTheme = this.DEFAULT_CONFIG.boardTheme;
                     this.configuration = config;
                     resolve(this.configuration);
                 } else {
@@ -53,7 +65,18 @@ export class ConfigurationService {
 
     save(): Promise<Configuration> {
         return this.storage.set('CONFIGURATION', this.configuration);
-      }
+        /*
+        return new Promise(resolve => {
+            this.storage.set('CONFIGURATION', this.configuration).then(function (result) {
+                this.onChange.next(true);
+                resolve(result);
+            });
+        });
+        */
+    }
 
+    notifyChanges() {
+        this.onChange.next(true);
+    }
 
 }

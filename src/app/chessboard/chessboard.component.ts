@@ -52,7 +52,12 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         public translate: TranslateService,
         public modalController: ModalController,
         private http: HttpClient,
-        private platform: Platform) { }
+        private platform: Platform) {
+        this.configurationService.initialize().then(config => {
+            this.configuration = config;
+            this.useSyzygy = this.configuration.useSyzygy;
+        });
+    }
 
     ngOnInit() {
         this.isMobileBrowser = (null !== navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/));
@@ -106,7 +111,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         }
         this.board = ChessBoard('__chessboard__', {
             position: fen,
-            pieceTheme: '/assets/icon/{piece}.png',
+            pieceTheme: `/assets/pieces/${this.configuration.pieceTheme}/{piece}.svg`,
             draggable: true,
             onDragStart: function (source, piece, position, orientation) { return self.onDragStart(source, piece, position, orientation); },
             onDrop: function (source, target, piece, newPos, oldPos, orientation) { return self.onDrop(source, target, piece, newPos, oldPos, orientation); },

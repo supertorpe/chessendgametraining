@@ -20,7 +20,7 @@
     </ion-button>
   </ion-buttons>
   <ion-title text-center *ngIf="(subcategory$ | async) as subcategory">
-      <img *ngFor="let image of subcategory.images" src="../../assets/icon/{{image}}" class="responsive-thumbnail" />
+      <img *ngFor="let image of subcategory.images" src="{{miscService.urlIcon(image, config.pieceTheme)}}" class="responsive-thumbnail" />
   </ion-title>
 </ion-toolbar>
 <ion-content>
