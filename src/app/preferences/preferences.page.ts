@@ -56,6 +56,7 @@ export class PreferencesPage {
   
   selectPieceTheme(theme) {
     this.configuration.pieceTheme = theme;
+    this.configurationService.notifyChanges();
   }
 
   async cleanDatabase() {

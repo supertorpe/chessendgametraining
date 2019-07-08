@@ -5,7 +5,7 @@
     "homepage": "https://github.com/supertorpe/chessendgametraining",
     "scripts": {
         "ng": "ng",
-        "start": "ionic serve",
+        "start": "ionic serve --devapp",
         "build-icons": "ionic cordova resources",
         "build": "ng build",
         "build-android-debug": "ionic cordova build android",

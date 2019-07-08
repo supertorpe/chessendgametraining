@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Configuration } from './model';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +10,10 @@ export class ConfigurationService {
 
     private configuration: Configuration;
 
-    private DEFAULT_CONFIG : Configuration = {
+    private onChange: Subject<boolean>;
+    public onChange$: Observable<boolean>;
+
+    private DEFAULT_CONFIG: Configuration = {
         useSyzygy: true,
         stockfishDepth: 28,
         automaticShowFirstPosition: true,
@@ -22,13 +26,15 @@ export class ConfigurationService {
     };
 
     constructor(private storage: Storage) {
+        this.onChange = new Subject<boolean>();
+        this.onChange$ = this.onChange.asObservable();
     }
 
     initialize(): Promise<Configuration> {
         return new Promise(resolve => {
             if (this.configuration) {
-              resolve(this.configuration);
-              return;
+                resolve(this.configuration);
+                return;
             }
             this.storage.get('CONFIGURATION').then(config => {
                 if (config) {
@@ -55,7 +61,18 @@ export class ConfigurationService {
 
     save(): Promise<Configuration> {
         return this.storage.set('CONFIGURATION', this.configuration);
-      }
+        /*
+        return new Promise(resolve => {
+            this.storage.set('CONFIGURATION', this.configuration).then(function (result) {
+                this.onChange.next(true);
+                resolve(result);
+            });
+        });
+        */
+    }
 
+    notifyChanges() {
+        this.onChange.next(true);
+    }
 
 }
