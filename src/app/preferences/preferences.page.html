@@ -26,6 +26,14 @@
       <img slot="start" class="big-thumbnail" src="/assets/pieces/{{theme}}/wN.svg" />
       <ion-label text-centered>{{theme}}</ion-label>
     </ion-item>
+    <ion-item (click)="toggleBoardThemes()">
+      <ion-label>{{'preferences.board-theme' | translate}}</ion-label>
+      <ion-icon slot="end" [name]="showBoardThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
+    </ion-item>
+    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let theme of boardThemeSwitcherService.getThemes()" button="true" (click)="selectBoardTheme(theme)">
+      <img slot="start" class="big-thumbnail" src="/assets/board/{{theme.name}}.png" />
+      <ion-label text-centered>{{theme.name}}</ion-label>
+    </ion-item>
     <ion-item button="true" (click)="cleanDatabase()">
       <ion-label>{{'preferences.clean-database' | translate}}</ion-label>
       <ion-icon slot="end" name="trash" color="medium"></ion-icon>

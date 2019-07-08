@@ -67,6 +67,7 @@
         "records-removed": "Records removed",
         "color-theme": "Color theme",
         "piece-theme": "Pieces style",
+        "board-theme": "Board theme",
         "save-changes": "Save changes",
         "changes-saved": "Changes saved",
         "goto-position": "Show puzzle at the beginning",

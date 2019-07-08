@@ -51,3 +51,17 @@
 .overlay-button {
     color: var(--ion-text-color) !important;
 }
+:root {
+    --chess-white-background: #f0d9b5;
+    --chess-white-color: #b58863;
+    --chess-black-background: #b58863;
+    --chess-black-color: #f0d9b5;
+}
+.white-1e1d7 {
+    background-color: var(--chess-white-background) !important;
+    color: var(--chess-white-color) !important;
+}
+.black-3c85d {
+    background-color: var(--chess-black-background) !important;
+    color: var(--chess-black-color) !important;
+}

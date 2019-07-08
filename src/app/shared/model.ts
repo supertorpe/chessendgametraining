@@ -34,5 +34,6 @@ export interface Configuration {
     playSounds: boolean,
     fullScreen: boolean,
     highlightSquares: boolean,
-    pieceTheme: string
+    pieceTheme: string,
+    boardTheme: string
 }

@@ -3,7 +3,7 @@ import { Platform, NavController, IonRouterOutlet, ToastController } from '@ioni
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
-import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, Configuration, ThemeSwitcherService } from './shared';
+import { EndgameDatabaseService, MiscService, EndgameDatabase, Category, ConfigurationService, Configuration, ThemeSwitcherService, BoardThemeSwitcherService } from './shared';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -61,7 +61,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private miscService: MiscService,
     private navCtrl: NavController,
     private endgameDatabaseService: EndgameDatabaseService,
-    private themeSwitcherService: ThemeSwitcherService
+    private themeSwitcherService: ThemeSwitcherService,
+    private boardThemeSwitcherService: BoardThemeSwitcherService
   ) {
     this.translate.setDefaultLang('en');
     this.translate.use(this.translate.getBrowserLang());
@@ -106,6 +107,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.config = values[0];
       this.pieceTheme = this.config.pieceTheme;
       this.themeSwitcherService.setTheme(this.config.colorTheme);
+      this.boardThemeSwitcherService.setTheme(this.config.boardTheme);
       if (this.config.fullScreen && this.platform.is('cordova')) {
         this.androidFullScreen.isImmersiveModeSupported()
           .then(() => this.androidFullScreen.immersiveMode());

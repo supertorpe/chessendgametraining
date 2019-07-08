@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Configuration } from './model';
 import { Subject, Observable } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
+import { DomController } from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root',
@@ -22,10 +24,11 @@ export class ConfigurationService {
         playSounds: true,
         fullScreen: true,
         highlightSquares: true,
-        pieceTheme: 'cburnett'
+        pieceTheme: 'cburnett',
+        boardTheme: 'brown'
     };
 
-    constructor(private storage: Storage) {
+    constructor(private storage: Storage, private domCtrl: DomController, @Inject(DOCUMENT) private document,) {
         this.onChange = new Subject<boolean>();
         this.onChange$ = this.onChange.asObservable();
     }
@@ -47,6 +50,7 @@ export class ConfigurationService {
                     if (config.fullScreen === undefined) config.fullScreen = this.DEFAULT_CONFIG.fullScreen;
                     if (config.highlightSquares === undefined) config.highlightSquares = this.DEFAULT_CONFIG.highlightSquares;
                     if (config.pieceTheme === undefined) config.pieceTheme = this.DEFAULT_CONFIG.pieceTheme;
+                    if (config.boardTheme === undefined) config.boardTheme = this.DEFAULT_CONFIG.boardTheme;
                     this.configuration = config;
                     resolve(this.configuration);
                 } else {
