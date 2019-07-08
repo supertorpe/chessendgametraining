@@ -10,7 +10,7 @@ import { ConfigurationService, Configuration } from '../shared';
 })
 export class PromotionDialog {
 
-  private configuration: Configuration;
+  public configuration: Configuration;
 
   @Input() turn: string;
 
