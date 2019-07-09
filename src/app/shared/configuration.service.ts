@@ -1,9 +1,7 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Configuration } from './model';
 import { Subject, Observable } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
-import { DomController } from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root',
@@ -12,8 +10,8 @@ export class ConfigurationService {
 
     private configuration: Configuration;
 
-    private onChange: Subject<boolean>;
-    public onChange$: Observable<boolean>;
+    private onChange: Subject<Configuration>;
+    public onChange$: Observable<Configuration>;
 
     private DEFAULT_CONFIG: Configuration = {
         useSyzygy: true,
@@ -28,8 +26,8 @@ export class ConfigurationService {
         boardTheme: 'brown'
     };
 
-    constructor(private storage: Storage, private domCtrl: DomController, @Inject(DOCUMENT) private document,) {
-        this.onChange = new Subject<boolean>();
+    constructor(private storage: Storage) {
+        this.onChange = new Subject<Configuration>();
         this.onChange$ = this.onChange.asObservable();
     }
 
@@ -75,8 +73,8 @@ export class ConfigurationService {
         */
     }
 
-    notifyChanges() {
-        this.onChange.next(true);
+    notifyChanges(configuration: Configuration) {
+        this.onChange.next(configuration);
     }
 
 }

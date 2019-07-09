@@ -49,7 +49,7 @@ export class PositionPage implements OnInit, OnDestroy {
   public intervalPlay;
   public literales: any;
 
-  @ViewChild('chessboard') chessboard: ChessboardComponent;
+  @ViewChild('chessboard', { static: true }) chessboard: ChessboardComponent;
 
   constructor(
     private platform: Platform,
@@ -165,10 +165,10 @@ export class PositionPage implements OnInit, OnDestroy {
     chess.load(this.position.fen);
     if (chess.turn() == 'w') {
       this.move = 'white';
-      this.targetImage = 'wK.png';
+      this.targetImage = this.miscService.urlIcon('wK.png', this.configuration.pieceTheme);
     } else {
       this.move = 'black';
-      this.targetImage = 'bK.png';
+      this.targetImage = this.miscService.urlIcon('bK.png', this.configuration.pieceTheme);
     }
     this.chessboard.build(this.position.fen, this.position.target);
     this.engineThinking = false;
@@ -187,11 +187,11 @@ export class PositionPage implements OnInit, OnDestroy {
     if (chess.turn() == 'w') {
       this.move = 'white';
       this.position = {"target":target,"fen":fen, record: -1};
-      this.targetImage = 'wK.png';
+      this.targetImage = this.miscService.urlIcon('wK.png', this.configuration.pieceTheme);
     } else {
       this.move = 'black';
       this.position = {"target":target,"fen":fen, record: -1};
-      this.targetImage = 'bK.png';
+      this.targetImage = this.miscService.urlIcon('bK.png', this.configuration.pieceTheme);
     }
     this.position$ = of(this.position);
     this.chessboard.build(fen, target);

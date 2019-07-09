@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, ConfigurationService, Configuration, MiscService } from '../shared';
+import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory } from '../shared';
 import { Observable, of } from 'rxjs';
 import { NavController } from '@ionic/angular';
 
@@ -12,7 +12,6 @@ import { NavController } from '@ionic/angular';
 })
 export class ListPage implements OnInit {
 
-  private config: Configuration;
   public endgameDatabase: EndgameDatabase;
   public idxCategory: number;
   public idxSubcategory: number;
@@ -27,12 +26,7 @@ export class ListPage implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private navCtrl: NavController,
-    private endgameDatabaseService: EndgameDatabaseService,
-    private configurationService: ConfigurationService,
-    private miscService: MiscService) {
-      this.configurationService.initialize().then(config => {
-        this.config = config;
-      });
+    private endgameDatabaseService: EndgameDatabaseService) {
   }
 
   ngOnInit() {
@@ -49,7 +43,6 @@ export class ListPage implements OnInit {
   load() {
     const cat = this.endgameDatabase.categories[this.idxCategory];
     const subcat = cat.subcategories[this.idxSubcategory];
-    subcat.images = this.miscService.textToImages(subcat.name);
     this.category$ = of(cat);
     this.subcategory$ = of(subcat);
     this.idxLastSubcategory = this.endgameDatabase.categories[this.idxCategory].subcategories.length - 1;

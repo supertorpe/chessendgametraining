@@ -1,9 +1,8 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService, BoardThemeSwitcherService } from '../shared';
-import { Platform, AlertController, ToastController, DomController } from '@ionic/angular';
+import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
-import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-preferences',
@@ -21,7 +20,6 @@ export class PreferencesPage {
 
   constructor(
     private platform: Platform,
-    private domCtrl: DomController, @Inject(DOCUMENT) private document,
     private androidFullScreen: AndroidFullScreen,
     private endgameDatabaseService: EndgameDatabaseService,
     private configurationService: ConfigurationService,
@@ -60,7 +58,7 @@ export class PreferencesPage {
   
   selectPieceTheme(theme) {
     this.configuration.pieceTheme = theme;
-    this.configurationService.notifyChanges();
+    this.configurationService.notifyChanges(this.configuration);
   }
 
   toggleBoardThemes() {

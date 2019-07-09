@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-import { EndgameDatabase, Category, Subcategory } from '.';
+import { EndgameDatabase, Category, Subcategory } from './model';
+import { MiscService } from './misc.service';
+import { ConfigurationService } from './configuration.service';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +12,10 @@ import { EndgameDatabase, Category, Subcategory } from '.';
 export class EndgameDatabaseService {
 
   private endgameDatabase: EndgameDatabase;
+  private onConfigChangeSubscription: Subscription;
     
-  constructor(private http: HttpClient, private storage: Storage) {
+  constructor(private http: HttpClient, private storage: Storage, private miscService: MiscService, private configurationService: ConfigurationService) {
+    this.onConfigChangeSubscription = this.configurationService.onChange$.subscribe(event => this.configurationChanged(event));
   }
 
   initialize(): Promise<boolean> {
@@ -20,15 +25,34 @@ export class EndgameDatabaseService {
         return;
       }
       Promise.all([
+        this.configurationService.initialize(),
         this.getLocalDatabase(),
         this.getRemoteDatabase()
-      ]).then((values: EndgameDatabase[]) => {
-        const localDatabase = values[0];
-        const remoteDatabase = values[1];
+      ]).then((values) => {
+        const config = values[0];
+        const localDatabase = values[1];
+        const remoteDatabase = values[2];
         this.endgameDatabase = this.reconcileDatabases(localDatabase, remoteDatabase);
+        this.enrich(this.endgameDatabase, config.pieceTheme);
         resolve(true);
       });
     });
+  }
+
+  public enrich(database: EndgameDatabase, pieceTheme: string) {
+    database.categories.forEach(category => {
+      category.iconUrls = [];
+      category.icons.forEach(icon => category.iconUrls.push(this.miscService.urlIcon(icon, pieceTheme)));
+      category.subcategories.forEach(subcategory => {
+        subcategory.images = this.miscService.textToImages(subcategory.name);
+        subcategory.imageUrls = [];
+        subcategory.images.forEach(image => subcategory.imageUrls.push(this.miscService.urlIcon(image, pieceTheme)));
+      });
+    });
+  }
+
+  private configurationChanged(config) {
+    this.enrich(this.endgameDatabase, config.pieceTheme);
   }
 
   private reconcileDatabases(localDatabase: EndgameDatabase, remoteDatabase: EndgameDatabase) : EndgameDatabase {
