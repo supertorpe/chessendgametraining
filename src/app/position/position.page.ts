@@ -49,7 +49,7 @@ export class PositionPage implements OnInit, OnDestroy {
   public intervalPlay;
   public literales: any;
 
-  @ViewChild('chessboard') chessboard: ChessboardComponent;
+  @ViewChild('chessboard', { static: true }) chessboard: ChessboardComponent;
 
   constructor(
     private platform: Platform,
