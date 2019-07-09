@@ -667,19 +667,12 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         if (!this.configuration.highlightSquares) {
             return;
         }
-        const squareEl = $('#__chessboard__ .square-' + square);
-        /*
-        let background = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANElEQVQYlWP4cHPrf0KYgZCCrR3J+BVt7UgmziScimAm4FSEroB067CZgKIIn4IPN7f+BwDVaRVpspCjIQAAAABJRU5ErkJggg==) repeat';
-        if (squareEl.hasClass('black-3c85d') === true) {
-            background = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAANElEQVQYlWPY2pH8nxBmIKTgw82t+BV9uLmVOJNwKoKZgFMRugLSrcNmAooifAq2diT/BwD7VtmENkc+eQAAAABJRU5ErkJggg==) repeat';
-        }
-        */
-        let background = '#e5d8c2'; // claro #f0d9b5
-        if (squareEl.hasClass('black-3c85d') === true) {
-            background = '#9d8b7b'; // oscuro #b58863
-        }
-
-        squareEl.css('background', background);
+       const squareEl = document.querySelector(`#__chessboard__ .square-${square}`) as HTMLElement;
+       if (squareEl.classList.contains('black-3c85d')) {
+           squareEl.style.setProperty('background-color', '#999999', 'important');
+       } else {
+           squareEl.style.setProperty('background-color', '#ffffff', 'important');
+       }
     };
 
     private removeGreySquares() {

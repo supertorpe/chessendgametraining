@@ -23,7 +23,7 @@ export class CacheInterceptor implements HttpInterceptor {
 
         const result = cachedResponse ?
             of(cachedResponse) : this.sendRequest(req, next, this.cache);
-        return result.pipe(delayWhen(() => timer(250)));
+        return result.pipe(delay(cachedResponse ? 250 : 200));
     }
 
     sendRequest(
