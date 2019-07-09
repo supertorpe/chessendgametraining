@@ -14,7 +14,7 @@
       <ion-label>{{'preferences.color-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showThemes}" *ngFor="let theme of themeSwitcherService.getThemes()" button="true" (click)="selectTheme(theme.name)">
+    <ion-item [ngClass]="{'ion-hide': !showThemes}" *ngFor="let theme of themeSwitcherService.getThemes()" color="{{configuration.colorTheme === theme.name ? 'light' : ''}}" button="true" (click)="selectTheme(theme.name)">
       <div slot="start" class="dot" [ngStyle]="{'background-color': theme.mainColor}"></div>
       <ion-label text-centered>{{theme.name}}</ion-label>
     </ion-item>
@@ -22,7 +22,7 @@
       <ion-label>{{'preferences.piece-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showPieceThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showPieceThemes}" *ngFor="let theme of pieceThemes" button="true" (click)="selectPieceTheme(theme)">
+    <ion-item [ngClass]="{'ion-hide': !showPieceThemes}" *ngFor="let theme of pieceThemes" color="{{configuration.pieceTheme === theme ? 'light' : ''}}" button="true" (click)="selectPieceTheme(theme)">
       <img slot="start" class="big-thumbnail" src="/assets/pieces/{{theme}}/wN.svg" />
       <ion-label text-centered>{{theme}}</ion-label>
     </ion-item>
@@ -30,7 +30,7 @@
       <ion-label>{{'preferences.board-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showBoardThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let theme of boardThemeSwitcherService.getThemes()" button="true" (click)="selectBoardTheme(theme)">
+    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let theme of boardThemeSwitcherService.getThemes()" color="{{configuration.boardTheme === theme.name ? 'light' : ''}}" button="true" (click)="selectBoardTheme(theme)">
       <img slot="start" class="big-thumbnail" src="/assets/board/{{theme.name}}.png" />
       <ion-label text-centered>{{theme.name}}</ion-label>
     </ion-item>

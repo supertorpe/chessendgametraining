@@ -79,7 +79,7 @@ export class MiscService {
 
   urlIcon(icon, pieceTheme) {
     if ('3.png' === icon || '4.png' === icon || '5.png' === icon || 'swords.png' === icon || 'elementary.png' === icon) {
-      return '/assets/icon/' + icon;
+      return '/assets/icon/' + icon.replace('.png', '.svg');
     }
     else
     {
