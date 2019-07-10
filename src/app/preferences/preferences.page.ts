@@ -16,7 +16,7 @@ export class PreferencesPage {
   public showPieceThemes = false;
   public showBoardThemes = false;
   private literals: any;
-  public pieceThemes = ['alpha', 'cburnett', 'chess7', 'chessnut', 'companion', 'fantasy', 'leipzig', 'letter', 'merida', 'mono', 'pirouetti', 'reilly', 'riohacha', 'shapes', 'spatial', 'symmetric'];
+  public pieceThemes = ['alpha', 'cburnett', 'chess7', 'chessnut', 'companion', 'fantasy', 'kosal', 'leipzig', 'letter', 'merida', 'mono', 'pirouetti', 'reilly', 'riohacha', 'shapes', 'spatial', 'symmetric'];
 
   constructor(
     private platform: Platform,
