@@ -64,24 +64,24 @@ export class PositionPage implements OnInit, OnDestroy {
     private insomnia: Insomnia,
     private clipboard: Clipboard,
     private toast: ToastController) {
-      this.configurationService.initialize().then(config => {
-        this.configuration = config;
-      });
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.idxCategory = +params.idxcategory;
-      this.idxSubcategory = +params.idxsubcategory;
-      this.idxPosition = +params.idxposition;
-      if (params.idxposition) {
-        this.endgameDatabaseService.initialize().then(result => {
-          this.endgameDatabase = this.endgameDatabaseService.getDatabase();
-          this.load();
-        });
-      } else if (params.fen1) {
-        this.loadFen(`${params.fen1}/${params.fen2}/${params.fen3}/${params.fen4}/${params.fen5}/${params.fen6}/${params.fen7}/${params.fen8}`, params.target ? params.target: 'checkmate');
-      }
+    this.configurationService.initialize().then(config => {
+      this.configuration = config;
+      this.route.params.subscribe(params => {
+        this.idxCategory = +params.idxcategory;
+        this.idxSubcategory = +params.idxsubcategory;
+        this.idxPosition = +params.idxposition;
+        if (params.idxposition) {
+          this.endgameDatabaseService.initialize().then(result => {
+            this.endgameDatabase = this.endgameDatabaseService.getDatabase();
+            this.load();
+          });
+        } else if (params.fen1) {
+          this.loadFen(`${params.fen1}/${params.fen2}/${params.fen3}/${params.fen4}/${params.fen5}/${params.fen6}/${params.fen7}/${params.fen8}`, params.target ? params.target : 'checkmate');
+        }
+      });
     });
   }
 
@@ -186,11 +186,11 @@ export class PositionPage implements OnInit, OnDestroy {
     chess.load(fen);
     if (chess.turn() == 'w') {
       this.move = 'white';
-      this.position = {"target":target,"fen":fen, record: -1};
+      this.position = { "target": target, "fen": fen, record: -1 };
       this.targetImage = this.miscService.urlIcon('wK.png', this.configuration.pieceTheme);
     } else {
       this.move = 'black';
-      this.position = {"target":target,"fen":fen, record: -1};
+      this.position = { "target": target, "fen": fen, record: -1 };
       this.targetImage = this.miscService.urlIcon('bK.png', this.configuration.pieceTheme);
     }
     this.position$ = of(this.position);
@@ -335,7 +335,7 @@ export class PositionPage implements OnInit, OnDestroy {
   btnCopyClipboardClick() {
     const self = this;
     if (this.platform.is('cordova')) {
-      this.clipboard.copy(this.chessboard.fen()).then(() => self.showToastClipboard() );
+      this.clipboard.copy(this.chessboard.fen()).then(() => self.showToastClipboard());
     } else {
       const el = document.createElement('textarea');
       el.value = this.chessboard.fen();
