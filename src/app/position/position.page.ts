@@ -89,7 +89,7 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    if (this.configuration.preventScreenOff) {
+    if (this.configuration && this.configuration.preventScreenOff) {
       this.insomnia.keepAwake();
     }
     this.menuController.get('mainMenu').then(function (menu) {

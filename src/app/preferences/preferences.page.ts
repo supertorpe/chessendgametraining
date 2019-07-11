@@ -144,6 +144,9 @@ export class PreferencesPage {
         duration: 1000
       });
       toast.present();
+      if (this.isModal) {
+        this.btnCloseClick();
+      }
     });
   }
 
