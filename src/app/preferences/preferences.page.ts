@@ -3,6 +3,7 @@ import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitc
 import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-preferences',
@@ -20,6 +21,7 @@ export class PreferencesPage {
 
   constructor(
     private platform: Platform,
+    private sanitizer: DomSanitizer,
     private androidFullScreen: AndroidFullScreen,
     private endgameDatabaseService: EndgameDatabaseService,
     private configurationService: ConfigurationService,
@@ -45,6 +47,8 @@ export class PreferencesPage {
 
   toggleThemes() {
     this.showThemes = !this.showThemes;
+    this.showPieceThemes = false;
+    this.showBoardThemes = false;
   }
   
   selectTheme(theme) {
@@ -54,6 +58,8 @@ export class PreferencesPage {
 
   togglePieceThemes() {
     this.showPieceThemes = !this.showPieceThemes;
+    this.showThemes = false;
+    this.showBoardThemes = false;
   }
   
   selectPieceTheme(theme) {
@@ -63,11 +69,17 @@ export class PreferencesPage {
 
   toggleBoardThemes() {
     this.showBoardThemes = !this.showBoardThemes;
+    this.showThemes = false;
+    this.showPieceThemes = false;
   }
   
   selectBoardTheme(theme) {
     this.configuration.boardTheme = theme.name;
     this.boardThemeSwitcherService.setTheme(theme.name);
+  }
+
+  getBoardBackground(themeName) {
+    return  this.sanitizer.bypassSecurityTrustStyle(this.configuration.boardTheme === themeName ? 'var(--ion-color-light)' : '');
   }
 
   async cleanDatabase() {

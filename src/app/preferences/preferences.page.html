@@ -23,16 +23,18 @@
       <ion-icon slot="end" [name]="showPieceThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
     <ion-item [ngClass]="{'ion-hide': !showPieceThemes}" *ngFor="let theme of pieceThemes" color="{{configuration.pieceTheme === theme ? 'light' : ''}}" button="true" (click)="selectPieceTheme(theme)">
-      <img slot="start" class="big-thumbnail" src="/assets/pieces/{{theme}}/wN.svg" />
-      <ion-label text-centered>{{theme}}</ion-label>
+      <ion-col size="2" *ngFor="let piece of ['P', 'B', 'N', 'R', 'Q', 'K']">
+        <img class="big-thumbnail" src="/assets/pieces/{{theme}}/w{{piece}}.svg" />
+      </ion-col>
     </ion-item>
     <ion-item (click)="toggleBoardThemes()">
       <ion-label>{{'preferences.board-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showBoardThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let theme of boardThemeSwitcherService.getThemes()" color="{{configuration.boardTheme === theme.name ? 'light' : ''}}" button="true" (click)="selectBoardTheme(theme)">
-      <img slot="start" class="big-thumbnail" src="/assets/board/{{theme.name}}.png" />
-      <ion-label text-centered>{{theme.name}}</ion-label>
+    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let chunk of boardThemeSwitcherService.getThemes() | chunks: 4; index as idxChunk">
+      <ion-col *ngFor="let theme of chunk; index as idxChunk" size="3" class="ion-text-center" [style.background-color]="getBoardBackground(theme.name)" (click)="selectBoardTheme(theme)" >
+        <img class="big-thumbnail" src="/assets/board/{{theme.name}}.png" />
+      </ion-col>
     </ion-item>
     <ion-item button="true" (click)="cleanDatabase()">
       <ion-label>{{'preferences.clean-database' | translate}}</ion-label>
