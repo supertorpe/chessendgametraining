@@ -5,10 +5,11 @@ import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory, Position, MiscService, ConfigurationService, Configuration } from '../shared';
 import { Observable, of } from 'rxjs';
-import { AlertController, MenuController, ToastController, Platform } from '@ionic/angular';
+import { AlertController, MenuController, ToastController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ChessboardComponent } from '../chessboard';
 import * as Chess from 'chess.js';
+import { PreferencesPage } from '../preferences/preferences.page';
 
 @Component({
   selector: 'app-position',
@@ -50,6 +51,7 @@ export class PositionPage implements OnInit, OnDestroy {
   public literales: any;
 
   @ViewChild('chessboard', { static: true }) chessboard: ChessboardComponent;
+  @ViewChild('fab', { static: true }) fab: any;
 
   constructor(
     private platform: Platform,
@@ -63,7 +65,8 @@ export class PositionPage implements OnInit, OnDestroy {
     private miscService: MiscService,
     private insomnia: Insomnia,
     private clipboard: Clipboard,
-    private toast: ToastController) {
+    private toast: ToastController,
+    public modalController: ModalController) {
   }
 
   ngOnInit() {
@@ -212,6 +215,7 @@ export class PositionPage implements OnInit, OnDestroy {
     if (this.gameOver) {
       return;
     }
+    if (this.fab.activated) this.fab.close();
     this.engineThinking = true;
   }
 
@@ -305,6 +309,29 @@ export class PositionPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
+  private async settingsDialog(): Promise<Configuration> {
+    return new Promise<Configuration>(async resolve => {
+      const modal = await this.modalController.create({
+        component: PreferencesPage,
+        componentProps: { isModal: true }
+      });
+      modal.present();
+      const { data } = await modal.onDidDismiss();
+      if (data == undefined) {
+        resolve(null);
+      } else {
+        resolve(data.config);
+      }
+    });
+  }
+
+  btnSettingsClick() {
+    const self = this;
+    this.settingsDialog().then(function(config) {
+      self.configurationService.notifyChanges(config);
+    });
+  }
+
   btnRewindClick() {
     this.chessboard.rewind();
     this.autosolveUsed = false;
@@ -327,6 +354,7 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   btnSolveClick() {
+    if (this.fab.activated) this.fab.close();
     this.autosolve = true;
     this.autosolveUsed = true;
     this.chessboard.solve();

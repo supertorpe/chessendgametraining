@@ -19,7 +19,7 @@
       &nbsp;<span class="responsive-text">[ {{idxPosition + 1}} / {{idxLastPosition + 1}} ]</span>
     </ion-title>
     <ion-title text-center class="padding-0" *ngIf="fen">
-        <span class="responsive-text">{{fen}}</span>
+      <span class="responsive-text">{{fen}}</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -67,8 +67,7 @@
               </ion-button>
             </ion-col>
             <ion-col size="2">
-              <ion-button [disabled]="!btnSolveEnabled" (click)="btnHintlick()" size="small" fill="clear"
-                color="dark">
+              <ion-button [disabled]="!btnSolveEnabled" (click)="btnHintlick()" size="small" fill="clear" color="dark">
                 <ion-icon slot="icon-only" name="bulb"></ion-icon>
               </ion-button>
             </ion-col>
@@ -76,12 +75,6 @@
               <ion-button [disabled]="!btnSolveEnabled" (click)="btnSolveClick()" size="small" fill="clear"
                 color="dark">
                 <ion-icon slot="icon-only" name="color-wand"></ion-icon>
-              </ion-button>
-            </ion-col>
-            <ion-col size="2">
-              <ion-button [disabled]="!btnSolveEnabled" (click)="btnCopyClipboardClick()" size="small" fill="clear"
-                color="dark">
-                <ion-icon slot="icon-only" name="clipboard"></ion-icon>
               </ion-button>
             </ion-col>
           </ion-row>
@@ -126,14 +119,19 @@
                 <ion-icon slot="icon-only" name="fastforward"></ion-icon>
               </ion-button>
             </ion-col>
-            <ion-col size="2">
-              <ion-button [disabled]="autoplaying" (click)="btnRewindClick()" size="small" fill="clear" color="dark">
-                <ion-icon slot="icon-only" name="trash"></ion-icon>
-              </ion-button>
-            </ion-col>
           </ion-row>
         </ion-grid>
       </div>
+      <ion-fab #fab vertical="bottom" horizontal="end" slot="fixed">
+          <ion-fab-button color="light" size="small" [disabled]="engineThinking || autoplaying">
+            <ion-icon name="arrow-dropup"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-list side="top">
+              <ion-fab-button color="dark" *ngIf="gameOver" (click)="btnRewindClick()"><ion-icon name="trash"></ion-icon></ion-fab-button>
+              <ion-fab-button color="dark" (click)="btnCopyClipboardClick()"><ion-icon name="clipboard"></ion-icon></ion-fab-button>
+              <ion-fab-button color="dark" (click)="btnSettingsClick()"><ion-icon name="options"></ion-icon></ion-fab-button>
+            </ion-fab-list>
+        </ion-fab>
     </div>
   </div>
 </ion-content>

@@ -1,11 +1,14 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
+    <ion-buttons slot="start" *ngIf="!isModal">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
       {{'preferences.title' | translate}}
     </ion-title>
+    <ion-buttons slot="end" *ngIf="isModal">
+      <ion-button (click)="btnCloseClick()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>

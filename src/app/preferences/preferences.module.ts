@@ -13,6 +13,6 @@ import { SharedModule } from '../shared';
       }
     ])
   ],
-  declarations: [PreferencesPage]
+  declarations: []
 })
 export class PreferencesPageModule {}

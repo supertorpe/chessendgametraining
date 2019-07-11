@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
-import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService, BoardThemeSwitcherService } from '../shared';
+import { Component, Input } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { EndgameDatabaseService } from '../shared/endgame.database.service';
+import { ConfigurationService } from '../shared/configuration.service';
+import { Configuration } from '../shared/model';
+import { ThemeSwitcherService } from '../shared/theme-switcher.service';
+import { BoardThemeSwitcherService } from '../shared/board-theme-switcher.service';
 import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
@@ -12,6 +17,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class PreferencesPage {
 
+  @Input() isModal = false;
+
   public configuration: Configuration;
   public showThemes = false;
   public showPieceThemes = false;
@@ -21,6 +28,7 @@ export class PreferencesPage {
 
   constructor(
     private platform: Platform,
+    public modalController: ModalController,
     private sanitizer: DomSanitizer,
     private androidFullScreen: AndroidFullScreen,
     private endgameDatabaseService: EndgameDatabaseService,
@@ -80,6 +88,10 @@ export class PreferencesPage {
 
   getBoardBackground(themeName) {
     return  this.sanitizer.bypassSecurityTrustStyle(this.configuration.boardTheme === themeName ? 'var(--ion-color-light)' : '');
+  }
+
+  btnCloseClick() {
+    this.modalController.dismiss({config: this.configuration});
   }
 
   async cleanDatabase() {
