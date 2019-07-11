@@ -417,6 +417,7 @@ export class PositionPage implements OnInit, OnDestroy {
   }
 
   btnPlayClick() {
+    if (this.fab.activated) this.fab.close();
     const self = this;
     this.autoplaying = true;
     if (this.internalPlay()) {
