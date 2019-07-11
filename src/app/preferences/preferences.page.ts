@@ -1,8 +1,14 @@
-import { Component } from '@angular/core';
-import { EndgameDatabaseService, ConfigurationService, Configuration, ThemeSwitcherService, BoardThemeSwitcherService } from '../shared';
+import { Component, Input } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { EndgameDatabaseService } from '../shared/endgame.database.service';
+import { ConfigurationService } from '../shared/configuration.service';
+import { Configuration } from '../shared/model';
+import { ThemeSwitcherService } from '../shared/theme-switcher.service';
+import { BoardThemeSwitcherService } from '../shared/board-theme-switcher.service';
 import { AlertController, ToastController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-preferences',
@@ -11,15 +17,19 @@ import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
 })
 export class PreferencesPage {
 
+  @Input() isModal = false;
+
   public configuration: Configuration;
   public showThemes = false;
   public showPieceThemes = false;
   public showBoardThemes = false;
   private literals: any;
-  public pieceThemes = ['alpha', 'cburnett', 'chess7', 'chessnut', 'companion', 'fantasy', 'leipzig', 'letter', 'merida', 'mono', 'pirouetti', 'reilly', 'riohacha', 'shapes', 'spatial', 'symmetric'];
+  public pieceThemes = ['alpha', 'cburnett', 'chess7', 'chessnut', 'companion', 'fantasy', 'kosal', 'leipzig', 'letter', 'merida', 'mono', 'pirouetti', 'reilly', 'riohacha', 'shapes', 'spatial', 'symmetric'];
 
   constructor(
     private platform: Platform,
+    public modalController: ModalController,
+    private sanitizer: DomSanitizer,
     private androidFullScreen: AndroidFullScreen,
     private endgameDatabaseService: EndgameDatabaseService,
     private configurationService: ConfigurationService,
@@ -45,6 +55,8 @@ export class PreferencesPage {
 
   toggleThemes() {
     this.showThemes = !this.showThemes;
+    this.showPieceThemes = false;
+    this.showBoardThemes = false;
   }
   
   selectTheme(theme) {
@@ -54,6 +66,8 @@ export class PreferencesPage {
 
   togglePieceThemes() {
     this.showPieceThemes = !this.showPieceThemes;
+    this.showThemes = false;
+    this.showBoardThemes = false;
   }
   
   selectPieceTheme(theme) {
@@ -63,11 +77,21 @@ export class PreferencesPage {
 
   toggleBoardThemes() {
     this.showBoardThemes = !this.showBoardThemes;
+    this.showThemes = false;
+    this.showPieceThemes = false;
   }
   
   selectBoardTheme(theme) {
     this.configuration.boardTheme = theme.name;
     this.boardThemeSwitcherService.setTheme(theme.name);
+  }
+
+  getBoardBackground(themeName) {
+    return  this.sanitizer.bypassSecurityTrustStyle(this.configuration.boardTheme === themeName ? 'var(--ion-color-light)' : '');
+  }
+
+  btnCloseClick() {
+    this.modalController.dismiss({config: this.configuration});
   }
 
   async cleanDatabase() {

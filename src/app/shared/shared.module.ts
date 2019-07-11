@@ -13,6 +13,7 @@ import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
 import { ThemeSwitcherService } from './theme-switcher.service';
 import { BoardThemeSwitcherService } from './board-theme-switcher.service';
+import { PreferencesPage } from '../preferences/preferences.page';
 
 const providers = [
     EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, 
@@ -25,10 +26,11 @@ const providers = [
         IonicModule,
         TranslateModule.forChild()
     ],
-    declarations: [ChunksPipe],
+    declarations: [ChunksPipe,PreferencesPage],
     providers: [
         AndroidFullScreen
     ],
+    entryComponents: [PreferencesPage],
     exports: [
         CommonModule,
         FormsModule,

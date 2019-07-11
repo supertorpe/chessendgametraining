@@ -20,6 +20,7 @@ declare var $: any;
 export class ChessboardComponent implements OnInit, OnDestroy {
 
     private configuration: Configuration;
+    private onConfigChangeSubscription: Subscription;
     private board: any;
     private chess: Chess = new Chess();
     private originalFen: string;
@@ -61,19 +62,27 @@ export class ChessboardComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.isMobileBrowser = (null !== navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/));
+        this.onConfigChangeSubscription = this.configurationService.onChange$.subscribe(event => this.configurationChanged(event));
         this.onStockfishMessageSubscription = this.stockfish.onMessage$.subscribe(event => this.messageReceived(event));
         this.loadAudio();
-        this.configurationService.initialize().then(config => {
-            this.configuration = config;
-            this.useSyzygy = this.configuration.useSyzygy;
-        });
     }
 
     ngOnDestroy() {
+        this.onConfigChangeSubscription.unsubscribe();
         this.onStockfishMessageSubscription.unsubscribe();
         this.unloadAudio();
     }
 
+    private uglyForceBoardRedraw() {
+        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 100);
+        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 1000);
+    }
+
+    private configurationChanged(config) {
+        this.configuration = config;
+        this.useSyzygy = this.configuration.useSyzygy;
+        this.uglyForceBoardRedraw();
+    }
     private loadAudio() {
         this.sounds.push({key: 'move', audio: new Howl({src:['/assets/audio/move.mp3']})});
         this.sounds.push({key: 'success', audio: new Howl({src:['/assets/audio/success.mp3']})});
@@ -111,7 +120,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         }
         this.board = ChessBoard('__chessboard__', {
             position: fen,
-            pieceTheme: `/assets/pieces/${this.configuration.pieceTheme}/{piece}.svg`,
+            pieceTheme: function(piece) { return '/assets/pieces/' + self.configuration.pieceTheme + '/' + piece + '.svg' },
             draggable: true,
             onDragStart: function (source, piece, position, orientation) { return self.onDragStart(source, piece, position, orientation); },
             onDrop: function (source, target, piece, newPos, oldPos, orientation) { return self.onDrop(source, target, piece, newPos, oldPos, orientation); },
@@ -140,8 +149,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         ]).subscribe(async res => {
             this.literales = res;
         });
-        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 100);
-        window.setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 1000);
+        this.uglyForceBoardRedraw();
     }
 
     rewind() {

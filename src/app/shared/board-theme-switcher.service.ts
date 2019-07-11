@@ -57,6 +57,42 @@ export class BoardThemeSwitcherService {
           { themeVariable: '--chess-black-background', value: '#888888' },
           { themeVariable: '--chess-black-color', value: '#AAAAAA' },
         ]
+      },
+      {
+        name: 'pink',
+        styles: [
+          { themeVariable: '--chess-white-background', value: '#FFF2F2' },
+          { themeVariable: '--chess-white-color', value: '#BC4545' },
+          { themeVariable: '--chess-black-background', value: '#BC4545' },
+          { themeVariable: '--chess-black-color', value: '#FFF2F2' },
+        ]
+      },
+      {
+        name: 'navy',
+        styles: [
+          { themeVariable: '--chess-white-background', value: '#ECECEC' },
+          { themeVariable: '--chess-white-color', value: '#385170' },
+          { themeVariable: '--chess-black-background', value: '#385170' },
+          { themeVariable: '--chess-black-color', value: '#ECECEC' },
+        ]
+      },
+      {
+        name: 'dark-green',
+        styles: [
+          { themeVariable: '--chess-white-background', value: '#E0EFBA' },
+          { themeVariable: '--chess-white-color', value: '#467A4B' },
+          { themeVariable: '--chess-black-background', value: '#467A4B' },
+          { themeVariable: '--chess-black-color', value: '#E0EFBA' },
+        ]
+      },
+      {
+        name: 'black-white',
+        styles: [
+          { themeVariable: '--chess-white-background', value: '#F2F2F2' },
+          { themeVariable: '--chess-white-color', value: '#0C0C0C' },
+          { themeVariable: '--chess-black-background', value: '#0C0C0C' },
+          { themeVariable: '--chess-black-color', value: '#F2F2F2' },
+        ]
       }
     ]
   };
