@@ -74,6 +74,9 @@ export class ConfigurationService {
     }
 
     notifyChanges(configuration: Configuration) {
+        if (!configuration) {
+            configuration = this.configuration;
+        }
         this.onChange.next(configuration);
     }
 
