@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="023" id="com.supertorpe.chessendgametraining" version="2.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="025" id="com.supertorpe.chessendgametraining" version="2.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Chess Endgame Training</name>
     <description>Chess Endgame Training</description>
     <author email="supertorpe@hotmail.com" href="https://github.com/supertorpe/chessendgametraining">supertorpe</author>
