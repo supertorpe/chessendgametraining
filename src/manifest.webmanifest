@@ -1,6 +1,6 @@
 {
-  "name": "chessendgametraining",
-  "short_name": "chessendgametraining",
+  "name": "Chess Endgame Training",
+  "short_name": "chessendings",
   "theme_color": "#FFFFFF",
   "background_color": "#000000",
   "display": "standalone",
