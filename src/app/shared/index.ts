@@ -6,3 +6,4 @@ export * from './misc.service';
 export * from './configuration.service';
 export * from './theme-switcher.service';
 export * from './board-theme-switcher.service';
+export * from './no-check';

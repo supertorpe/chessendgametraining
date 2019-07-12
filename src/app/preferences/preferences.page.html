@@ -11,32 +11,32 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content [lazy-load-images]="{ rootMargin: '50px' }">
   <ion-list *ngIf="configuration">
     <ion-item (click)="toggleThemes()">
       <ion-label>{{'preferences.color-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showThemes}" *ngFor="let theme of themeSwitcherService.getThemes()" color="{{configuration.colorTheme === theme.name ? 'light' : ''}}" button="true" (click)="selectTheme(theme.name)">
-      <div slot="start" class="dot" [ngStyle]="{'background-color': theme.mainColor}"></div>
-      <ion-label text-centered>{{theme.name}}</ion-label>
+    <ion-item [ngClass]="{'ion-hide': !showThemes}" *ngFor="let theme of themeSwitcherService.getThemes(); trackBy: trackFunc" color="{{configuration.colorTheme === theme.name ? 'light' : ''}}" button="true" (click)="selectTheme(theme.name)">
+      <div *ngNoCheck slot="start" class="dot" [ngStyle]="{'background-color': theme.mainColor}"></div>
+      <ion-label *ngNoCheck text-centered>{{theme.name}}</ion-label>
     </ion-item>
     <ion-item (click)="togglePieceThemes()">
       <ion-label>{{'preferences.piece-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showPieceThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showPieceThemes}" *ngFor="let theme of pieceThemes" color="{{configuration.pieceTheme === theme ? 'light' : ''}}" button="true" (click)="selectPieceTheme(theme)">
-      <ion-col size="2" *ngFor="let piece of ['P', 'B', 'N', 'R', 'Q', 'K']">
-        <img class="big-thumbnail" src="/assets/pieces/{{theme}}/w{{piece}}.svg" />
+    <ion-item [ngClass]="{'ion-hide': !showPieceThemes}" *ngFor="let theme of pieceThemes; trackBy: trackFunc" color="{{configuration.pieceTheme === theme ? 'light' : ''}}" button="true" (click)="selectPieceTheme(theme)">
+      <ion-col size="2" *ngFor="let piece of ['P', 'B', 'N', 'R', 'Q', 'K']; trackBy: trackFunc">
+        <img *ngNoCheck class="big-thumbnail" attr.data-src="/assets/pieces/{{theme}}/w{{piece}}.svg" />
       </ion-col>
     </ion-item>
     <ion-item (click)="toggleBoardThemes()">
       <ion-label>{{'preferences.board-theme' | translate}}</ion-label>
       <ion-icon slot="end" [name]="showBoardThemes ? 'arrow-dropdown' : 'arrow-dropright'" color="medium"></ion-icon>
     </ion-item>
-    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let chunk of boardThemeSwitcherService.getThemes() | chunks: 4; index as idxChunk">
-      <ion-col *ngFor="let theme of chunk; index as idxChunk" size="3" class="ion-text-center" [style.background-color]="getBoardBackground(theme.name)" (click)="selectBoardTheme(theme)" >
-        <img class="big-thumbnail" src="/assets/board/{{theme.name}}.png" />
+    <ion-item [ngClass]="{'ion-hide': !showBoardThemes}" *ngFor="let chunk of boardThemeSwitcherService.getThemes() | chunks: 4; index as idxChunk; trackBy: trackFunc">
+      <ion-col *ngFor="let theme of chunk; index as idxChunk; trackBy: trackFunc" size="3" class="ion-text-center" [style.background-color]="getBoardBackground(theme.name)" (click)="selectBoardTheme(theme)" >
+        <img *ngNoCheck class="big-thumbnail" attr.data-src="/assets/board/{{theme.name}}.png" />
       </ion-col>
     </ion-item>
     <ion-item button="true" (click)="cleanDatabase()">

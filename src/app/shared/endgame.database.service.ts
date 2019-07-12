@@ -40,10 +40,13 @@ export class EndgameDatabaseService {
   }
 
   public enrich(database: EndgameDatabase, pieceTheme: string) {
+    database.count = database.categories.length;
     database.categories.forEach(category => {
+      category.count = category.subcategories.length;
       category.iconUrls = [];
       category.icons.forEach(icon => category.iconUrls.push(this.miscService.urlIcon(icon, pieceTheme)));
       category.subcategories.forEach(subcategory => {
+        subcategory.count = subcategory.games.length;
         subcategory.images = this.miscService.textToImages(subcategory.name);
         subcategory.imageUrls = [];
         subcategory.images.forEach(image => subcategory.imageUrls.push(this.miscService.urlIcon(image, pieceTheme)));

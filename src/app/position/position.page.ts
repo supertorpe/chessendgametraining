@@ -158,10 +158,10 @@ export class PositionPage implements OnInit, OnDestroy {
     this.category$ = of(this.category);
     this.subcategory$ = of(this.subcategory);
     this.position$ = of(this.position);
-    this.idxLastSubcategory = this.endgameDatabase.categories[this.idxCategory].subcategories.length - 1;
-    this.idxLastPosition = this.endgameDatabase.categories[this.idxCategory].subcategories[this.idxSubcategory].games.length - 1;
+    this.idxLastSubcategory = this.endgameDatabase.categories[this.idxCategory].count - 1;
+    this.idxLastPosition = this.endgameDatabase.categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
     this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxPosition > 0;
-    this.showNavNext = !(this.idxCategory === this.endgameDatabase.categories.length - 1
+    this.showNavNext = !(this.idxCategory === this.endgameDatabase.count - 1
       && this.idxSubcategory === this.idxLastSubcategory
       && this.idxPosition === this.idxLastPosition);
     const chess: Chess = new Chess();
@@ -207,6 +207,10 @@ export class PositionPage implements OnInit, OnDestroy {
     this.initLocales();
   }
 
+  trackFunc(index: number, obj: any) {
+    return index;
+  }
+  
   onEngineReady() {
 
   }
@@ -461,9 +465,9 @@ export class PositionPage implements OnInit, OnDestroy {
       idxSub--;
       if (idxSub < 0) {
         idxCat--;
-        idxSub = this.endgameDatabase.categories[idxCat].subcategories.length - 1;
+        idxSub = this.endgameDatabase.categories[idxCat].count - 1;
       }
-      idxPos = this.endgameDatabase.categories[idxCat].subcategories[idxSub].games.length - 1;
+      idxPos = this.endgameDatabase.categories[idxCat].subcategories[idxSub].count - 1;
     }
     //this.navCtrl.navigateRoot('/position/'+ idxCat + '/' + idxSub + '/' + idxPos);
     this.idxCategory = idxCat;

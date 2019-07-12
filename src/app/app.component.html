@@ -6,33 +6,35 @@
           <ion-title>{{'app.menu' | translate}}</ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
+      <ion-content [lazy-load-images]="{ rootMargin: '50px' }">
         <ion-list>
           <ion-menu-toggle auto-hide="false">
-            <ion-item *ngFor="let p of prePages" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon" color="dark"></ion-icon>
+            <ion-item *ngFor="let p of prePages; trackBy: trackFunc" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
+              <ion-icon *ngNoCheck slot="start" [name]="p.icon" color="dark"></ion-icon>
               <ion-label>
                 {{'app.' + p.title | translate}}
               </ion-label>
             </ion-item>
-            <ng-container *ngFor="let category of endgameDatabase.categories; index as idxCategory">
+            <ng-container *ngFor="let category of endgameDatabase.categories; index as idxCategory; trackBy: trackFunc">
               <ion-item (click)="$event.stopPropagation();toggleCategory(category)" lines="full">
                 <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
-                  <div *ngFor="let icon of category.iconUrls" class="thumbnail"><img width="100%" [src]="icon" /></div>
+                  <div *ngFor="let icon of category.iconUrls; trackBy: trackFunc" class="thumbnail"><img *ngNoCheck width="100%" [attr.data-src]="icon" /></div>
                 </div>
-                <ion-label>
+                <ion-label *ngNoCheck>
                   {{'category.' + category.name | translate}}
                 </ion-label>
                 <ion-icon slot="end" color="medium" [name]="category.selected ? 'arrow-dropdown' : 'arrow-dropright'"></ion-icon>
               </ion-item>
               <ion-item [ngClass]="{'ion-hide': !category.selected}" color="light"
-                *ngFor="let subcategory of category.subcategories; index as idxSubcategory"
+                *ngFor="let subcategory of category.subcategories; index as idxSubcategory; trackBy: trackFunc"
                 (click)="showList(idxCategory, idxSubcategory)">
-                <img *ngFor="let image of subcategory.imageUrls" [src]="image" class="medium-thumbnail" />
+                <ng-container *ngFor="let image of subcategory.imageUrls; trackBy: trackFunc">
+                    <img *ngNoCheck [attr.data-src]="image" class="medium-thumbnail" />
+                </ng-container>
               </ion-item>
             </ng-container>
-            <ion-item *ngFor="let p of postPages" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon" color="dark"></ion-icon>
+            <ion-item *ngFor="let p of postPages; trackBy: trackFunc" lines="full" [routerDirection]="'root'" [routerLink]="[p.url]">
+              <ion-icon *ngNoCheck slot="start" [name]="p.icon" color="dark"></ion-icon>
               <ion-label>
                 {{'app.' + p.title | translate}}
               </ion-label>

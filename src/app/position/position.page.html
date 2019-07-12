@@ -15,7 +15,7 @@
     </ion-buttons>
     <ion-title text-center class="padding-0" *ngIf="(subcategory$ | async) as subcategory" [routerDirection]="'root'"
       routerLink="/list/{{idxCategory}}/{{idxSubcategory}}">
-      <img *ngFor="let image of subcategory.imageUrls" [src]="image" class="responsive-thumbnail" />
+      <img *ngFor="let image of subcategory.imageUrls; trackBy: trackFunc" [src]="image" class="responsive-thumbnail" />
       &nbsp;<span class="responsive-text">[ {{idxPosition + 1}} / {{idxLastPosition + 1}} ]</span>
     </ion-title>
     <ion-title text-center class="padding-0" *ngIf="fen">

@@ -6,6 +6,7 @@ import { AndroidFullScreen } from '@ionic-native/android-full-screen/ngx';
 import { TranslateModule } from '@ngx-translate/core';
 import { Insomnia } from '@ionic-native/insomnia/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { LazyLoadImagesModule } from 'ngx-lazy-load-images';
 import { EndgameDatabaseService } from './endgame.database.service';
 import { MiscService } from './misc.service';
 import { ConfigurationService } from './configuration.service';
@@ -13,6 +14,7 @@ import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
 import { ThemeSwitcherService } from './theme-switcher.service';
 import { BoardThemeSwitcherService } from './board-theme-switcher.service';
+import { NgNoCheck } from './no-check';
 import { PreferencesPage } from '../preferences/preferences.page';
 
 const providers = [
@@ -24,9 +26,10 @@ const providers = [
         CommonModule,
         FormsModule,
         IonicModule,
+        LazyLoadImagesModule,
         TranslateModule.forChild()
     ],
-    declarations: [ChunksPipe,PreferencesPage],
+    declarations: [ChunksPipe,PreferencesPage,NgNoCheck],
     providers: [
         AndroidFullScreen
     ],
@@ -35,8 +38,10 @@ const providers = [
         CommonModule,
         FormsModule,
         IonicModule,
+        LazyLoadImagesModule,
         TranslateModule,
-        ChunksPipe
+        ChunksPipe,
+        NgNoCheck
     ]
 })
 export class SharedModule {
