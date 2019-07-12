@@ -10,6 +10,7 @@ export interface Subcategory {
     images: string[];
     imageUrls: string[];
     games: Position[];
+    count: number;
 }
 
 export interface Category {
@@ -18,11 +19,13 @@ export interface Category {
     iconUrls: string[];
     selected: boolean;
     subcategories: Subcategory[];
+    count: number;
 }
 
 export interface EndgameDatabase {
-    version: string,
+    version: string;
     categories: Category[];
+    count: number;
 }
 
 export interface Configuration {

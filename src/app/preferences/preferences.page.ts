@@ -53,6 +53,10 @@ export class PreferencesPage {
       });
   }
 
+  trackFunc(index: number, obj: any) {
+    return index;
+  }
+  
   toggleThemes() {
     this.showThemes = !this.showThemes;
     this.showPieceThemes = false;

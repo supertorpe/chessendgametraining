@@ -29,4 +29,8 @@ export class HomePage {
     });
   }
 
+  trackFunc(index: number, obj: any) {
+    return index;
+  }
+  
 }

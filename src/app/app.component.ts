@@ -17,7 +17,8 @@ export class AppComponent implements OnInit, OnDestroy {
   public initialized = false;
   public endgameDatabase: EndgameDatabase = {
     version: null,
-    categories: null
+    categories: null,
+    count: 0
   };
   public prePages = [
     {
@@ -124,6 +125,10 @@ export class AppComponent implements OnInit, OnDestroy {
         this.splashScreen.hide();
       });
     });
+  }
+
+  trackFunc(index: number, obj: any) {
+    return index;
   }
 
   private async goBack() {
