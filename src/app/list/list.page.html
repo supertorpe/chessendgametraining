@@ -27,7 +27,7 @@
     <ion-grid *ngIf="(subcategory$ | async) as subcategory">
         <ion-row *ngFor="let chunk of subcategory.games | chunks: 6; index as idxChunk; trackBy: trackFunc">
           <ion-col *ngFor="let game of chunk; index as idxGame; trackBy: trackFunc" size="2">
-            <ion-button *ngNoCheck color="{{!game.record ? 'light' : game.record < 0 ? 'warning' : 'success'}}" expand="block" (click)="showPosition(idxGame + idxChunk * 6)">{{1 + idxGame + idxChunk * 6}}</ion-button>
+            <ion-button color="{{!game.record ? 'light' : game.record < 0 ? 'warning' : 'success'}}" expand="block" (click)="showPosition(idxGame + idxChunk * 6)">{{1 + idxGame + idxChunk * 6}}</ion-button>
           </ion-col>
         </ion-row>
     </ion-grid>
