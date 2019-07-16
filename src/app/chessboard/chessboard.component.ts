@@ -271,6 +271,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     private messageReceived(message) {
+        const self = this;
         if (this.initializing) {
             return;
         }
@@ -331,7 +332,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 } else {
                     this.player = 'w';
                 }
-                this.prepareMove();
+                setTimeout(function() {
+                    self.prepareMove();
+                }, 100);
             } else {
                 if (this.squareSelected) {
                     document.querySelector('.square-' + this.squareSelected).classList.add('highlight-square');

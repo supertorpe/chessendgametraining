@@ -1,6 +1,6 @@
 {
     "name": "chessendgames",
-  "version": "2.2.2",
+  "version": "2.3.0",
     "author": "supertorpe@hotmail.com",
     "homepage": "https://github.com/supertorpe/chessendgametraining",
     "scripts": {
@@ -56,6 +56,7 @@
       "ngx-lazy-load-images": "^1.3.1",
       "rxjs": "~6.5.2",
       "stockfish.js": "^10.0.1",
+      "stockfish.wasm": "^0.5.7",
       "zone.js": "~0.9.1"
     },
     "devDependencies": {

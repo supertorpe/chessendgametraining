@@ -14,12 +14,13 @@ import { StockfishService } from './stockfish.service';
 import { ChunksPipe } from './chunk.pipe';
 import { ThemeSwitcherService } from './theme-switcher.service';
 import { BoardThemeSwitcherService } from './board-theme-switcher.service';
+import { ScriptService } from './script.service';
 import { NgNoCheck } from './no-check';
 import { PreferencesPage } from '../preferences/preferences.page';
 
 const providers = [
     EndgameDatabaseService, MiscService, ConfigurationService, StockfishService, 
-    ThemeSwitcherService, BoardThemeSwitcherService, Insomnia, Clipboard];
+    ThemeSwitcherService, BoardThemeSwitcherService, ScriptService, Insomnia, Clipboard];
 
 @NgModule({
     imports: [
