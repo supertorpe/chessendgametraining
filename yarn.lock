@@ -371,7 +371,7 @@
     typescript "3.4.3"
     ws "^6.1.4"
 
-"@ionic/angular@^4.7.0-dev.201907122213.5db409f":
+"@ionic/angular@4.7.0-dev.201907122213.5db409f":
   version "4.7.0-dev.201907122213.5db409f"
   resolved "https://registry.yarnpkg.com/@ionic/angular/-/angular-4.7.0-dev.201907122213.5db409f.tgz#028efdb9d4d21f8bf3cb818eaaa9392638f181d0"
   integrity sha512-oOqoT+R6ZDLxVChAtOApsBnncoZ7yUY0K8MM0HuM7eKwhHpL4JAa2yKiHwe6xUG4DSlVYLUcT6w8AyV3nIK2Vw==

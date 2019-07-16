@@ -39,11 +39,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     private sounds = [];
     private ooopsPlayed = false;
     private isMobileBrowser = false;
+    private stockfishWarningShowed = false;
+    private stockfishWarnTimeout: any;
 
     @Output() engineReady: EventEmitter<void> = new EventEmitter<void>();
     @Output() engineStartThinking: EventEmitter<void> = new EventEmitter<void>();
     @Output() engineEndThinking: EventEmitter<void> = new EventEmitter<void>();
     @Output() engineInfo: EventEmitter<string> = new EventEmitter<string>();
+    @Output() warn: EventEmitter<string> = new EventEmitter<string>();
     @Output() playerMoved: EventEmitter<void> = new EventEmitter<void>();
     @Output() gameOver: EventEmitter<string> = new EventEmitter<string>();
 
@@ -145,7 +148,8 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             'chessboard.white-advantage',
             'chessboard.black-advantage',
             'chessboard.querying-syzygy',
-            'chessboard.syzygy-error'
+            'chessboard.syzygy-error',
+            'chessboard.stockfish-slow'
         ]).subscribe(async res => {
             this.literales = res;
         });
@@ -276,6 +280,10 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         }
         let match;
         if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
+            if (this.stockfishWarnTimeout) {
+                clearTimeout(this.stockfishWarnTimeout);
+                this.stockfishWarnTimeout = null;
+            }
             if (this.hinting) {
                 this.showHint(match[1], match[2], match[3], 2);
                 return;
@@ -498,6 +506,14 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     private getStockfishMove() {
+        if (!this.stockfishWarningShowed) {
+            const self = this;
+            this.stockfishWarnTimeout = setTimeout(function() {
+                self.stockfishWarningShowed = true;
+                self.stockfishWarnTimeout = null;
+                self.warn.emit(self.literales['chessboard.stockfish-slow']);
+            }, 5000);
+        }
         this.stockfish.postMessage('position fen ' + this.chess.fen());
         this.stockfish.postMessage('go depth ' + this.configuration.stockfishDepth);
     }
@@ -605,7 +621,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 }
             }, error => {
                 this.useSyzygy = false;
-                this.engineInfo.emit(this.literales['syzygy-error']);
+                this.warn.emit(this.literales['chessboard.syzygy-error']);
                 this.getStockfishMove();
             }
             );

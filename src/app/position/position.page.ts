@@ -229,8 +229,18 @@ export class PositionPage implements OnInit, OnDestroy {
       this.infotext += ' : ' + this.literales['position.your-turn'];
   }
 
-  onEngineInfo(info) {
+  async onEngineInfo(info) {
     this.infotext = info;
+  }
+
+  async onWarn(info) {
+    const toast = await this.toast.create({
+      message: info,
+      position: 'middle',
+      color: 'warning',
+      duration: 3000
+    });
+    toast.present();
   }
 
   onPlayerMoved() {
