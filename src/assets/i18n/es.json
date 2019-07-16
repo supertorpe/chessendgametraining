@@ -57,6 +57,7 @@
         "black-advantage": "Ventaja negras",
         "querying-syzygy": "Consultando Syzygy...",
         "syzygy-error": "Error en Syzygy. Cambiando a Stockfish",
+        "stockfish-slow": "Stockfish está tardando mucho. Puede bajar la profundidad de búsqueda en la pantalla de configuración.",
         "promotion": {
             "title": "Elija la pieza para promocionar"
         }

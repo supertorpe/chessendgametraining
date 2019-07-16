@@ -57,6 +57,7 @@
         "black-advantage": "Black advantage",
         "querying-syzygy": "Querying Syzygy...",
         "syzygy-error": "Syzygy error. Switching to Stockfish",
+        "stockfish-slow": "Stockfish is working slow. Consider lowering the search depth in configuration screen.",
         "promotion": {
             "title": "Select piece for promotion"
         }
