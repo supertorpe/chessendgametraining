@@ -10,6 +10,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { IdlePreloadModule } from './core/idle-preload.module';
 import { SharedModule } from './shared';
 import { RequestCacheService, RequestCacheWithMap } from './core/request-cache.service';
 import { CacheInterceptor } from './core/cache.interceptor';
@@ -27,6 +28,7 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserModule,
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
+    IdlePreloadModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

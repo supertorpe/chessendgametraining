@@ -1,8 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { EndgameDatabaseService, EndgameDatabase, Category, Subcategory } from '../shared';
-import { Observable, of } from 'rxjs';
 import { NavController } from '@ionic/angular';
 
 @Component({
@@ -18,12 +17,11 @@ export class ListPage implements OnInit {
   public idxLastSubcategory: number;
   public showNavPrev = false;
   public showNavNext = false;
-  public category$: Observable<Category>;
-  public subcategory$: Observable<Subcategory>;
+  public category: Category;
+  public subcategory: Subcategory;
   public idx = 1;
 
   constructor(
-    private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private location: Location,
     private navCtrl: NavController,
@@ -31,7 +29,7 @@ export class ListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe( params => {
+    this.route.params.subscribe(params => {
       this.idxCategory = +params.idxcategory;
       this.idxSubcategory = +params.idxsubcategory;
       this.endgameDatabaseService.initialize().then(result => {
@@ -42,15 +40,11 @@ export class ListPage implements OnInit {
   }
 
   load() {
-    this.ref.detach();
-    const cat = this.endgameDatabase.categories[this.idxCategory];
-    const subcat = cat.subcategories[this.idxSubcategory];
-    this.category$ = of(cat);
-    this.subcategory$ = of(subcat);
+    this.category = this.endgameDatabase.categories[this.idxCategory];
+    this.subcategory = this.category.subcategories[this.idxSubcategory];
     this.idxLastSubcategory = this.endgameDatabase.categories[this.idxCategory].count - 1;
     this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0;
     this.showNavNext = !(this.idxCategory === this.endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory);
-    this.ref.detectChanges();
   }
 
   trackFunc(index: number, obj: any) {
@@ -67,7 +61,7 @@ export class ListPage implements OnInit {
     //this.navCtrl.navigateRoot('/list/'+ idxCat + '/' + idxSub);
     this.idxCategory = idxCat;
     this.idxSubcategory = idxSub;
-    this.location.go('/list/'+ idxCat + '/' + idxSub);
+    this.location.go('/list/' + idxCat + '/' + idxSub);
     this.load();
   }
 
@@ -81,12 +75,12 @@ export class ListPage implements OnInit {
     //this.navCtrl.navigateRoot('/list/'+ idxCat + '/' + idxSub);
     this.idxCategory = idxCat;
     this.idxSubcategory = idxSub;
-    this.location.go('/list/'+ idxCat + '/' + idxSub);
+    this.location.go('/list/' + idxCat + '/' + idxSub);
     this.load();
   }
 
   showPosition(idxGame) {
-    this.navCtrl.navigateRoot('/position/'+ this.idxCategory + '/' + this.idxSubcategory + '/' + idxGame);
+    this.navCtrl.navigateRoot('/position/' + this.idxCategory + '/' + this.idxSubcategory + '/' + idxGame);
   }
 
 }
