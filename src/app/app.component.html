@@ -18,7 +18,7 @@
             <ng-container *ngFor="let category of endgameDatabase.categories; index as idxCategory; trackBy: trackFunc">
               <ion-item (click)="$event.stopPropagation();toggleCategory(category)" lines="full">
                 <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
-                  <div *ngFor="let icon of category.iconUrls; trackBy: trackFunc" class="thumbnail"><img *ngNoCheck width="100%" [attr.data-src]="icon" /></div>
+                  <div *ngFor="let icon of category.iconUrls; trackBy: trackFunc" class="thumbnail"><img width="100%" [attr.data-src]="icon" /></div>
                 </div>
                 <ion-label *ngNoCheck>
                   {{'category.' + category.name | translate}}
@@ -29,7 +29,7 @@
                 *ngFor="let subcategory of category.subcategories; index as idxSubcategory; trackBy: trackFunc"
                 (click)="showList(idxCategory, idxSubcategory)">
                 <ng-container *ngFor="let image of subcategory.imageUrls; trackBy: trackFunc">
-                    <img *ngNoCheck [attr.data-src]="image" class="medium-thumbnail" />
+                    <img [attr.data-src]="image" class="medium-thumbnail" />
                 </ng-container>
               </ion-item>
             </ng-container>
