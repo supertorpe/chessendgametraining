@@ -10,7 +10,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConfigurationService, Configuration } from '../shared';
 
 declare var ChessBoard: any;
-declare var $: any;
 
 @Component({
     selector: 'chessboard',
@@ -473,7 +472,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     };
 
     private onMouseoutSquare(square, piece, position, orientation) {
-        this.removeGreySquares();
+        // this.removeGreySquares();
     };
 
     private onMouseoverSquare(square, piece, position, orientation) {
@@ -684,7 +683,6 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         const moves = this.chess.moves({ square: square, verbose: true });
         // exit if there are no moves available for this square
         if (moves.length === 0) return;
-        //this.removeGreySquares();
         // highlight the square they moused over
         this.greySquare(square);
         // highlight the possible squares for this piece
@@ -699,9 +697,9 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         }
        const squareEl = document.querySelector(`#__chessboard__ .square-${square}`) as HTMLElement;
        if (squareEl.classList.contains('black-3c85d')) {
-           squareEl.style.setProperty('background-color', '#999999', 'important');
+           squareEl.classList.add('move-dest-black');
        } else {
-           squareEl.style.setProperty('background-color', '#ffffff', 'important');
+        squareEl.classList.add('move-dest-white');
        }
     };
 
@@ -709,6 +707,11 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         if (!this.configuration.highlightSquares) {
             return;
         }
-        $('#__chessboard__ .square-55d63').css('background', '');
+        document.querySelectorAll('.move-dest-black').forEach(function(el) {
+            el.classList.remove('move-dest-black');
+        });
+        document.querySelectorAll('.move-dest-white').forEach(function(el) {
+            el.classList.remove('move-dest-white');
+        });
     };
 }

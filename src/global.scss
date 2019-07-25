@@ -57,6 +57,12 @@
     --chess-black-background: #b58863;
     --chess-black-color: #f0d9b5;
 }
+.move-dest-white {
+    background: radial-gradient(var(--chess-black-background) 19%, rgba(0,0,0,0) 20%);
+}
+.move-dest-black {
+    background: radial-gradient(var(--chess-white-background) 19%, rgba(0,0,0,0) 20%);
+}
 .white-1e1d7 {
     background-color: var(--chess-white-background) !important;
     color: var(--chess-white-color) !important;
