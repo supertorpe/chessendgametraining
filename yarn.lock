@@ -319,6 +319,13 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
+"@chrisoakman/chessboardjs@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@chrisoakman/chessboardjs/-/chessboardjs-1.0.0.tgz#2cfc3399bed5e9933bd8d02ea4b405e21a0b611b"
+  integrity sha512-JHXHoQwwc86xW3F0YIdFcEWLnPldee5mHkqwJbOTeDh5gvNmYXyBj6AkeecDkj2WtORF959yaWYlpyZHUl3LCQ==
+  dependencies:
+    jquery ">=3.4.1"
+
 "@ionic-native/android-full-screen@^5.10.0":
   version "5.10.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/android-full-screen/-/android-full-screen-5.10.0.tgz#e51c064a369e665f2df6879246b72f04e2ecb31b"
@@ -1560,11 +1567,6 @@ chess.js@^0.10.2:
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/chess.js/-/chess.js-0.10.2.tgz#eacefa2067155f87f046e80cc12d2019eef1b81a"
   integrity sha1-6s76IGcVX4fwRugMwS0gGe7xuBo=
-
-chessboardjs@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/chessboardjs/-/chessboardjs-0.0.1.tgz#106e112dba6cc0dcdcf75472a29212c304ff564e"
-  integrity sha1-EG4RLbpswNzc91RyopISwwT/Vk4=
 
 "chokidar@>=2.0.0 <4.0.0":
   version "3.0.2"
@@ -3989,7 +3991,7 @@ jasminewd2@^2.1.0:
   resolved "https://registry.yarnpkg.com/jasminewd2/-/jasminewd2-2.2.0.tgz#e37cf0b17f199cce23bea71b2039395246b4ec4e"
   integrity sha1-43zwsX8ZnM4jvqcbIDk5Uka07E4=
 
-jquery@^3.4.1:
+jquery@>=3.4.1, jquery@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
@@ -6475,10 +6477,10 @@ stockfish.js@^10.0.1:
   resolved "https://registry.yarnpkg.com/stockfish.js/-/stockfish.js-10.0.1.tgz#612da6ffd82e22a39db273b841cf47a6d217cfa9"
   integrity sha512-qSUlwMbI+pzyxVB5toGfMjP/ophj5pW+xXwD3IVO7YqkfhEMDi0YDJjHd3BUtknM77fITTwVNgGicG+7MWoK4A==
 
-stockfish.wasm@^0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/stockfish.wasm/-/stockfish.wasm-0.5.7.tgz#d50f620dc8e26ae173ed0d417f0ecca6066f4492"
-  integrity sha512-wDkhaA+wy0GzOlb8RDCZXQa6yK2+eDGlXd2n9piEE6hYyL562pK6NbsbBKdbI6T9vOsS+finDH6AKOjoKszzLg==
+stockfish.wasm@^0.5.8:
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/stockfish.wasm/-/stockfish.wasm-0.5.8.tgz#c1409f048ed9ce462cb8d9ff13dd1d73a4a4d87a"
+  integrity sha512-oMfTjt/UPZ9enIvhvLsRwNtMOvqC4B7/KI0u4oy6OxAOgHGX+FQQB2+YTw4mi0isC4ICTev37gkD5eVDV5IY0g==
 
 stream-browserify@^2.0.1:
   version "2.0.2"

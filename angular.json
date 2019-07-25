@@ -49,12 +49,12 @@
                 "input": "src/global.scss"
               },
               {
-                "input": "node_modules/chessboardjs/www/releases/0.3.0/css/chessboard-0.3.0.css"
+                "input": "node_modules/@chrisoakman/chessboardjs/dist/chessboard-1.0.0.css"
               }
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/chessboardjs/www/releases/0.3.0/js/chessboard-0.3.0.js"
+              "node_modules/@chrisoakman/chessboardjs/dist/chessboard-1.0.0.js"
             ],
             "es5BrowserSupport": true
           },
