@@ -331,9 +331,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 } else {
                     this.player = 'w';
                 }
-                setTimeout(function() {
-                    self.prepareMove();
-                }, 100);
+                self.prepareMove();
             } else {
                 if (this.squareSelected) {
                     document.querySelector('.square-' + this.squareSelected).classList.add('highlight-square');
