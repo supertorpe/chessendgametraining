@@ -4,4 +4,8 @@
 }
 a {
   color: var(--ion-color-tertiary);
+
+  &:not([href]) {
+    cursor: pointer;
+  }
 }
