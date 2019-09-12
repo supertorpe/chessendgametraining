@@ -46,6 +46,7 @@ export class PositionPage implements OnInit, OnDestroy {
   public autosolveUsed = false;
   public engineThinking = false;
   public gameOver = false;
+  public gameOverMessage: string;
   public autoplaying = false;
   public intervalPlay;
   public literales: any;
@@ -267,12 +268,14 @@ export class PositionPage implements OnInit, OnDestroy {
         playerMoves = (totalMoves + 1) / 2;
       }
       if (this.autosolveUsed) {
+        this.gameOverMessage = 'used-assistance';
         header = this.literales['position.used-assistance'];
         buttons = [{
           test: this.literales['position.ok'],
           cssClass: 'overlay-button'
         }];
       } else {
+        this.gameOverMessage = 'goal-achieved';
         if (!this.position.record || this.position.record < 0 || playerMoves < this.position.record) {
           subHeader = this.literales['position.new-record']
           this.position.record = playerMoves;
@@ -302,6 +305,7 @@ export class PositionPage implements OnInit, OnDestroy {
       }
       text = this.infotext + ' ' + this.literales['position.in'] + ' ' + playerMoves + ' ' + this.literales['position.moves'];
     } else {
+      this.gameOverMessage = 'keep-practicing';
       if (!this.position.record) {
         this.position.record = -1;
         this.endgameDatabaseService.saveDatabase();

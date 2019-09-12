@@ -34,10 +34,13 @@
     <div class="info_wrapper">
       <div class="info">
         <div class="innerinfo" *ngIf="(position$ | async) as position">
-          <p class="text-centered">
+          <p class="text-centered" *ngIf="!gameOver">
             <img *ngIf="targetImage" [src]="targetImage" class="thumbnail" />
             {{('position.' + move) | translate}} {{'position.to' | translate}}
             {{('position.' + position.target) | translate}}
+          </p>
+          <p class="text-centered" *ngIf="gameOver">
+            {{('position.' + gameOverMessage) | translate}}
           </p>
           <p *ngIf="engineThinking" class="text-centered">
             <ion-spinner name="dots"></ion-spinner>
