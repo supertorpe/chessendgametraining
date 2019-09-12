@@ -255,6 +255,7 @@ export class PositionPage implements OnInit, OnDestroy {
     this.gameOver = true;
     let header, subHeader, text;
     if (this.autosolve) {
+      this.gameOverMessage = 'used-assistance';
       this.autosolve = false;
       return;
     }
