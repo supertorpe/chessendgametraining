@@ -115,6 +115,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.autosolve = false;
         this.originalFen = fen;
         this.fenHistory = [fen];
+        this.fenPointer = 0;
         this.ooopsPlayed = false;
         if (this.board) {
             this.board.destroy();
@@ -159,6 +160,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.board.position(this.originalFen);
         this.chess.load(this.originalFen);
         this.fenHistory = [this.originalFen];
+        this.fenPointer = 0;
         this.player = this.chess.turn();
         this.ooopsPlayed = false;
     }
@@ -169,6 +171,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
         this.chess.undo();
         this.fenHistory.pop();
         this.fenHistory.pop();
+        this.fenPointer -= 2;
         this.board.position(this.chess.fen());
         this.ooopsPlayed = false;
     }
@@ -257,7 +260,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
     }
 
     fen() {
-        return this.chess.fen();
+        return this.fenHistory[this.fenPointer];
     }
 
     private showFenPointer() {
@@ -294,6 +297,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                 this.playerMoved.emit();
             }
             this.fenHistory.push(this.chess.fen());
+            this.fenPointer++;
             this.highlightSquares(match[1], match[2]);
             if (this.chess.game_over()) {
                 let message;
@@ -440,6 +444,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
             this.playAudio('move');
         }
         this.fenHistory.push(this.chess.fen());
+        this.fenPointer++;
         this.playerMoved.emit();
         this.initializing = false;
         this.prepareMove();
@@ -559,6 +564,7 @@ export class ChessboardComponent implements OnInit, OnDestroy {
                     this.playerMoved.emit();
                 }
                 this.fenHistory.push(this.chess.fen());
+                this.fenPointer++;
                 this.highlightSquares(match[1], match[2]);
                 if (this.chess.game_over()) {
                     let message;
