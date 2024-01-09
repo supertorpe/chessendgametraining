@@ -2,6 +2,8 @@
 <a style="margin-bottom: 0;" href='https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="80px"/></a>
 --------------------
 
+**UPDATE 2024-01-09** After 5 years of inactivity in the project, I'm starting to reingeneer it (replace Angular with Alpine.js, simplify codebase, replace chessboard.js with chessground and more...). Be patient, the 3.0.0 release is getting closer.
+
 Chess Endgame Training is an [ionic](https://ionicframework.com/) / [cordova](https://cordova.apache.org/) application. It is written
 in [TypeScript](http://www.typescriptlang.org/) and [Angular](https://angular.io/).
 
