@@ -1,9 +1,9 @@
 {
   "version": "3.0.0-alpha.1",
   "scripts": {
-    "dev": "vite --host --base=/chess-endgame-training",
-    "build": "tsc && vite build --base=/chess-endgame-training/",
-    "serve": "vite preview --host --base=/chess-endgame-training/"
+    "dev": "vite --host --base=/chessendgametraining",
+    "build": "tsc && vite build --base=/chessendgametraining/",
+    "serve": "vite preview --host --base=/chessendgametraining/"
   },
   "type": "module",
   "dependencies": {

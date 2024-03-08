@@ -3,7 +3,7 @@ import { appController, homeController, aboutController, settingsController, lis
 export const ROUTE_MAP = {
     hash: true,
     mainRoute: {
-        path: '/chess-endgame-training/',
+        path: '/chessendgametraining/',
         template: 'app.html',
         tag: 'ion-app',
         controller: appController,
