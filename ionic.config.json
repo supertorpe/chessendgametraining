@@ -1,7 +1,0 @@
-{
-  "name": "Chess Endgame Training",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
