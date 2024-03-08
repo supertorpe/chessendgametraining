@@ -1,0 +1,36 @@
+<ion-header x-data="info">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title x-text="$t('home.title')"></ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card class="welcome-card">
+    <ion-card-header>
+      <ion-card-subtitle color="medium" x-text="$t('home.get-started')"></ion-card-subtitle>
+      <ion-card-title color="dark" x-text="$t('home.presentation')"></ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p x-text="$t('home.description')"></p>
+      <ion-grid>
+        <template x-for="i in categories.length / 2">
+          <ion-row>
+            <template x-for="j in 2">
+              <ion-col size="6">
+                <ion-button color="light" size="default" expand="full" x-bind:aria-label="categories[(i-1)*2+j-1].name"
+                  x-bind:href="'list/' + ((i-1)*2+j-1) + '/0'" data-navigo>
+                  <template x-for="iconUrl in categories[(i-1)*2+j-1].iconUrls">
+                    <img slot="start" x-bind:src="iconUrl" class="thumbnail aura"
+                      x-bind:alt="categories[(i-1)*2+j-1].name" />
+                  </template>
+                </ion-button>
+              </ion-col>
+            </template>
+          </ion-row>
+        </template>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

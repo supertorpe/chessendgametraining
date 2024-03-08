@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://server.mydomain.local:5173/chess-endgame-training/sitemap.xml

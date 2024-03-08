@@ -1,0 +1,57 @@
+<ion-split-pane content-id="main" x-data="info">
+    <ion-menu menu-id="main-menu" content-id="main">
+        <ion-header>
+            <ion-toolbar>
+                <ion-title x-text="$t('app.menu')"></ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content>
+            <ion-menu-toggle auto-hide="false">
+                <ion-list role="list">
+                    <ion-item lines="full" href="home" data-navigo  detail="false">
+                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="home-sharp"></ion-icon>
+                        <ion-label x-text="$t('app.home')"></ion-label>
+                    </ion-item>
+                    <template x-for="(category, idxCategory) in categories" :key="category.name">
+                        <span>
+                            <ion-item lines="full" button="true" detail="false"
+                                x-on:click="$event.stopPropagation(); selectCategory(category.name)">
+                                <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
+                                    <template x-for="iconUrl in category.iconUrls">
+                                        <div class="thumbnail"><img width="100%" class="aura" x-bind:src="iconUrl" alt="ariaDescriptionFromIcon(imageUrl)" /></div>
+                                    </template>
+                                </div>
+                                <ion-label x-text="$t('category.' + category.name)"></ion-label>
+                                <ion-icon slot="end"
+                                    x-bind:data-name="categorySelected == category.name ? 'caret-down' : 'caret-forward'"
+                                    color="medium" class="aura"></ion-icon>
+                            </ion-item>
+                            <template x-if="categorySelected == category.name">
+                                <template x-for="(subcategory, idxSubcategory) in category.subcategories"
+                                    :key="subcategory.name">
+                                    <ion-item color="light" button="true" detail="false"
+                                        x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" data-navigo>
+                                        <template x-for="imageUrl in subcategory.imageUrls">
+                                            <img class="medium-thumbnail aura" x-bind:src="imageUrl"
+                                                alt="ariaDescriptionFromIcon(imageUrl)" />
+                                        </template>
+                                    </ion-item>
+                                </template>
+                            </template>
+                        </span>
+                    </template>
+                    <ion-item lines="full" button="true" detail="false" x-on:click="showSettings()"> 
+                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="settings-sharp"></ion-icon>
+                        <ion-label x-text="$t('app.settings')"></ion-label>
+                    </ion-item>
+                    <ion-item lines="full" href="about" data-navigo detail="false">
+                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="information-circle"></ion-icon>
+                        <ion-label x-text="$t('app.about')"></ion-label>
+                    </ion-item>
+                </ion-list>
+            </ion-menu-toggle>
+            </ion-list>
+        </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main"></ion-router-outlet>
+</ion-split-pane>

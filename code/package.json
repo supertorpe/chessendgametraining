@@ -1,0 +1,31 @@
+{
+  "version": "3.0.0-alpha.1",
+  "scripts": {
+    "dev": "vite --host --base=/chess-endgame-training",
+    "build": "tsc && vite build --base=/chess-endgame-training/",
+    "serve": "vite preview --host --base=/chess-endgame-training/"
+  },
+  "type": "module",
+  "dependencies": {
+    "@ionic/core": "8.0.0-beta.1",
+    "@ionic/storage": "^4.0.0",
+    "alpinejs": "^3.13.7",
+    "alpinejs-i18n": "^2.4.2",
+    "chess.js": "^0.13.4",
+    "chessground": "^9.0.4",
+    "howler": "^2.2.4",
+    "navigo": "^8.11.1",
+    "stockfish": "^16.0.0",
+    "stockfish11": "npm:stockfish@11.0.0"
+  },
+  "devDependencies": {
+    "@types/alpinejs": "^3.13.7",
+    "@types/chess.js": "^0.13.7",
+    "@types/howler": "^2.2.11",
+    "sass": "^1.71.1",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.5",
+    "vite-plugin-pwa": "^0.17.5",
+    "vite-plugin-static-copy": "^1.0.1"
+  }
+}

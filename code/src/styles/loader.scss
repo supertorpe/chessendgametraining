@@ -1,0 +1,24 @@
+.loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.loader {
+    width: 192px;
+    height: 192px;
+    background-image: url('/assets/icons/pwa-192x192.png');
+    animation: loader-animate 1s linear infinite;
+    perspective: 800px;
+}
+
+@keyframes loader-animate {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    100% {
+        transform: rotateY(360deg);
+    }
+}

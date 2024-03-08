@@ -1,0 +1,2 @@
+const o="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='ionicon'%20viewBox='0%200%20512%20512'%3e%3cpath%20stroke-linecap='round'%20stroke-linejoin='round'%20d='M464%20208L352%2096%20240%20208M352%20113.13V416M48%20304l112%20112%20112-112M160%20398V96'%20class='ionicon-fill-none%20ionicon-stroke-width'/%3e%3c/svg%3e";export{o as default};
+//# sourceMappingURL=swap-vertical-CwZ8QMVW.js.map

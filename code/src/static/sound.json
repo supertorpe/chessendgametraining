@@ -1,0 +1,8 @@
+{
+    "sounds": [
+        { "key": "move", "audio": "assets/audio/move.mp3" },
+        { "key": "capture", "audio": "assets/audio/capture.mp3" },
+        { "key": "success", "audio": "assets/audio/success.mp3" },
+        { "key": "fail", "audio": "assets/audio/fail.mp3" }
+    ]
+}

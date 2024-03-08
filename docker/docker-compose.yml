@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  chess-endgame-training:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    image: chess-endgame-training:0.0.1
+    container_name: chess-endgame-training
+    user: ${MY_UID}:${MY_GID}
+    environment:
+      - SCRIPT=${SCRIPT}
+    ports:
+      - "5173:5173"
+      - "4173:4173"
+    volumes:
+      - ../code:/app
+    working_dir: /app
