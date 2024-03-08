@@ -6,7 +6,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 export default defineConfig({
   build: {
     sourcemap: true,
-    outDir: 'docs'
+    outDir: '../docs'
   },
   plugins: [
     splitVendorChunkPlugin(),
