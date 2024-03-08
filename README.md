@@ -4,6 +4,8 @@
 
 **UPDATE 2024-01-09** After 5 years of inactivity in the project, I'm starting to reingeneer it (replace Angular with Alpine.js, simplify codebase, replace chessboard.js with chessground and more...). Be patient, the 3.0.0 release is getting closer.
 
+**UPDATE 2024-03-08** 3.0.0 version has started. You can follow the progress in [branch v3](https://github.com/supertorpe/chessendgametraining/tree/v3) and test it [here: https://supertorpe.github.io/chessendgametraining/](https://supertorpe.github.io/chessendgametraining/). Keep in mind it's currently 3.0.0.alpha.1 
+
 Chess Endgame Training is an [ionic](https://ionicframework.com/) / [cordova](https://cordova.apache.org/) application. It is written
 in [TypeScript](http://www.typescriptlang.org/) and [Angular](https://angular.io/).
 
