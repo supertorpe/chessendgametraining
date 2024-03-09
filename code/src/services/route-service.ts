@@ -133,6 +133,10 @@ class RouteService {
             } else {
                 this.navigo.on(route.path, () => {
                     document.querySelector(route.tag) ? oRoute() : mainRoute().then(() => oRoute());
+                }, {
+                    leave(done, _match) {
+                        route.controller.onExit().then((canExit: boolean) => done(canExit));
+                    }
                 });
             }
         });
