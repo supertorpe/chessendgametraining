@@ -117,15 +117,14 @@ ion-modal, ion-alert {
 .info_wrapper {
     /*float: left;*/
     float: right;
-}
-.info {
     width: 100%;
-    min-height: calc(100% - 105px);
-    max-height: calc(100% - 105px);
-    padding: 2px;
-    font-size: 1.3em;
+    height: 100%;
+    font-size: 1.0em;
     text-align: justify;
     overflow: hidden;
+}
+.info_moves {
+    padding: 2px;
     overflow-y: auto;
     font-family: figurine;
 }

@@ -36,6 +36,7 @@ class PositionController extends BaseController {
     const container = document.querySelector('.container') as HTMLElement;
     const boardWrapper = document.querySelector('.board_wrapper') as HTMLElement;
     const infoWrapper = document.querySelector('.info_wrapper') as HTMLElement;
+    const infoMoves = document.querySelector('.info_moves') as HTMLElement;
     const actionButtons = document.querySelector('.action_buttons') as HTMLElement;
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight - header.clientHeight;
@@ -49,11 +50,12 @@ class PositionController extends BaseController {
     }
     if (containerWidth > containerHeight) {
       infoWrapper.style.width = `${(containerWidth - minSize - 2)}px`;
-      infoWrapper.style.height = '100%';
+      infoWrapper.style.height = `calc(100% - ${actionButtons.clientHeight}px`;
     } else {
       infoWrapper.style.width = '100%';
-      infoWrapper.style.height = `${(containerHeight - minSize - 2)}px`;
+      infoWrapper.style.height = `${(containerHeight - minSize - actionButtons.clientHeight - 2)}px`;
     }
+    infoMoves.style.height = `${infoWrapper.clientHeight - 48}px`;
     actionButtons.style.width = infoWrapper.style.width;
     const board: any = document.getElementById('__chessboard__');
     board.style.height = `${boardWrapper.clientWidth}px`;
