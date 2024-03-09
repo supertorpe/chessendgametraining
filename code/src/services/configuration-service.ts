@@ -15,6 +15,7 @@ class ConfigurationService {
                 if (config) {
                     if (config.useSyzygy === undefined) config.useSyzygy = DEFAULT_CONFIG.useSyzygy;
                     if (config.stockfishDepth === undefined) config.stockfishDepth = DEFAULT_CONFIG.stockfishDepth;
+                    if (config.stockfishMovetime === undefined) config.stockfishMovetime = DEFAULT_CONFIG.stockfishMovetime;
                     if (config.automaticShowFirstPosition === undefined) config.automaticShowFirstPosition = DEFAULT_CONFIG.automaticShowFirstPosition;
                     if (config.preventScreenOff === undefined) config.preventScreenOff = DEFAULT_CONFIG.preventScreenOff;
                     if (config.colorTheme === undefined) config.colorTheme = DEFAULT_CONFIG.colorTheme;
@@ -26,6 +27,7 @@ class ConfigurationService {
                     this._configuration = new Configuration(
                         config.useSyzygy,
                         config.stockfishDepth,
+                        config.stockfishMovetime,
                         config.automaticShowFirstPosition,
                         config.preventScreenOff,
                         config.colorTheme,

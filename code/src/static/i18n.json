@@ -104,6 +104,7 @@
             "full-screen": "Full screen mode",
             "use-syzygy": "Use Syzygy tables",
             "stockfish-depth": "Stockfish depth",
+            "stockfish-movetime": "Stockfish movetime",
             "clean-dialog" : {
                 "title": "Are you sure?",
                 "subtitle": "Reset records",
@@ -250,6 +251,7 @@
             "full-screen": "Ocupar toda la pantalla",
             "use-syzygy": "Usar tablas Syzygy",
             "stockfish-depth": "Stockfish profundidad",
+            "stockfish-movetime": "Stockfish tiempo",
             "clean-dialog" : {
                 "title": "¿Está seguro?",
                 "subtitle": "Eliminar records",

@@ -80,6 +80,12 @@ class SettingsController extends BaseController {
                 this.currentStockfishDepth = value;
                 configurationService.configuration.stockfishDepth = value;  
             },
+            // stockfish movetime
+            currentStockfishMovetime: configurationService.configuration.stockfishMovetime,
+            changeStockfishMovetime(value: number) {
+                this.currentStockfishMovetime = value;
+                configurationService.configuration.stockfishMovetime = value;  
+            },
             // save settings
             save() {
                 configurationService.save().then(async () => {
@@ -110,6 +116,12 @@ class SettingsController extends BaseController {
                 stockfishDepthRange.value = configurationService.configuration.stockfishDepth;
                 stockfishDepthRange.addEventListener('ionChange', () => {
                     if (typeof stockfishDepthRange.value ===  'number') this.changeStockfishDepth(stockfishDepthRange.value);
+                });
+
+                const stockfishMovetimeRange = document.getElementById('stockfishMovetimeRange') as IonRange;
+                stockfishMovetimeRange.value = configurationService.configuration.stockfishMovetime;
+                stockfishMovetimeRange.addEventListener('ionChange', () => {
+                    if (typeof stockfishMovetimeRange.value ===  'number') this.changeStockfishMovetime(stockfishMovetimeRange.value);
                 });
 
                 ['showThemes', 'showPieceThemes', 'showBoardThemes'].forEach((item) => {

@@ -2,7 +2,7 @@ import { BOARD_THEMES, PIECE_THEMES, EventEmitter } from '../commons';
 
 export type ConfigurationField =
 
-    'useSyzygy' | 'stockfishDepth' | 'automaticShowFirstPosition' | 'preventScreenOff' | 'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme';
+    'useSyzygy' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'preventScreenOff' | 'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme';
 
 export type ConfigurationChangedEvent = { config: Configuration, field: ConfigurationField };
 
@@ -13,6 +13,7 @@ export class Configuration {
     constructor(
         private _useSyzygy: boolean,
         private _stockfishDepth: number,
+        private _stockfishMovetime: number,
         private _automaticShowFirstPosition: boolean,
         private _preventScreenOff: boolean,
         private _colorTheme: string,
@@ -27,6 +28,7 @@ export class Configuration {
         return {
             useSyzygy: this._useSyzygy,
             stockfishDepth: this._stockfishDepth,
+            stockfishMovetime: this._stockfishMovetime,
             automaticShowFirstPosition: this._automaticShowFirstPosition,
             preventScreenOff: this._preventScreenOff,
             colorTheme: this._colorTheme,
@@ -46,6 +48,9 @@ export class Configuration {
 
     get stockfishDepth(): number { return this._stockfishDepth; }
     set stockfishDepth(value: number) { this._stockfishDepth = value; this._configurationChangedEmitter.notify({ config: this, field: 'stockfishDepth' }); }
+
+    get stockfishMovetime(): number { return this._stockfishMovetime; }
+    set stockfishMovetime(value: number) { this._stockfishMovetime = value; this._configurationChangedEmitter.notify({ config: this, field: 'stockfishMovetime' }); }
 
     get automaticShowFirstPosition(): boolean { return this._automaticShowFirstPosition; }
     set automaticShowFirstPosition(value: boolean) { this._automaticShowFirstPosition = value; this._configurationChangedEmitter.notify({ config: this, field: 'automaticShowFirstPosition' }); }
@@ -75,7 +80,8 @@ export class Configuration {
 
 export const DEFAULT_CONFIG = new Configuration(
     true,
-    28,
+    15,
+    5,
     true,
     true,
     'dark',

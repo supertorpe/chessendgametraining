@@ -75,6 +75,9 @@
     <ion-item>
       <ion-range id="stockfishDepthRange" label-placement="start" x-bind:aria-label="$t('settings.stockfish-depth')" x-bind:label="$t('settings.stockfish-depth') + ' (' + currentStockfishDepth +  ')'" min="10" max="30" color="medium" pin="true"></ion-range>
     </ion-item>
+    <ion-item>
+      <ion-range id="stockfishMovetimeRange" label-placement="start" x-bind:aria-label="$t('settings.stockfish-movetime')" x-bind:label="$t('settings.stockfish-movetime') + ' (' + currentStockfishMovetime +  ')'" min="1" max="60" color="medium" pin="true"></ion-range>
+    </ion-item>
   </ion-list>
 </ion-content>
 <ion-footer>

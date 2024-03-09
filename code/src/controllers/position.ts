@@ -22,7 +22,6 @@ class PositionController extends BaseController {
   //private engine!: "white" | "black";
   private target!: string;
   private useSyzygy = false;
-  private stockfishDepth!: number;
   private listeningToStockfish = false;
 
   constructor() {
@@ -467,10 +466,9 @@ class PositionController extends BaseController {
   }
 
   private getStockfishMove() {
-    this.stockfishDepth = configurationService.configuration.stockfishDepth;
     stockfishService.postMessage(`position fen ${this.chess.fen()}`);
     this.listeningToStockfish = true;
-    stockfishService.postMessage(`go depth ${this.stockfishDepth}`);
+    stockfishService.postMessage(`go depth ${configurationService.configuration.stockfishDepth} movetime ${configurationService.configuration.stockfishMovetime * 1000}`);
   }
 
   private stockfishMessage(message: string) {
