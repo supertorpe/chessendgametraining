@@ -39,15 +39,12 @@ class PositionController extends BaseController {
     const infoMoves = document.querySelector('.info_moves') as HTMLElement;
     const actionButtons = document.querySelector('.action_buttons') as HTMLElement;
     const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight - header.clientHeight;
+    const containerHeight = container.clientHeight;
     let minSize = Math.min(containerWidth, containerHeight);
     const mod = minSize % 8;
     minSize = minSize - mod;
     boardWrapper.style.height = `${minSize}px`;
     boardWrapper.style.width = `${minSize}px`;
-    if (mod > 0) {
-      boardWrapper.style.paddingLeft = `${(mod / 2)}px`;
-    }
     if (containerWidth > containerHeight) {
       infoWrapper.style.width = `${(containerWidth - minSize - 2)}px`;
       infoWrapper.style.height = `calc(100% - ${actionButtons.clientHeight}px`;
