@@ -9,7 +9,7 @@ import { Api } from 'chessground/api';
 import { colors, MoveMetadata, Color, Key } from 'chessground/types';
 import { Config } from 'chessground/config';
 import { promotionController } from './promotion';
-import { alertController, menuController } from '@ionic/core';
+import { alertController, menuController, toastController } from '@ionic/core';
 
 class PositionController extends BaseController {
 
@@ -272,7 +272,7 @@ class PositionController extends BaseController {
     if (promotion)
       this.board.set({ fen: this.chess.fen() });
     console.log(this.chess.fen());
-    
+
     this.parsePgn(this.chess.pgn());
     // this.fenHistory.push(this.chess.fen());
     // this.fenPointer++;
@@ -291,12 +291,12 @@ class PositionController extends BaseController {
     const result = this.chess.game_over();
     if (result) {
       if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
-          'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn())) {
-            soundService.playAudio('success');
+        'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn())) {
+        soundService.playAudio('success');
       } else {
         soundService.playAudio('fail');
       }
-      
+
       let message;
       if (this.chess.in_checkmate())
         message = 'position.checkmate';
@@ -321,7 +321,7 @@ class PositionController extends BaseController {
           }
         ]
       }).then(alert => alert.present());
-    
+
     }
     return result;
   }
@@ -342,31 +342,42 @@ class PositionController extends BaseController {
   }
 
   private getSyzygyMove() {
-    syzygyService.get(this.chess.fen()).then(response => response.json().then(data => {
-      console.log(JSON.stringify(data));
-      const bestmove = data.moves[0].uci;
-      let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
-      const from = match[1];
-      const to = match[2];
-      const promotion = match[3];
-      this.board.move(from as Key, to as Key);
-      this.chess.move({ from: from as Square, to: to as Square, promotion: promotion });
-      const turn = this.chess.turn() === 'w' ? 'white' : 'black';
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: turn,
-        movable: {
-          dests: this.toDests()
+    syzygyService.get(this.chess.fen())
+      .then(response => response.json().then(data => {
+        console.log(JSON.stringify(data));
+        const bestmove = data.moves[0].uci;
+        let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
+        const from = match[1];
+        const to = match[2];
+        const promotion = match[3];
+        this.board.move(from as Key, to as Key);
+        this.chess.move({ from: from as Square, to: to as Square, promotion: promotion });
+        const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+        this.board.set({
+          fen: this.chess.fen(),
+          turnColor: turn,
+          movable: {
+            dests: this.toDests()
+          }
+        });
+        console.log(this.chess.fen());
+        this.parsePgn(this.chess.pgn());
+        if (this.checkEnding()) {
+          this.board.set({ viewOnly: true });
+        } else {
+          soundService.playAudio('move');
         }
+      })
+      ).catch((_err) => {
+        this.useSyzygy = false;
+        toastController.create({
+          message: window.AlpineI18n.t('position.syzygy-error'),
+          position: 'middle',
+          color: 'warning',
+          duration: 2000
+        }).then(toast => toast.present());
+        this.getStockfishMove();
       });
-      console.log(this.chess.fen());
-      this.parsePgn(this.chess.pgn());
-      if (this.checkEnding()) {
-        this.board.set({ viewOnly: true });
-      } else {
-        soundService.playAudio('move');
-      }
-    }));
 
     /*
 {
@@ -468,7 +479,7 @@ class PositionController extends BaseController {
     let match;
     if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
       this.listeningToStockfish = false;
-      
+
       const from = match[1];
       const to = match[2];
       const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;

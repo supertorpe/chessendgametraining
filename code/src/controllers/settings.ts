@@ -68,6 +68,12 @@ class SettingsController extends BaseController {
                 this.highlightSquares = checked;
                 configurationService.configuration.highlightSquares = checked;
             },
+            // use syzygy
+            useSyzygy: configurationService.configuration.useSyzygy,
+            useSyzygyChanged(checked: boolean) {
+                this.useSyzygy = checked;
+                configurationService.configuration.useSyzygy = checked;
+            },
             // stockfish depth
             currentStockfishDepth: configurationService.configuration.stockfishDepth,
             changeStockfishDepth(value: number) {
@@ -97,6 +103,9 @@ class SettingsController extends BaseController {
                 const togglePlaySounds = document.getElementById('togglePlaySounds') as IonToggle;
                 togglePlaySounds.addEventListener('ionChange', () => { this.playSoundsChanged(togglePlaySounds.checked); });
                 
+                const toggleUseSyzygy = document.getElementById('toggleUseSyzygy') as IonToggle;
+                toggleUseSyzygy.addEventListener('ionChange', () => { this.useSyzygyChanged(toggleUseSyzygy.checked); });
+          
                 const stockfishDepthRange = document.getElementById('stockfishDepthRange') as IonRange;
                 stockfishDepthRange.value = configurationService.configuration.stockfishDepth;
                 stockfishDepthRange.addEventListener('ionChange', () => {
