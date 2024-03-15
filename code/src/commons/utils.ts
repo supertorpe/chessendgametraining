@@ -2,7 +2,7 @@ export const textToImages = (text: string) => {
     const result: string[] = [];
     const words = text.split(" ");
     let cont = 1;
-    let themeColor = document.querySelector('body')?.classList.contains('dark') ? 'w' : 'b';
+    let themeColor = document.querySelector('html')?.classList.contains('ion-theme-dark') ? 'w' : 'b';
     let color = 'w';
     words.forEach(word => {
         let image;

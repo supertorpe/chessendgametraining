@@ -9,13 +9,13 @@ class ThemeSwitcherService {
 
     public setTheme(theme: string) {
         if ('dark' == theme)
-            document.querySelector('body')?.classList.add('dark');
+            document.querySelector('html')?.classList.add('ion-theme-dark');
         else
-            document.querySelector('body')?.classList.remove('dark');
+            document.querySelector('html')?.classList.remove('ion-theme-dark');
     }
 
     public currentTheme() {
-        return document.querySelector('body')?.classList.contains('dark') ? 'dark' : 'light';
+        return document.querySelector('html')?.classList.contains('ion-theme-dark') ? 'dark' : 'light';
     }
 
     public init() {

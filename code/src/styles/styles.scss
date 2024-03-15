@@ -115,28 +115,35 @@ ion-alert {
 }
 
 .container {
+    display: flex;
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
-.board_wrapper {
-    float: left;
+@media (orientation: portrait) {
+    .container {
+        flex-direction: column;
+    }
+}
+
+@media (orientation: landscape) {
+    .container {
+        flex-direction: row;
+    }
 }
 
 .info_wrapper {
-    /*float: left;*/
-    float: right;
-    width: 100%;
-    height: 100%;
-    font-size: 1.0em;
+    width: 200px;
+    height: 200px;
+    font-size: 1.1em;
     text-align: justify;
     overflow: hidden;
 }
 
 .info_moves {
     padding: 2px;
-    overflow-y: auto;
+    overflow-y: scroll;
     font-family: figurine;
 }
 

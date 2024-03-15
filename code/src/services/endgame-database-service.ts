@@ -19,6 +19,13 @@ class EndgameDatabaseService {
                 configurationService.configuration.configurationChangedEmitter.addEventListener((event) => {
                     if (event.field == 'pieceTheme') this.enrich(this.endgameDatabase, event.config.pieceTheme);
                 });
+                configurationService.configuration.configurationChangedEmitter.addEventListener((event) => {
+                    switch (event.field) {
+                      case 'pieceTheme': 
+                      case 'colorTheme': this.enrich(this.endgameDatabase, event.config.pieceTheme); break;
+                    }
+                  });
+
                 /////////////// TO DO: eliminar esto, es para el sitemap.xml
                 /*
                 this._endgameDatabase.categories.forEach( (category, idxCategory) => {

@@ -34,29 +34,28 @@ class PositionController extends BaseController {
     const header = headers.find(header => header.clientHeight > 0);
     if (!header) return;
     const container = document.querySelector('.container') as HTMLElement;
-    const boardWrapper = document.querySelector('.board_wrapper') as HTMLElement;
     const infoWrapper = document.querySelector('.info_wrapper') as HTMLElement;
     const infoMoves = document.querySelector('.info_moves') as HTMLElement;
     const actionButtons = document.querySelector('.action_buttons') as HTMLElement;
+
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     let minSize = Math.min(containerWidth, containerHeight);
     const mod = minSize % 8;
     minSize = minSize - mod;
-    boardWrapper.style.height = `${minSize}px`;
-    boardWrapper.style.width = `${minSize}px`;
+    const board: any = document.getElementById('__chessboard__');
+    board.style.height = `${minSize}px`;
+    board.style.width = `${minSize}px`;
+    
     if (containerWidth > containerHeight) {
       infoWrapper.style.width = `${(containerWidth - minSize - 2)}px`;
       infoWrapper.style.height = `calc(100% - ${actionButtons.clientHeight}px`;
     } else {
       infoWrapper.style.width = '100%';
-      infoWrapper.style.height = `${(containerHeight - minSize - actionButtons.clientHeight - 2)}px`;
+      infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
     infoMoves.style.height = `${infoWrapper.clientHeight - 48}px`;
     actionButtons.style.width = infoWrapper.style.width;
-    const board: any = document.getElementById('__chessboard__');
-    board.style.height = `${boardWrapper.clientWidth}px`;
-    board.style.width = `${boardWrapper.clientHeight}px`;
   }
 
   private parsePgn(pgn: string) {
