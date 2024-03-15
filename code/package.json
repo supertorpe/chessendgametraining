@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@ionic/core": "8.0.0-beta.1",
+    "@ionic/core": "8.0.0-beta.2",
     "@ionic/storage": "^4.0.0",
     "alpinejs": "^3.13.7",
     "alpinejs-i18n": "^2.4.2",
@@ -19,12 +19,12 @@
     "stockfish11": "npm:stockfish@11.0.0"
   },
   "devDependencies": {
-    "@types/alpinejs": "^3.13.7",
+    "@types/alpinejs": "^3.13.9",
     "@types/chess.js": "^0.13.7",
     "@types/howler": "^2.2.11",
-    "sass": "^1.71.1",
+    "sass": "^1.72.0",
     "typescript": "^5.4.2",
-    "vite": "^5.1.5",
+    "vite": "^5.1.6",
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-static-copy": "^1.0.1"
   }
