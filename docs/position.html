@@ -1,4 +1,4 @@
-<div class="ion-page" x-data="info">
+<ion-page class="ion-page" x-data="info">
     <ion-header>
         <ion-toolbar>
             <ion-buttons slot="start">
@@ -41,17 +41,8 @@
     </ion-header>
     <ion-content>
         <div class="container">
-            <div class="board_wrapper">
-                <!--
-                <chessboard #chessboard (warn)="onWarn($event)" (playerMoved)="onPlayerMoved()"
-                    (gameOver)="onGameOver($event)">
-                </chessboard>
-                -->
-
-                <div x-bind:class="[boardTheme, pieceTheme]">
-                    <div id="__chessboard__"></div>
-                </div>
-
+            <div x-bind:class="[boardTheme, pieceTheme]">
+                <div id="__chessboard__"></div>
             </div>
             <div class="info_wrapper">
                 <ion-item class="ion-text-center">
@@ -69,24 +60,25 @@
                         </span>
                     </template>
                 </div>
-                        <ion-buttons class="action_buttons">
-                            <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart" disabled="true">
-                                <ion-icon class="aura" data-name="power"></ion-icon>
-                            </ion-button>
-                            <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
-                                <ion-icon class="aura" data-name="arrow-undo"></ion-icon>
-                            </ion-button>
-                            <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
-                                <ion-icon class="aura" data-name="swap-vertical"></ion-icon>
-                            </ion-button>
-                            <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
-                                <ion-icon class="aura" data-name="bulb"></ion-icon>
-                            </ion-button>
-                            <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
-                                <ion-icon class="aura" data-name="color-wand"></ion-icon>
-                            </ion-button>
-                        </ion-buttons>
-                    <!--
+                <ion-buttons class="action_buttons">
+                    <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
+                        disabled="true">
+                        <ion-icon class="aura" data-name="power"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
+                        <ion-icon class="aura" data-name="arrow-undo"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
+                        <ion-icon class="aura" data-name="swap-vertical"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
+                        <ion-icon class="aura" data-name="bulb"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
+                        <ion-icon class="aura" data-name="color-wand"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+                <!--
                     <ion-grid>
                         <ion-row>
                             <ion-col size="2" class="ion-text-center">
@@ -117,7 +109,7 @@
                         </ion-row>
                     </ion-grid>
                     -->
-                    <!--
+                <!--
                     <ion-grid>
                         <ion-row>
                             <ion-col size="2">
@@ -197,4 +189,4 @@
             -->
         </div>
     </ion-content>
-</div>
+</ion-page>
