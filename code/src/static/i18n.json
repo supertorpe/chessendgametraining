@@ -80,6 +80,12 @@
                 "message": "Sure to abandon the game?",
                 "no": "No",
                 "yes": "yes"
+            },
+            "confirm-restart": {
+                "header": "Attention",
+                "message": "Sure to restart the game?",
+                "no": "No",
+                "yes": "yes"
             }
         },
         "settings": {
@@ -225,6 +231,12 @@
             "confirm-exit": {
                 "header": "Atención",
                 "message": "¿Seguro de abandonar la partida?",
+                "no": "No",
+                "yes": "Sí"
+            },
+            "confirm-restart": {
+                "header": "Atención",
+                "message": "¿Seguro de reiniciar la partida?",
                 "no": "No",
                 "yes": "Sí"
             }

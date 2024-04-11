@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "scripthost"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "google.accounts"],
     "moduleResolution": "Node",
     "strict": true,
     "sourceMap": true,

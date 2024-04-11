@@ -9,7 +9,7 @@
   "dependencies": {
     "@ionic/core": "8.0.0-beta.2",
     "@ionic/storage": "^4.0.0",
-    "alpinejs": "^3.13.7",
+    "alpinejs": "^3.13.8",
     "alpinejs-i18n": "^2.4.2",
     "chess.js": "^0.13.4",
     "chessground": "^9.0.4",
@@ -19,13 +19,14 @@
     "stockfish11": "npm:stockfish@11.0.0"
   },
   "devDependencies": {
-    "@types/alpinejs": "^3.13.9",
+    "@types/alpinejs": "^3.13.10",
     "@types/chess.js": "^0.13.7",
+    "@types/google.accounts": "^0.0.14",
     "@types/howler": "^2.2.11",
-    "sass": "^1.72.0",
-    "typescript": "^5.4.2",
-    "vite": "^5.1.6",
+    "sass": "^1.74.1",
+    "typescript": "^5.4.4",
+    "vite": "^5.2.8",
     "vite-plugin-pwa": "^0.17.5",
-    "vite-plugin-static-copy": "^1.0.1"
+    "vite-plugin-static-copy": "^1.0.2"
   }
 }

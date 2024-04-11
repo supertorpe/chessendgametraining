@@ -17,12 +17,15 @@ class PositionController extends BaseController {
   private chess: ChessInstance = Chess();
   private board!: Api;
   private boardConfig!: Config;
+  private fen!: string;
   private parsedPgn: { value: string[][] } = Alpine.reactive({ value: [] });
   private player!: "white" | "black";
   //private engine!: "white" | "black";
   private target!: string;
   private useSyzygy = false;
-  private listeningToStockfish = false;
+  private gameOver = Alpine.reactive({value: false});
+  private waitingForOpponent = Alpine.reactive({value: false});
+  private askingForHint = Alpine.reactive({value: false});
 
   constructor() {
     super();
@@ -46,7 +49,7 @@ class PositionController extends BaseController {
     const board: any = document.getElementById('__chessboard__');
     board.style.height = `${minSize}px`;
     board.style.width = `${minSize}px`;
-    
+
     if (containerWidth > containerHeight) {
       infoWrapper.style.width = `${(containerWidth - minSize - 2)}px`;
       infoWrapper.style.height = `calc(100% - ${actionButtons.clientHeight}px`;
@@ -71,7 +74,10 @@ class PositionController extends BaseController {
       }
       pos++;
     });
-    console.log(JSON.stringify(this.parsedPgn.value));
+    console.log(`this.parsedPgn.value: ${JSON.stringify(this.parsedPgn.value)}`);
+    const movelist = document.querySelector('.info_moves') as HTMLDivElement;
+    if (movelist)
+      movelist.scrollTop = movelist.scrollHeight;
   }
 
   private toDests(): Map<Key, Key[]> {
@@ -81,6 +87,42 @@ class PositionController extends BaseController {
       if (ms.length) dests.set(s, ms.map(m => m.to));
     });
     return dests;
+  }
+
+  private restart() {
+    alertController.create({
+      header: window.AlpineI18n.t('position.confirm-restart.header'),
+      message: window.AlpineI18n.t('position.confirm-restart.message'),
+      buttons: [
+        {
+          text: window.AlpineI18n.t('position.confirm-restart.no'),
+          role: 'cancel',
+          cssClass: 'overlay-button',
+          handler: () => {
+          }
+        }, {
+          text: window.AlpineI18n.t('position.confirm-restart.yes'),
+          cssClass: 'overlay-button',
+          handler: () => {
+            this.waitingForOpponent.value = false;
+            this.gameOver.value = false;
+            stockfishService.postMessage('stop');
+            this.chess.load(this.fen);
+            const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+            this.board.set({
+              fen: this.chess.fen(),
+              turnColor: turn,
+              lastMove: [],
+              viewOnly: false,
+              movable: {
+                dests: this.toDests()
+              }
+            });
+            this.parsePgn(this.chess.pgn());
+          }
+        }
+      ]
+    }).then(alert => alert.present());
   }
 
   onEnter($routeParams?: any): void {
@@ -101,11 +143,10 @@ class PositionController extends BaseController {
     let idxLastGame: number;
 
     const customFen = ($routeParams['fen1'] !== undefined);
-    let fen: string;
     if (customFen) {
-      fen = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
+      this.fen = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
       this.target = $routeParams['target'];
-      this.seo = fen;
+      this.seo = this.fen;
     } else {
       idxCategory = parseInt($routeParams['idxCategory']);
       idxSubcategory = parseInt($routeParams['idxSubcategory']);
@@ -115,12 +156,12 @@ class PositionController extends BaseController {
       game = subcategory.games[idxGame];
       idxLastSubcategory = category.count - 1;
       idxLastGame = subcategory.count - 1;
-      fen = game.fen;
+      this.fen = game.fen;
       this.target = game.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
     }
 
-    this.chess.load(fen);
+    this.chess.load(this.fen);
     this.parsePgn(this.chess.pgn());
 
     const turnWhite = this.chess.turn() == 'w';
@@ -164,10 +205,11 @@ class PositionController extends BaseController {
     });
 
     Alpine.data('info', () => ({
+      position: self,
       boardTheme: configurationService.configuration.boardTheme,
       pieceTheme: configurationService.configuration.pieceTheme,
       customFen: customFen,
-      fen: fen,
+      fen: this.fen,
       target: this.target,
       idxCategory: idxCategory,
       idxSubcategory: idxSubcategory,
@@ -187,6 +229,12 @@ class PositionController extends BaseController {
       listUrl: `/list/${idxCategory}/${idxSubcategory}`,
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
+      restart() {
+        self.restart.call(self);
+      },
+      hint() {
+        self.getHint.call(self);
+      },
       init() {
         self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
@@ -280,13 +328,14 @@ class PositionController extends BaseController {
     if (!this.checkEnding()) {
       soundService.playAudio('move');
       //this.playerMoved.emit();
-      this.getOponentMove();
+      this.getOpponentMove();
     }
   }
 
   private checkEnding(): boolean {
     const result = this.chess.game_over();
     if (result) {
+      this.gameOver.value = true;
       if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
         'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn())) {
         soundService.playAudio('success');
@@ -328,7 +377,7 @@ class PositionController extends BaseController {
     return fen.substring(0, fen.indexOf(" ")).replace(/\d/g, "").replace(/\//g, "").length;
   }
 
-  private getOponentMove() {
+  private getOpponentMove() {
     let moveFunk;
     if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
@@ -338,14 +387,36 @@ class PositionController extends BaseController {
     moveFunk.call(this);
   }
 
+  private getHint() {
+    this.askingForHint.value = true;
+    this.getOpponentMove();
+    /*
+    let hintFunk;
+    if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
+      hintFunk = this.getSyzygyHint;
+    } else {
+      hintFunk = this.getStockfishHint;
+    }
+    hintFunk.call(this);
+    */
+  }
+
   private getSyzygyMove() {
+    this.waitingForOpponent.value = true;
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
+        if (!this.waitingForOpponent.value) return;
+        this.waitingForOpponent.value = false;
         console.log(JSON.stringify(data));
         const bestmove = data.moves[0].uci;
         let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
         const from = match[1];
         const to = match[2];
+        if (this.askingForHint.value) {
+          this.board.setShapes([{ orig: from, dest: to, brush: 'blue' }]);
+          this.askingForHint.value = false;
+          return;
+        }
         const promotion = match[3];
         this.board.move(from as Key, to as Key);
         this.chess.move({ from: from as Square, to: to as Square, promotion: promotion });
@@ -465,19 +536,23 @@ class PositionController extends BaseController {
 
   private getStockfishMove() {
     stockfishService.postMessage(`position fen ${this.chess.fen()}`);
-    this.listeningToStockfish = true;
+    this.waitingForOpponent.value = true;
     stockfishService.postMessage(`go depth ${configurationService.configuration.stockfishDepth} movetime ${configurationService.configuration.stockfishMovetime * 1000}`);
   }
 
   private stockfishMessage(message: string) {
-    if (!this.listeningToStockfish) return;
+    if (!this.waitingForOpponent.value) return;
     //console.log(`STOCKFISH: ${message}`);
     let match;
     if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
-      this.listeningToStockfish = false;
-
+      this.waitingForOpponent.value = false;
       const from = match[1];
       const to = match[2];
+      if (this.askingForHint.value) {
+        this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
+        this.askingForHint.value = false;
+        return;
+      }
       const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
       this.board.move(from as Key, to as Key);
       this.chess.move({ from: from as Square, to: to as Square, promotion: promotion });
@@ -528,6 +603,7 @@ class PositionController extends BaseController {
             text: window.AlpineI18n.t('position.confirm-exit.yes'),
             cssClass: 'overlay-button',
             handler: () => {
+              this.waitingForOpponent.value = false;
               stockfishService.postMessage('stop');
               menuController.get(MAIN_MENU_ID).then(function (menu) {
                 if (menu) menu.swipeGesture = true;
