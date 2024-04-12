@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { endgameDatabaseService } from '../services';
-import { ariaDescriptionFromIcon, clone } from '../commons';
+import { ariaDescriptionFromIcon, clone, setupSEO } from '../commons';
 import { EndgameDatabase } from '../model';
 
 class ListController extends BaseController {
@@ -10,8 +10,9 @@ class ListController extends BaseController {
     private seo!: string;
 
     onEnter($routeParams?: any): void {
+        const self = this;
         const endgameDatabase = endgameDatabaseService.endgameDatabase;
-        let categories = endgameDatabase.categories;
+        const categories = endgameDatabase.categories;
         const idxCategory = parseInt($routeParams['idxCategory']);
         const idxSubcategory = parseInt($routeParams['idxSubcategory']);
         const category = categories[idxCategory];
@@ -31,11 +32,48 @@ class ListController extends BaseController {
             idxLastSubcategory: idxLastSubcategory,
             showNavPrev: idxSubcategory > 0 || idxCategory > 0,
             showNavNext: !(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory),
-            prevUrl: '',
-            nextUrl: '',
             rows: Math.ceil(subcategory.games.length / 6),
-            showPosition(idxGame: Number) {
-                console.log(idxGame);
+            showPrevious() {
+                if (this.idxSubcategory > 0 || this.idxCategory > 0) {
+                    this.idxSubcategory--;
+                    if (this.idxSubcategory < 0) {
+                        this.idxCategory--;
+                        this.idxSubcategory = endgameDatabase.categories[this.idxCategory].count - 1;
+                        this.idxLastSubcategory = this.idxSubcategory;
+                        this.category =  endgameDatabase.categories[this.idxCategory];
+                    }
+                    this.subcategory =  this.category.subcategories[this.idxSubcategory];
+                    this.gameCount = this.subcategory.games.length;
+                    this.rows = Math.ceil(this.gameCount / 6);
+                    this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0;
+                    this.showNavNext = true;
+                    this.title = `${window.AlpineI18n.t(`category.${this.category.name}`)} [ ${this.idxSubcategory + 1} / ${this.idxLastSubcategory + 1} ]`;
+                    self.title = this.title;
+                    self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
+                    setupSEO('list.html', self.getSEOParams());
+                    window.history.replaceState(this.title, this.title, `/chessendgametraining/#/chessendgametraining/list/${this.idxCategory}/${this.idxSubcategory}`);
+                }
+            },
+            showNext() {
+                if (!(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory)) {
+                    this.idxSubcategory++;
+                    if (this.idxSubcategory > this.idxLastSubcategory) {
+                        this.idxCategory++;
+                        this.idxSubcategory = 0;
+                        this.idxLastSubcategory = endgameDatabase.categories[this.idxCategory].count - 1;
+                        this.category =  endgameDatabase.categories[this.idxCategory];
+                    }
+                    this.subcategory =  this.category.subcategories[this.idxSubcategory];
+                    this.gameCount = this.subcategory.games.length;
+                    this.rows = Math.ceil(this.gameCount / 6);
+                    this.showNavPrev = true;
+                    this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory);
+                    this.title = `${window.AlpineI18n.t(`category.${this.category.name}`)} [ ${this.idxSubcategory + 1} / ${this.idxLastSubcategory + 1} ]`;
+                    self.title = this.title;
+                    self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
+                    setupSEO('list.html', self.getSEOParams());
+                    window.history.replaceState(this.title, this.title, `/chessendgametraining/#/chessendgametraining/list/${this.idxCategory}/${this.idxSubcategory}`);
+                }
             },
             ariaDescriptionFromIcon: ariaDescriptionFromIcon,
             init() {
@@ -44,26 +82,6 @@ class ListController extends BaseController {
                     this.category = clone(categories[idxCategory]);
                     this.subcategory = clone(this.category.subcategories[idxSubcategory]);
                 });
-                // prevUrl
-                if (idxSubcategory > 0 || idxCategory > 0) {
-                    let idxCat = this.idxCategory;
-                    let idxSub = this.idxSubcategory - 1;
-                    if (idxSub < 0) {
-                      idxCat--;
-                      idxSub = endgameDatabase.categories[idxCat].count - 1;
-                    }
-                    this.prevUrl = `/list/${idxCat}/${idxSub}`;
-                }
-                // nextUrl
-                if (!(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory)) {
-                    let idxCat = this.idxCategory;
-                    let idxSub = this.idxSubcategory + 1;
-                    if (idxSub > this.idxLastSubcategory) {
-                      idxCat++;
-                      idxSub = 0;
-                    }
-                    this.nextUrl = `/list/${idxCat}/${idxSub}`;
-                }
             }
         }));
     }

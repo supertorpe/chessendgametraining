@@ -8,20 +8,16 @@
         </ion-toolbar>
     </ion-header>
     <ion-toolbar color="light">
-        <template x-if="showNavPrev">
-            <ion-buttons slot="start" x-bind:href="prevUrl" data-navigo>
-                <ion-button aria-label="Previous category">
-                    <ion-icon slot="icon-only" class="aura" data-name="arrow-back"></ion-icon>
-                </ion-button>
-            </ion-buttons>
-        </template>
-        <template x-if="showNavNext">
-            <ion-buttons slot="end" x-bind:href="nextUrl" data-navigo>
-                <ion-button aria-label="Next category">
-                    <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
-                </ion-button>
-            </ion-buttons>
-        </template>
+        <ion-buttons slot="start">
+            <ion-button aria-label="Previous category" x-show="showNavPrev" x-on:click="showPrevious()">
+                <ion-icon slot="icon-only" class="aura" data-name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+            <ion-button aria-label="Next category" x-show="showNavNext" x-on:click="showNext()">
+                <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
+            </ion-button>
+        </ion-buttons>
         <ion-title class="ion-text-center">
             <template x-for="imageUrl in subcategory.imageUrls">
                 <img x-bind:src="imageUrl" alt="ariaDescriptionFromIcon(imageUrl)" class="responsive-thumbnail aura" />
@@ -38,7 +34,7 @@
                                 <ion-button
                                     x-bind:href="'position/' + idxCategory + '/' + idxSubcategory + '/' + ((i-1)*6+j-1)"
                                     data-navigo
-                                    x-bind:color="!subcategory.games[(i-1)*6+j-1].record ? 'light' : subcategory.games[(i-1)*6+j-1].record < 0 ? 'warning' : 'success'"
+                                    x-bind:color="!subcategory.games[(i-1)*6+j-1]?.record ? 'light' : subcategory.games[(i-1)*6+j-1]?.record < 0 ? 'warning' : 'success'"
                                     expand="block" x-text="1 + (i-1)*6+j-1"></ion-button>
                             </ion-col>
                         </template>
