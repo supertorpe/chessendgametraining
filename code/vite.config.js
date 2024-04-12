@@ -36,13 +36,17 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
       manifestFilename: 'manifest.json',
-      includeAssets: ['*','*/*','*/*/*','*/*/*/*'],
+      includeAssets: ['*', '*/*', '*/*/*', '*/*/*/*'],
       manifest: {
         name: 'Chess Endgame Trainer',
         short_name: 'chessendtrain',
         description: 'Chess Endgame Trainer',
-        theme_color: '#ffffff',
+        display: 'standalone',
+        background_color: '#000000',
+        theme_color: '#000000',
         icons: [
           {
             src: 'assets/icons/pwa-192x192.png',
@@ -55,10 +59,96 @@ export default defineConfig({
             type: 'image/png',
           },
           {
-            src: 'assets/icons/pwa-512x512.png',
-            sizes: '512x512',
+            src: 'assets/icons/pwa-maskable-icon-336x336.png',
+            sizes: '336x336',
             type: 'image/png',
-            purpose: 'any maskable',
+            purpose: 'maskable',
+          }
+        ],
+        "screenshots": [
+          {
+            "src": "assets/screenshots/screenshot_1.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Home"
+          },
+          {
+            "src": "assets/screenshots/screenshot_2.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Menu"
+          },
+          {
+            "src": "assets/screenshots/screenshot_3.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Menu"
+          },
+          {
+            "src": "assets/screenshots/screenshot_4.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "List"
+          },
+          {
+            "src": "assets/screenshots/screenshot_5.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Game"
+          },
+          {
+            "src": "assets/screenshots/screenshot_6.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Settings"
+          },
+          {
+            "src": "assets/screenshots/screenshot_1.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Home"
+          },
+          {
+            "src": "assets/screenshots/screenshot_2.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Menu"
+          },
+          {
+            "src": "assets/screenshots/screenshot_3.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Menu"
+          },
+          {
+            "src": "assets/screenshots/screenshot_4.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "List"
+          },
+          {
+            "src": "assets/screenshots/screenshot_5.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Game"
+          },
+          {
+            "src": "assets/screenshots/screenshot_6.png",
+            "sizes": "360x740",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Settings"
           }
         ]
       }
