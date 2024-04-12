@@ -9,16 +9,16 @@
                     <ion-label class="responsive-text" x-text="fen"></ion-label>
                 </ion-title>
             </template>
-            <template x-if="!customFen && showNavPrev">
-                <ion-buttons slot="start" x-bind:href="prevUrl" data-navigo>
-                    <ion-button aria-label="Previous position">
+            <template x-if="!customFen">
+                <ion-buttons slot="start">
+                    <ion-button aria-label="Previous position" x-show="showNavPrev" x-on:click="showPreviousPosition()">
                         <ion-icon slot="icon-only" class="aura" data-name="arrow-back"></ion-icon>
                     </ion-button>
                 </ion-buttons>
             </template>
-            <template x-if="!customFen && showNavNext">
-                <ion-buttons slot="end" x-bind:href="nextUrl" data-navigo>
-                    <ion-button aria-label="Next position">
+            <template x-if="!customFen">
+                <ion-buttons slot="end">
+                    <ion-button aria-label="Next position" x-show="showNavNext" x-on:click="showNextPosition()">
                         <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
                     </ion-button>
                 </ion-buttons>
@@ -51,32 +51,37 @@
                         x-text="$t('position.' + move) + ' ' + $t('position.to') + ' ' + $t('position.' + target)"></ion-label>
                 </ion-item>
                 <div class="info_moves">
-                    <template x-for="(moves, idx) in parsedPgn.value">
-                        <span>
-                            <ion-label class="text-figurine" x-text="(idx+1) + '. '"></ion-label>
-                            <template x-for="move in moves">
-                                <ion-label class="text-figurine" x-text="move + ' '"></ion-label>
-                            </template>
-                        </span>
-                    </template>
+                    <ion-list>
+                        <template x-for="(moves, idx) in parsedPgn.value">
+                            <ion-item>
+                                <ion-label class="text-figurine" x-text="(idx+1) + '. '"></ion-label>
+                                <template x-for="move in moves">
+                                    <ion-label class="text-figurine" x-text="move + ' '"></ion-label>
+                                </template>
+                            </ion-item>
+                        </template>
+                    </ion-list>
                 </div>
                 <ion-buttons class="action_buttons">
-                    <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
-                        disabled="true">
+                    <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart" x-on:click="showRestartDialog()">
                         <ion-icon class="aura" data-name="power"></ion-icon>
                     </ion-button>
+                    <!--
                     <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
                         <ion-icon class="aura" data-name="arrow-undo"></ion-icon>
                     </ion-button>
                     <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
                         <ion-icon class="aura" data-name="swap-vertical"></ion-icon>
                     </ion-button>
-                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
+                    -->
+                    <ion-button size="small" fill="clear" expand="full" color="dark" x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value" x-on:click="hint()">
                         <ion-icon class="aura" data-name="bulb"></ion-icon>
                     </ion-button>
+                    <!--
                     <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
                         <ion-icon class="aura" data-name="color-wand"></ion-icon>
                     </ion-button>
+                    -->
                 </ion-buttons>
                 <!--
                     <ion-grid>
