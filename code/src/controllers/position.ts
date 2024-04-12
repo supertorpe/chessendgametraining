@@ -23,9 +23,9 @@ class PositionController extends BaseController {
   //private engine!: "white" | "black";
   private target!: string;
   private useSyzygy = false;
-  private gameOver = Alpine.reactive({value: false});
-  private waitingForOpponent = Alpine.reactive({value: false});
-  private askingForHint = Alpine.reactive({value: false});
+  private gameOver = Alpine.reactive({ value: false });
+  private waitingForOpponent = Alpine.reactive({ value: false });
+  private askingForHint = Alpine.reactive({ value: false });
 
   constructor() {
     super();
@@ -89,7 +89,25 @@ class PositionController extends BaseController {
     return dests;
   }
 
-  private restart() {
+  private resetPosition() {
+    this.waitingForOpponent.value = false;
+    this.gameOver.value = false;
+    stockfishService.postMessage('stop');
+    this.chess.load(this.fen);
+    const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+    this.board.set({
+      fen: this.chess.fen(),
+      turnColor: turn,
+      lastMove: [],
+      viewOnly: false,
+      movable: {
+        dests: this.toDests()
+      }
+    });
+    this.parsePgn(this.chess.pgn());
+  }
+
+  private showRestartDialog() {
     alertController.create({
       header: window.AlpineI18n.t('position.confirm-restart.header'),
       message: window.AlpineI18n.t('position.confirm-restart.message'),
@@ -104,21 +122,7 @@ class PositionController extends BaseController {
           text: window.AlpineI18n.t('position.confirm-restart.yes'),
           cssClass: 'overlay-button',
           handler: () => {
-            this.waitingForOpponent.value = false;
-            this.gameOver.value = false;
-            stockfishService.postMessage('stop');
-            this.chess.load(this.fen);
-            const turn = this.chess.turn() === 'w' ? 'white' : 'black';
-            this.board.set({
-              fen: this.chess.fen(),
-              turnColor: turn,
-              lastMove: [],
-              viewOnly: false,
-              movable: {
-                dests: this.toDests()
-              }
-            });
-            this.parsePgn(this.chess.pgn());
+            this.resetPosition();
           }
         }
       ]
@@ -224,13 +228,57 @@ class PositionController extends BaseController {
       idxLastGame: idxLastGame,
       showNavPrev: idxSubcategory > 0 || idxCategory > 0 || idxGame > 0,
       showNavNext: !(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory && idxGame === idxLastGame),
-      prevUrl: '',
-      nextUrl: '',
       listUrl: `/list/${idxCategory}/${idxSubcategory}`,
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
-      restart() {
-        self.restart.call(self);
+      showPreviousPosition() {
+        if (this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0) {
+          self.onExit().then(value => {
+            if (value) {
+              this.idxGame--;
+              if (this.idxGame < 0) {
+                this.idxSubcategory--;
+                if (this.idxSubcategory < 0) {
+                  this.idxCategory--;
+                  this.idxSubcategory = categories[this.idxCategory].count - 1;
+                  this.idxLastSubcategory = this.idxSubcategory;
+                }
+                this.idxGame = categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
+                this.idxLastGame = this.idxGame;
+              }
+              this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
+              this.showNavNext = true;
+              self.fen = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame].fen;
+              self.resetPosition.call(self);
+            }
+          });
+        }
+      },
+      showNextPosition() {
+        if (!(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame)) {
+          self.onExit().then(value => {
+            if (value) {
+              this.idxGame++;
+              if (this.idxGame > this.idxLastGame) {
+                this.idxSubcategory++;
+                if (this.idxSubcategory > this.idxLastSubcategory) {
+                  this.idxCategory++;
+                  this.idxSubcategory = 0;
+                  this.idxLastSubcategory = categories[this.idxCategory].count - 1;
+                }
+                this.idxGame = 0;
+                this.idxLastGame = categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
+              }
+              this.showNavPrev = true;
+              this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
+              self.fen = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame].fen;
+              self.resetPosition.call(self);
+            }
+          });
+        }
+      },
+      showRestartDialog() {
+        self.showRestartDialog.call(self);
       },
       hint() {
         self.getHint.call(self);
@@ -262,36 +310,6 @@ class PositionController extends BaseController {
             case 'useSyzygy': self.useSyzygy = configurationService.configuration.useSyzygy; break;
           }
         });
-        // prevUrl
-        if (idxSubcategory > 0 || idxCategory > 0 || idxGame > 0) {
-          let idxCat = this.idxCategory;
-          let idxSub = this.idxSubcategory;
-          let idxGame = this.idxGame - 1;
-          if (idxGame < 0) {
-            idxSub--;
-            if (idxSub < 0) {
-              idxCat--;
-              idxSub = categories[idxCat].count - 1;
-            }
-            idxGame = categories[idxCat].subcategories[idxSub].count - 1;
-          }
-          this.prevUrl = `/position/${idxCat}/${idxSub}/${idxGame}`;
-        }
-        // nextUrl
-        if (!(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory && idxGame === idxLastGame)) {
-          let idxCat = this.idxCategory;
-          let idxSub = this.idxSubcategory;
-          let idxGame = this.idxGame + 1;
-          if (idxGame > this.idxLastGame) {
-            idxSub++;
-            if (idxSub > this.idxLastSubcategory) {
-              idxCat++;
-              idxSub = 0;
-            }
-            idxGame = 0;
-          }
-          this.nextUrl = `/position/${idxCat}/${idxSub}/${idxGame}`;
-        }
       }
     }));
   }
@@ -588,6 +606,10 @@ class PositionController extends BaseController {
 
   onExit(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
+      if (this.parsedPgn.value.length == 0) {
+        resolve(true);
+        return;
+      }
       const alert = await alertController.create({
         header: window.AlpineI18n.t('position.confirm-exit.header'),
         message: window.AlpineI18n.t('position.confirm-exit.message'),
