@@ -23,8 +23,8 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.14",
     "@types/howler": "^2.2.11",
-    "sass": "^1.74.1",
-    "typescript": "^5.4.4",
+    "sass": "^1.75.0",
+    "typescript": "^5.4.5",
     "vite": "^5.2.8",
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-static-copy": "^1.0.2"
