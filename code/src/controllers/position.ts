@@ -462,6 +462,7 @@ class PositionController extends BaseController {
     const result = this.chess.game_over();
     if (result) {
       this.gameOver.value = true;
+      this.solving.value = false;
       if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
         'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn())) {
         soundService.playAudio('success');
