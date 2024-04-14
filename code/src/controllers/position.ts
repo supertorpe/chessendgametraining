@@ -151,12 +151,13 @@ class PositionController extends BaseController {
     this.gameOver.value = false;
     stockfishService.postMessage('stop');
     this.chess.load(idx == -1 ? this.fen : this.moveList[idx].fen);
+    this.gameOver.value = this.chess.game_over();
     const turn = this.chess.turn() === 'w' ? 'white' : 'black';
     this.board.set({
       fen: this.chess.fen(),
       turnColor: turn,
       lastMove: [],
-      viewOnly: this.chess.game_over(),
+      viewOnly: this.gameOver.value,
       movable: {
         dests: this.toDests()
       }
