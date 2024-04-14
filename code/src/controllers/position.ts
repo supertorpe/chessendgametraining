@@ -115,6 +115,7 @@ class PositionController extends BaseController {
   }
 
   private showPruneDialog(idx: number) {
+    if (this.solving.value || this.waitingForOpponent.value) return;
     alertController.create({
       header: window.AlpineI18n.t('position.confirm-prune.header'),
       message: window.AlpineI18n.t('position.confirm-prune.message'),
@@ -145,24 +146,67 @@ class PositionController extends BaseController {
   }
 
   private gotoMove(idx: number) {
-    if (idx >= 0 && !this.moveList[idx].fen) return;
+    if (this.solving.value || this.waitingForOpponent.value) return;
+    if (idx >= 0 && !this.moveList[idx].fen2) return;
     this.movePointer.value = idx;
-    this.waitingForOpponent.value = false;
     redrawIconImages();
-    this.gameOver.value = false;
     stockfishService.postMessage('stop');
-    this.chess.load(idx == -1 ? this.fen : this.moveList[idx].fen);
-    this.gameOver.value = this.chess.game_over();
-    const turn = this.chess.turn() === 'w' ? 'white' : 'black';
-    this.board.set({
-      fen: this.chess.fen(),
-      turnColor: turn,
-      lastMove: [],
-      viewOnly: this.gameOver.value,
-      movable: {
-        dests: this.toDests()
-      }
-    });
+    if (idx > -1) {
+      const move = this.moveList[idx];
+      this.chess.load(move.prevFen);
+      this.gameOver.value = this.chess.game_over();
+      const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+      this.board.set({
+        fen: this.chess.fen(),
+        turnColor: turn,
+        lastMove: [],
+        viewOnly: this.gameOver.value,
+        movable: {
+          dests: this.toDests()
+        }
+      });
+      setTimeout(() => {
+        this.chess.load(move.fen1);
+        this.gameOver.value = this.chess.game_over();
+        const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+        this.board.set({
+          fen: this.chess.fen(),
+          turnColor: turn,
+          lastMove: [move.from1 as Key, move.to1 as Key],
+          viewOnly: this.gameOver.value,
+          movable: {
+            dests: this.toDests()
+          }
+        });
+        setTimeout(() => {
+          this.chess.load(move.fen2);
+          this.gameOver.value = this.chess.game_over();
+          const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+          this.board.set({
+            fen: this.chess.fen(),
+            turnColor: turn,
+            lastMove: [move.from2 as Key, move.to2 as Key],
+            viewOnly: this.gameOver.value,
+            movable: {
+              dests: this.toDests()
+            }
+          });
+        }, 200);
+      }, 200);
+    } else {
+      this.chess.load(this.fen);
+      this.gameOver.value = this.chess.game_over();
+      const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+      this.board.set({
+        fen: this.chess.fen(),
+        turnColor: turn,
+        lastMove: [],
+        viewOnly: false,
+        movable: {
+          dests: this.toDests()
+        }
+      });
+    }
   }
 
   private stop() {
@@ -172,7 +216,7 @@ class PositionController extends BaseController {
     redrawIconImages();
     stockfishService.postMessage('stop');
     if (!this.moveList[this.movePointer.value].move2) {
-     this.pruneMove(this.movePointer.value); 
+      this.pruneMove(this.movePointer.value);
     }
   }
 
@@ -401,12 +445,14 @@ class PositionController extends BaseController {
     }
   }
 
-  private updateMoveList(prevFen: string) {
+  private updateMoveList(prevFen: string, from: string, to: string) {
     const history = this.chess.history();
     if (this.chess.turn() === 'w') {
       const move = this.moveList[this.movePointer.value];
       move.move2 = history[history.length - 1];
-      move.fen = this.chess.fen();
+      move.from2 = from;
+      move.to2 = to;
+      move.fen2 = this.chess.fen();
     } else {
       // look for moveItem
       const itemOrder = this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1;
@@ -417,10 +463,9 @@ class PositionController extends BaseController {
       } else {
         const moveItem: MoveItem = {
           order: itemOrder,
-          move1: move1,
-          move2: '',
           prevFen: prevFen,
-          fen: ''
+          move1: move1, from1: from, to1: to, fen1: this.chess.fen(),
+          move2: '', from2: '', to2: '', fen2: ''
         };
         if (this.movePointer.value === this.moveList.length - 1) {
           // If movePointer is pointing to the last item, simply push the new item to the end of the array
@@ -435,7 +480,7 @@ class PositionController extends BaseController {
         }
       }
       if (this.chess.game_over()) {
-        this.moveList[this.movePointer.value].fen = this.chess.fen();
+        this.moveList[this.movePointer.value].fen2 = this.chess.fen();
       }
     }
   }
@@ -450,7 +495,7 @@ class PositionController extends BaseController {
     if (promotion)
       this.board.set({ fen: this.chess.fen() });
 
-    this.updateMoveList(prevFen);
+    this.updateMoveList(prevFen, source, target);
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
@@ -516,12 +561,45 @@ class PositionController extends BaseController {
 
   private getOpponentMove() {
     let moveFunk;
+    let wait = false;
     if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
+      wait = this.solving.value;
     } else {
       moveFunk = this.getStockfishMove;
     }
-    moveFunk.call(this);
+    if (wait) setTimeout(() => { moveFunk.call(this); }, 500);
+    else moveFunk.call(this);
+  }
+
+  private processOpponentMove(from: string, to: string, promotion: string | undefined) {
+    this.waitingForOpponent.value = false;
+    redrawIconImages();
+    if (this.askingForHint.value) {
+      this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
+      this.askingForHint.value = false;
+      return;
+    }
+    const promo = (promotion == 'r' || promotion == 'n' || promotion == 'b' || promotion == 'q') ? promotion : undefined;
+    this.board.move(from as Key, to as Key);
+    this.chess.move({ from: from as Square, to: to as Square, promotion: promo });
+    const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+    this.board.set({
+      fen: this.chess.fen(),
+      turnColor: turn,
+      movable: {
+        dests: this.toDests()
+      }
+    });
+
+    this.updateMoveList('', from, to);
+
+    if (this.checkEnding()) {
+      this.board.set({ viewOnly: true });
+    } else {
+      soundService.playAudio('move');
+      if (this.solving.value) this.getOpponentMove();
+    }
   }
 
   private getSyzygyMove() {
@@ -530,37 +608,12 @@ class PositionController extends BaseController {
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
-        this.waitingForOpponent.value = false;
-        redrawIconImages();
         const bestmove = data.moves[0].uci;
         let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
         const from = match[1];
         const to = match[2];
-        if (this.askingForHint.value) {
-          this.board.setShapes([{ orig: from, dest: to, brush: 'blue' }]);
-          this.askingForHint.value = false;
-          return;
-        }
         const promotion = match[3];
-        this.board.move(from as Key, to as Key);
-        this.chess.move({ from: from as Square, to: to as Square, promotion: promotion });
-        const turn = this.chess.turn() === 'w' ? 'white' : 'black';
-        this.board.set({
-          fen: this.chess.fen(),
-          turnColor: turn,
-          movable: {
-            dests: this.toDests()
-          }
-        });
-
-        this.updateMoveList('');
-
-        if (this.checkEnding()) {
-          this.board.set({ viewOnly: true });
-        } else {
-          soundService.playAudio('move');
-          if (this.solving.value) setTimeout(() => { if (this.solving.value) this.getOpponentMove()}, 500);
-        }
+        this.processOpponentMove(from, to, promotion);
       })
       ).catch((_err) => {
         this.useSyzygy = false;
@@ -671,43 +724,10 @@ class PositionController extends BaseController {
     if (!this.waitingForOpponent.value) return;
     let match;
     if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
-      this.waitingForOpponent.value = false;
-      redrawIconImages();
       const from = match[1];
       const to = match[2];
-      if (this.askingForHint.value) {
-        this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
-        this.askingForHint.value = false;
-        return;
-      }
       const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
-      this.board.move(from as Key, to as Key);
-      this.chess.move({ from: from as Square, to: to as Square, promotion: promotion });
-      const turn = this.chess.turn() === 'w' ? 'white' : 'black';
-      // this.board.set({
-      //   fen: this.chess.fen(),
-      //   turnColor: turn,
-      //   movable: {
-      //     dests: this.toDests()
-      //   }
-      // });
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: turn,
-        movable: {
-          color: turn,
-          dests: this.toDests()
-        }
-      });
-
-      this.updateMoveList('');
-
-      if (this.checkEnding()) {
-        this.board.set({ viewOnly: true });
-      } else {
-        soundService.playAudio('move');
-        if (this.solving.value) setTimeout(() => { if (this.solving.value) this.getOpponentMove()}, 500);
-      }
+      this.processOpponentMove(from, to, promotion);
     }
   }
 
