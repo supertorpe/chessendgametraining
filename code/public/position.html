@@ -45,29 +45,26 @@
                 <div id="__chessboard__"></div>
             </div>
             <div class="info_wrapper">
-                <ion-item class="ion-text-center">
+                <ion-item id="info_target" class="ion-text-center">
                     <!--<img class="medium-thumbnail aura" x-bind:src="targetImage"></img>-->
                     <ion-label
                         x-text="$t('position.' + move) + ' ' + $t('position.to') + ' ' + $t('position.' + target)"></ion-label>
                 </ion-item>
-                <div class="info_moves">
-                    <template x-if="moveList.length > 0">
-                        <ion-list>
-                            <template x-for="move in moveList" :key="move.fen">
-                                <span>
-                                    <ion-item button="true">
-                                        <ion-label x-text="(move.order) + '. '"></ion-label>
-                                        <ion-label class="text-figurine" x-text="move.move1"></ion-label>
-                                        <ion-label class="text-figurine" x-text="move.move2"></ion-label>
-                                        <template x-if="!move.move2">
-                                            <ion-spinner name="dots"></ion-spinner>
-                                        </template>
-                                    </ion-item>
-                                </span>
-                            </template>
-                        </ion-list>
+                <ion-list class="info_moves">
+                    <ion-item button="true" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
+                        x-on:click="gotoMove(-1)">
+                        <ion-label x-text="position.fen"></ion-label>
+                    </ion-item>
+                    <template x-for="(move, idx) in moveList" :key="move.order + '.' + move.fen">
+                        <ion-item x-bind:id="'item-' + movePointer.value" button="true"
+                            x-bind:color="idx == movePointer.value ? 'medium' : ''" x-on:click="gotoMove(idx)">
+                            <ion-label x-text="(move.order) + '. '"></ion-label>
+                            <ion-label class="text-figurine" x-text="move.move1"></ion-label>
+                            <ion-label class="text-figurine" x-text="move.move2"></ion-label>
+                        </ion-item>
                     </template>
-                </div>
+                    <ion-item lines="none"></ion-item>
+                </ion-list>
                 <template x-if="position.waitingForOpponent.value">
                     <ion-buttons class="action_buttons">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="thinking">

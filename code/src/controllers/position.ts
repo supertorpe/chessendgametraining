@@ -19,7 +19,7 @@ class PositionController extends BaseController {
   private boardConfig!: Config;
   private fen!: string;
   private moveList: MoveItem[] = Alpine.reactive([]);
-  private movePointer: {value: number} = Alpine.reactive({value:-1});
+  private movePointer: { value: number } = Alpine.reactive({ value: -1 });
   private player!: "white" | "black";
   //private engine!: "white" | "black";
   private target!: string;
@@ -39,9 +39,9 @@ class PositionController extends BaseController {
     if (!header) return;
     const container = document.querySelector('.container') as HTMLElement;
     const infoWrapper = document.querySelector('.info_wrapper') as HTMLElement;
+    const infoTarget = document.getElementById('info_target') as HTMLElement;
     const infoMoves = document.querySelector('.info_moves') as HTMLElement;
     const actionButtons = document.querySelector('.action_buttons') as HTMLElement;
-
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     let minSize = Math.min(containerWidth, containerHeight);
@@ -58,7 +58,7 @@ class PositionController extends BaseController {
       infoWrapper.style.width = '100%';
       infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
-    infoMoves.style.height = `${infoWrapper.clientHeight - 48}px`;
+    infoMoves.style.height = `${infoWrapper.clientHeight - (infoTarget.clientHeight)}px`;
     actionButtons.style.width = infoWrapper.style.width;
   }
 
@@ -111,6 +111,26 @@ class PositionController extends BaseController {
         }
       ]
     }).then(alert => alert.present());
+  }
+
+  private gotoMove(idx: number) {
+    if (idx >= 0 && !this.moveList[idx].fen) return;
+    this.movePointer.value = idx;
+    this.waitingForOpponent.value = false;
+    redrawIconImages();
+    this.gameOver.value = false;
+    stockfishService.postMessage('stop');
+    this.chess.load(idx == -1 ? this.fen : this.moveList[idx].fen);
+    const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+    this.board.set({
+      fen: this.chess.fen(),
+      turnColor: turn,
+      lastMove: [],
+      viewOnly: false,
+      movable: {
+        dests: this.toDests()
+      }
+    });
   }
 
   private stop() {
@@ -279,6 +299,9 @@ class PositionController extends BaseController {
       showRestartDialog() {
         self.showRestartDialog.call(self);
       },
+      gotoMove(idx: number) {
+        self.gotoMove.call(self, idx);
+      },
       stop() {
         self.stop.call(self);
       },
@@ -290,6 +313,14 @@ class PositionController extends BaseController {
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
         requestAnimationFrame(() => {
           self.resizeBoard();
+        });
+        this.$watch('movePointer', (_value) => {
+          const movelist = document.querySelector('.info_moves') as HTMLIonListElement;
+          const item = document.getElementById(`item-${this.movePointer.value}`) as HTMLElement;
+          if (item) {
+            const y = item.offsetHeight * (this.movePointer.value);
+            movelist.scrollTo({ top: y, behavior: 'smooth' });
+          }
         });
         endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {
           const categories = database.categories;
@@ -329,6 +360,7 @@ class PositionController extends BaseController {
   }
 
   private registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
+    const prevFen = this.chess.fen();
     this.chess.move({
       from: source,
       to: target,
@@ -339,38 +371,65 @@ class PositionController extends BaseController {
     console.log(this.chess.fen());
 
     const history = this.chess.history();
-    const moveItem: MoveItem = {
-      order: this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1,
-      move1: history[history.length - 1],
-      move2: '',
-      fen: this.chess.fen()
-    };
-    if (this.movePointer.value === this.moveList.length - 1) {
-      // If movePointer is pointing to the last item, simply push the new item to the end of the array
-      this.moveList.push(moveItem);
-      // Update movePointer to point to the newly added item
-      this.movePointer.value = this.moveList.length - 1;
+    // look for moveItem
+    const itemOrder = this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1;
+    const move1 = history[history.length - 1];
+    const itemIndex = this.moveList.findIndex(item => item.order == itemOrder && item.move1 == move1 && item.prevFen == prevFen);
+    if (itemIndex > -1) {
+      this.movePointer.value = itemIndex;
     } else {
-      // If movePointer is pointing to any other item, insert the new item after the current one
-      this.moveList.splice(this.movePointer.value + 1, 0, moveItem);
-      // Update movePointer to point to the newly added item
-      this.movePointer.value++;
+      const moveItem: MoveItem = {
+        order: itemOrder,
+        move1: move1,
+        move2: '',
+        prevFen: prevFen,
+        fen: ''
+      };
+      if (this.movePointer.value === this.moveList.length - 1) {
+        // If movePointer is pointing to the last item, simply push the new item to the end of the array
+        this.moveList.push(moveItem);
+        // Update movePointer to point to the newly added item
+        this.movePointer.value = this.moveList.length - 1;
+      } else {
+        // If movePointer is pointing to any other item, insert the new item after the current one
+        this.moveList.splice(this.movePointer.value + 1, 0, moveItem);
+        // Update movePointer to point to the newly added item
+        this.movePointer.value++;
+      }
     }
-    const movelist = document.querySelector('.info_moves') as HTMLDivElement;
-    if (movelist)
-      movelist.scrollTop = movelist.scrollHeight;
-    //this.moveTree = clone(this.moveTree);
-    console.log(`moveList=${JSON.stringify(this.moveList)}`);
 
-    // this.fenHistory.push(this.chess.fen());
-    // this.fenPointer++;
-    // this.playerMoved.emit();
-    // this.initializing = false;
-    // this.prepareMove();
+    //  setTimeout(() => {
+    /*
+          const movelist = document.querySelector('.info_moves') as HTMLDivElement;
+          if (movelist) {
+            const rect = movelist.getBoundingClientRect();
+            const offsetTop = rect.top + document.body.scrollTop;
+            //movelist.scrollTop = movelist.scrollHeight * 2;
+            movelist.scrollTo(0, offsetTop);
+          }
+    */
+
+    // const movelist = document.querySelector('.info_moves') as HTMLIonListElement;
+    // const item = document.getElementById(`item-${this.movePointer.value}`) as HTMLElement;
+
+
+    // if (item) {
+    //   const y = item.offsetTop;
+    //   // @ts-ignore
+    //   movelist.scrollTo({top: y})
+    /*
+    const offsetTop = item.offsetTop - movelist.offsetTop;
+    movelist.scrollTo({
+      top: offsetTop,
+      left: 0,
+      behavior: 'smooth' // Optional: smooth scrolling animation
+  });*/
+    // }
+
+    // }, 200);
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
-      //this.playerMoved.emit();
       this.getOpponentMove();
     }
   }
@@ -476,7 +535,9 @@ class PositionController extends BaseController {
         console.log(this.chess.fen());
 
         const history = this.chess.history();
-        this.moveList[this.movePointer.value].move2 =  history[history.length - 1];
+        const move = this.moveList[this.movePointer.value];
+        move.move2 = history[history.length - 1];
+        move.fen = this.chess.fen();
         console.log(`moveList=${JSON.stringify(this.moveList)}`);
 
         if (this.checkEnding()) {
@@ -626,7 +687,9 @@ class PositionController extends BaseController {
       console.log(this.chess.fen());
 
       const history = this.chess.history();
-      this.moveList[this.movePointer.value].move2 = history[history.length - 1];
+      const move = this.moveList[this.movePointer.value];
+      move.move2 = history[history.length - 1];
+      move.fen = this.chess.fen();
 
       if (this.checkEnding()) {
         this.board.set({ viewOnly: true });

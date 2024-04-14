@@ -137,12 +137,11 @@ ion-alert {
     font-size: 1.1em;
     text-align: justify;
     overflow: hidden;
+    height: 100%;
 }
 
 .info_moves {
-    padding: 2px;
-    overflow-y: scroll;
-    font-family: figurine;
+    overflow-y: auto;
 }
 
 .action_buttons {
