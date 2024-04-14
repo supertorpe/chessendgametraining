@@ -51,22 +51,43 @@
                         x-text="$t('position.' + move) + ' ' + $t('position.to') + ' ' + $t('position.' + target)"></ion-label>
                 </ion-item>
                 <div class="info_moves">
-                    <ion-list>
-                        <template x-for="(moves, idx) in parsedPgn.value">
-                            <ion-item>
-                                <ion-label class="text-figurine" x-text="(idx+1) + '. '"></ion-label>
-                                <template x-for="move in moves">
-                                    <ion-label class="text-figurine" x-text="move + ' '"></ion-label>
-                                </template>
-                            </ion-item>
-                        </template>
-                    </ion-list>
+                    <template x-if="moveList.length > 0">
+                        <ion-list>
+                            <template x-for="move in moveList" :key="move.fen">
+                                <span>
+                                    <ion-item button="true">
+                                        <ion-label x-text="(move.order) + '. '"></ion-label>
+                                        <ion-label class="text-figurine" x-text="move.move1"></ion-label>
+                                        <ion-label class="text-figurine" x-text="move.move2"></ion-label>
+                                        <template x-if="!move.move2">
+                                            <ion-spinner name="dots"></ion-spinner>
+                                        </template>
+                                    </ion-item>
+                                </span>
+                            </template>
+                        </ion-list>
+                    </template>
                 </div>
-                <ion-buttons class="action_buttons">
-                    <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart" x-on:click="showRestartDialog()">
-                        <ion-icon class="aura" data-name="power"></ion-icon>
-                    </ion-button>
-                    <!--
+                <template x-if="position.waitingForOpponent.value">
+                    <ion-buttons class="action_buttons">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="thinking">
+                            <ion-spinner name="circular"></ion-spinner>
+                        </ion-button>
+                        <template x-if="position.askingForHint.value">
+                            <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
+                                x-on:click="stop()">
+                                <ion-icon class="aura" data-name="stop"></ion-icon>
+                            </ion-button>
+                        </template>
+                    </ion-buttons>
+                </template>
+                <template x-if="!position.waitingForOpponent.value">
+                    <ion-buttons class="action_buttons">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
+                            x-on:click="showRestartDialog()">
+                            <ion-icon class="aura" data-name="power"></ion-icon>
+                        </ion-button>
+                        <!--
                     <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
                         <ion-icon class="aura" data-name="arrow-undo"></ion-icon>
                     </ion-button>
@@ -74,14 +95,18 @@
                         <ion-icon class="aura" data-name="swap-vertical"></ion-icon>
                     </ion-button>
                     -->
-                    <ion-button size="small" fill="clear" expand="full" color="dark" x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value" x-on:click="hint()">
-                        <ion-icon class="aura" data-name="bulb"></ion-icon>
-                    </ion-button>
-                    <!--
+                        <ion-button size="small" fill="clear" expand="full" color="dark"
+                            x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
+                            x-on:click="hint()">
+                            <ion-icon class="aura" data-name="bulb"></ion-icon>
+                        </ion-button>
+                        <!--
                     <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
                         <ion-icon class="aura" data-name="color-wand"></ion-icon>
                     </ion-button>
                     -->
+
+                </template>
                 </ion-buttons>
                 <!--
                     <ion-grid>
