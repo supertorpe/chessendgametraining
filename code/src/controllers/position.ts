@@ -27,6 +27,7 @@ class PositionController extends BaseController {
   private gameOver = Alpine.reactive({ value: false });
   private waitingForOpponent = Alpine.reactive({ value: false });
   private askingForHint = Alpine.reactive({ value: false });
+  private solving = Alpine.reactive({ value: false });
 
   constructor() {
     super();
@@ -139,8 +140,8 @@ class PositionController extends BaseController {
     const order = this.moveList[idx].order;
     do {
       this.moveList.splice(idx, 1);
-    } while(this.moveList.length > idx && this.moveList[idx].order > order);
-    this.gotoMove(idx-1);
+    } while (this.moveList.length > idx && this.moveList[idx].order > order);
+    this.gotoMove(idx - 1);
   }
 
   private gotoMove(idx: number) {
@@ -167,8 +168,12 @@ class PositionController extends BaseController {
   private stop() {
     this.waitingForOpponent.value = false;
     this.askingForHint.value = false;
+    this.solving.value = false;
     redrawIconImages();
     stockfishService.postMessage('stop');
+    if (!this.moveList[this.movePointer.value].move2) {
+     this.pruneMove(this.movePointer.value); 
+    }
   }
 
   onEnter($routeParams?: any): void {
@@ -342,6 +347,9 @@ class PositionController extends BaseController {
       hint() {
         self.getHint.call(self);
       },
+      solve() {
+        self.solve.call(self);
+      },
       init() {
         self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
@@ -393,6 +401,45 @@ class PositionController extends BaseController {
     }
   }
 
+  private updateMoveList(prevFen: string) {
+    const history = this.chess.history();
+    if (this.chess.turn() === 'w') {
+      const move = this.moveList[this.movePointer.value];
+      move.move2 = history[history.length - 1];
+      move.fen = this.chess.fen();
+    } else {
+      // look for moveItem
+      const itemOrder = this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1;
+      const move1 = history[history.length - 1];
+      const itemIndex = this.moveList.findIndex(item => item.order == itemOrder && item.move1 == move1 && item.prevFen == prevFen);
+      if (itemIndex > -1) {
+        this.movePointer.value = itemIndex;
+      } else {
+        const moveItem: MoveItem = {
+          order: itemOrder,
+          move1: move1,
+          move2: '',
+          prevFen: prevFen,
+          fen: ''
+        };
+        if (this.movePointer.value === this.moveList.length - 1) {
+          // If movePointer is pointing to the last item, simply push the new item to the end of the array
+          this.moveList.push(moveItem);
+          // Update movePointer to point to the newly added item
+          this.movePointer.value = this.moveList.length - 1;
+        } else {
+          // If movePointer is pointing to any other item, insert the new item after the current one
+          this.moveList.splice(this.movePointer.value + 1, 0, moveItem);
+          // Update movePointer to point to the newly added item
+          this.movePointer.value++;
+        }
+      }
+      if (this.chess.game_over()) {
+        this.moveList[this.movePointer.value].fen = this.chess.fen();
+      }
+    }
+  }
+
   private registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
     const prevFen = this.chess.fen();
     this.chess.move({
@@ -402,40 +449,12 @@ class PositionController extends BaseController {
     });
     if (promotion)
       this.board.set({ fen: this.chess.fen() });
-    console.log(this.chess.fen());
 
-    const history = this.chess.history();
-    // look for moveItem
-    const itemOrder = this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1;
-    const move1 = history[history.length - 1];
-    const itemIndex = this.moveList.findIndex(item => item.order == itemOrder && item.move1 == move1 && item.prevFen == prevFen);
-    if (itemIndex > -1) {
-      this.movePointer.value = itemIndex;
-    } else {
-      const moveItem: MoveItem = {
-        order: itemOrder,
-        move1: move1,
-        move2: '',
-        prevFen: prevFen,
-        fen: ''
-      };
-      if (this.movePointer.value === this.moveList.length - 1) {
-        // If movePointer is pointing to the last item, simply push the new item to the end of the array
-        this.moveList.push(moveItem);
-        // Update movePointer to point to the newly added item
-        this.movePointer.value = this.moveList.length - 1;
-      } else {
-        // If movePointer is pointing to any other item, insert the new item after the current one
-        this.moveList.splice(this.movePointer.value + 1, 0, moveItem);
-        // Update movePointer to point to the newly added item
-        this.movePointer.value++;
-      }
-    }
+    this.updateMoveList(prevFen);
+
     if (!this.checkEnding()) {
       soundService.playAudio('move');
       this.getOpponentMove();
-    } else {
-      this.moveList[this.movePointer.value].fen = this.chess.fen();
     }
   }
 
@@ -484,6 +503,16 @@ class PositionController extends BaseController {
     return fen.substring(0, fen.indexOf(" ")).replace(/\d/g, "").replace(/\//g, "").length;
   }
 
+  private getHint() {
+    this.askingForHint.value = true;
+    this.getOpponentMove();
+  }
+
+  private solve() {
+    this.solving.value = true;
+    this.getOpponentMove();
+  }
+
   private getOpponentMove() {
     let moveFunk;
     if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
@@ -494,20 +523,6 @@ class PositionController extends BaseController {
     moveFunk.call(this);
   }
 
-  private getHint() {
-    this.askingForHint.value = true;
-    this.getOpponentMove();
-    /*
-    let hintFunk;
-    if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
-      hintFunk = this.getSyzygyHint;
-    } else {
-      hintFunk = this.getStockfishHint;
-    }
-    hintFunk.call(this);
-    */
-  }
-
   private getSyzygyMove() {
     this.waitingForOpponent.value = true;
     redrawIconImages();
@@ -516,7 +531,6 @@ class PositionController extends BaseController {
         if (!this.waitingForOpponent.value) return;
         this.waitingForOpponent.value = false;
         redrawIconImages();
-        console.log(JSON.stringify(data));
         const bestmove = data.moves[0].uci;
         let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
         const from = match[1];
@@ -537,18 +551,14 @@ class PositionController extends BaseController {
             dests: this.toDests()
           }
         });
-        console.log(this.chess.fen());
 
-        const history = this.chess.history();
-        const move = this.moveList[this.movePointer.value];
-        move.move2 = history[history.length - 1];
-        move.fen = this.chess.fen();
-        console.log(`moveList=${JSON.stringify(this.moveList)}`);
+        this.updateMoveList('');
 
         if (this.checkEnding()) {
           this.board.set({ viewOnly: true });
         } else {
           soundService.playAudio('move');
+          if (this.solving.value) setTimeout(() => { if (this.solving.value) this.getOpponentMove()}, 500);
         }
       })
       ).catch((_err) => {
@@ -658,7 +668,6 @@ class PositionController extends BaseController {
 
   private stockfishMessage(message: string) {
     if (!this.waitingForOpponent.value) return;
-    //console.log(`STOCKFISH: ${message}`);
     let match;
     if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
       this.waitingForOpponent.value = false;
@@ -689,17 +698,14 @@ class PositionController extends BaseController {
           dests: this.toDests()
         }
       });
-      console.log(this.chess.fen());
 
-      const history = this.chess.history();
-      const move = this.moveList[this.movePointer.value];
-      move.move2 = history[history.length - 1];
-      move.fen = this.chess.fen();
+      this.updateMoveList('');
 
       if (this.checkEnding()) {
         this.board.set({ viewOnly: true });
       } else {
         soundService.playAudio('move');
+        if (this.solving.value) setTimeout(() => { if (this.solving.value) this.getOpponentMove()}, 500);
       }
     }
   }
