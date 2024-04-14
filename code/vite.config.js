@@ -42,7 +42,7 @@ export default defineConfig({
       includeAssets: ['*', '*/*', '*/*/*', '*/*/*/*'],
       manifest: {
         name: 'Chess Endgame Trainer',
-        short_name: 'chessendtrain',
+        short_name: 'Chess Endgame Trainer',
         description: 'Chess Endgame Trainer',
         display: 'standalone',
         background_color: '#000000',

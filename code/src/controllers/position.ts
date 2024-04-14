@@ -1,8 +1,8 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, redrawIconImages, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, urlIcon } from '../commons';
-import { Category, EndgameDatabase, Position, Subcategory } from '../model';
+import { Category, EndgameDatabase, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -18,7 +18,8 @@ class PositionController extends BaseController {
   private board!: Api;
   private boardConfig!: Config;
   private fen!: string;
-  private parsedPgn: { value: string[][] } = Alpine.reactive({ value: [] });
+  private moveList: MoveItem[] = Alpine.reactive([]);
+  private movePointer: {value: number} = Alpine.reactive({value:-1});
   private player!: "white" | "black";
   //private engine!: "white" | "black";
   private target!: string;
@@ -61,25 +62,6 @@ class PositionController extends BaseController {
     actionButtons.style.width = infoWrapper.style.width;
   }
 
-  private parsePgn(pgn: string) {
-    this.parsedPgn.value = [];
-    if (pgn == '')
-      return;
-    const parts = pgn.split('.');
-    let pos = 0;
-    parts.forEach(part => {
-      if (pos > 0) {
-        let moves = part.trim().split(' ', 2);
-        this.parsedPgn.value.push(moves);
-      }
-      pos++;
-    });
-    console.log(`this.parsedPgn.value: ${JSON.stringify(this.parsedPgn.value)}`);
-    const movelist = document.querySelector('.info_moves') as HTMLDivElement;
-    if (movelist)
-      movelist.scrollTop = movelist.scrollHeight;
-  }
-
   private toDests(): Map<Key, Key[]> {
     const dests = new Map();
     SQUARES.forEach(s => {
@@ -91,6 +73,7 @@ class PositionController extends BaseController {
 
   private resetPosition() {
     this.waitingForOpponent.value = false;
+    redrawIconImages();
     this.gameOver.value = false;
     stockfishService.postMessage('stop');
     this.chess.load(this.fen);
@@ -104,7 +87,8 @@ class PositionController extends BaseController {
         dests: this.toDests()
       }
     });
-    this.parsePgn(this.chess.pgn());
+    this.moveList.splice(0, this.moveList.length);
+    this.movePointer.value = -1;
   }
 
   private showRestartDialog() {
@@ -127,6 +111,13 @@ class PositionController extends BaseController {
         }
       ]
     }).then(alert => alert.present());
+  }
+
+  private stop() {
+    this.waitingForOpponent.value = false;
+    this.askingForHint.value = false;
+    redrawIconImages();
+    stockfishService.postMessage('stop');
   }
 
   onEnter($routeParams?: any): void {
@@ -166,7 +157,8 @@ class PositionController extends BaseController {
     }
 
     this.chess.load(this.fen);
-    this.parsePgn(this.chess.pgn());
+    this.moveList.splice(0, this.moveList.length);
+    this.movePointer.value = -1;
 
     const turnWhite = this.chess.turn() == 'w';
     const turnColor: Color = (turnWhite ? 'white' : 'black');
@@ -221,7 +213,8 @@ class PositionController extends BaseController {
       category: category,
       subcategory: subcategory,
       game: game,
-      parsedPgn: self.parsedPgn,
+      moveList: self.moveList,
+      movePointer: self.movePointer,
       move: move,
       targetImage: targetImage,
       idxLastSubcategory: idxLastSubcategory,
@@ -235,6 +228,9 @@ class PositionController extends BaseController {
         if (this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0) {
           self.onExit().then(value => {
             if (value) {
+              menuController.get(MAIN_MENU_ID).then(function (menu) {
+                if (menu) menu.swipeGesture = false;
+              });
               this.idxGame--;
               if (this.idxGame < 0) {
                 this.idxSubcategory--;
@@ -258,6 +254,9 @@ class PositionController extends BaseController {
         if (!(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame)) {
           self.onExit().then(value => {
             if (value) {
+              menuController.get(MAIN_MENU_ID).then(function (menu) {
+                if (menu) menu.swipeGesture = false;
+              });
               this.idxGame++;
               if (this.idxGame > this.idxLastGame) {
                 this.idxSubcategory++;
@@ -279,6 +278,9 @@ class PositionController extends BaseController {
       },
       showRestartDialog() {
         self.showRestartDialog.call(self);
+      },
+      stop() {
+        self.stop.call(self);
       },
       hint() {
         self.getHint.call(self);
@@ -336,7 +338,30 @@ class PositionController extends BaseController {
       this.board.set({ fen: this.chess.fen() });
     console.log(this.chess.fen());
 
-    this.parsePgn(this.chess.pgn());
+    const history = this.chess.history();
+    const moveItem: MoveItem = {
+      order: this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1,
+      move1: history[history.length - 1],
+      move2: '',
+      fen: this.chess.fen()
+    };
+    if (this.movePointer.value === this.moveList.length - 1) {
+      // If movePointer is pointing to the last item, simply push the new item to the end of the array
+      this.moveList.push(moveItem);
+      // Update movePointer to point to the newly added item
+      this.movePointer.value = this.moveList.length - 1;
+    } else {
+      // If movePointer is pointing to any other item, insert the new item after the current one
+      this.moveList.splice(this.movePointer.value + 1, 0, moveItem);
+      // Update movePointer to point to the newly added item
+      this.movePointer.value++;
+    }
+    const movelist = document.querySelector('.info_moves') as HTMLDivElement;
+    if (movelist)
+      movelist.scrollTop = movelist.scrollHeight;
+    //this.moveTree = clone(this.moveTree);
+    console.log(`moveList=${JSON.stringify(this.moveList)}`);
+
     // this.fenHistory.push(this.chess.fen());
     // this.fenPointer++;
     // this.playerMoved.emit();
@@ -421,10 +446,12 @@ class PositionController extends BaseController {
 
   private getSyzygyMove() {
     this.waitingForOpponent.value = true;
+    redrawIconImages();
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
         this.waitingForOpponent.value = false;
+        redrawIconImages();
         console.log(JSON.stringify(data));
         const bestmove = data.moves[0].uci;
         let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
@@ -447,7 +474,11 @@ class PositionController extends BaseController {
           }
         });
         console.log(this.chess.fen());
-        this.parsePgn(this.chess.pgn());
+
+        const history = this.chess.history();
+        this.moveList[this.movePointer.value].move2 =  history[history.length - 1];
+        console.log(`moveList=${JSON.stringify(this.moveList)}`);
+
         if (this.checkEnding()) {
           this.board.set({ viewOnly: true });
         } else {
@@ -555,6 +586,7 @@ class PositionController extends BaseController {
   private getStockfishMove() {
     stockfishService.postMessage(`position fen ${this.chess.fen()}`);
     this.waitingForOpponent.value = true;
+    redrawIconImages();
     stockfishService.postMessage(`go depth ${configurationService.configuration.stockfishDepth} movetime ${configurationService.configuration.stockfishMovetime * 1000}`);
   }
 
@@ -564,6 +596,7 @@ class PositionController extends BaseController {
     let match;
     if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
       this.waitingForOpponent.value = false;
+      redrawIconImages();
       const from = match[1];
       const to = match[2];
       if (this.askingForHint.value) {
@@ -591,7 +624,10 @@ class PositionController extends BaseController {
         }
       });
       console.log(this.chess.fen());
-      this.parsePgn(this.chess.pgn());
+
+      const history = this.chess.history();
+      this.moveList[this.movePointer.value].move2 = history[history.length - 1];
+
       if (this.checkEnding()) {
         this.board.set({ viewOnly: true });
       } else {
@@ -606,7 +642,7 @@ class PositionController extends BaseController {
 
   onExit(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
-      if (this.parsedPgn.value.length == 0) {
+      if (this.moveList.length == 0) {
         resolve(true);
         return;
       }
@@ -626,6 +662,7 @@ class PositionController extends BaseController {
             cssClass: 'overlay-button',
             handler: () => {
               this.waitingForOpponent.value = false;
+              redrawIconImages();
               stockfishService.postMessage('stop');
               menuController.get(MAIN_MENU_ID).then(function (menu) {
                 if (menu) menu.swipeGesture = true;

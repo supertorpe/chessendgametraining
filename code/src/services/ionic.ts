@@ -80,7 +80,7 @@ import { IonSegment } from '@ionic/core/components/ion-segment';
 // import { IonSkeletonText } from '@ionic/core/components/ion-skeleton-text';
 // import { IonSlide } from '@ionic/core/components/ion-slide';
 // import { IonSlides } from '@ionic/core/components/ion-slides';
-// import { IonSpinner } from '@ionic/core/components/ion-spinner';
+import { IonSpinner } from '@ionic/core/components/ion-spinner';
 import { IonSplitPane } from '@ionic/core/components/ion-split-pane';
 // import { IonTabBar } from '@ionic/core/components/ion-tab-bar';
 // import { IonTabButton } from '@ionic/core/components/ion-tab-button';
@@ -185,7 +185,7 @@ tryDefine(IonSegment, 'ion-segment');
 // tryDefine(IonSkeletonText, 'ion-skeleton-text');
 // tryDefine(IonSlide, 'ion-slide');
 // tryDefine(IonSlides, 'ion-slides');
-// tryDefine(IonSpinner, 'ion-spinner');
+tryDefine(IonSpinner, 'ion-spinner');
 tryDefine(IonSplitPane, 'ion-split-pane');
 // tryDefine(IonTabBar, 'ion-tab-bar');
 // tryDefine(IonTabButton, 'ion-tab-button');
@@ -200,9 +200,10 @@ tryDefine(IonToggle, 'ion-toggle');
 tryDefine(IonToolbar, 'ion-toolbar');
 // tryDefine(IonVirtualScroll, 'ion-virtual-scroll');
 
-const images = import.meta.glob('/node_modules/@ionic/core/dist/ionic/svg/(close|home-sharp|information-circle|settings-sharp|save|caret-down|caret-forward|caret-up|arrow-back|arrow-forward|power|swap-vertical|arrow-undo|bulb|color-wand|flag).svg', { as: 'url' });
+const images = import.meta.glob('/node_modules/@ionic/core/dist/ionic/svg/(close|home-sharp|information-circle|settings-sharp|save|caret-down|caret-forward|caret-up|arrow-back|arrow-forward|power|swap-vertical|arrow-undo|bulb|color-wand|flag|stop).svg', { as: 'url' });
 export const redrawIconImages = () => {
-  document.querySelectorAll('ion-icon').forEach((el) => {
+  requestAnimationFrame(() => {
+    document.querySelectorAll('ion-icon').forEach((el) => {
       const name = el.getAttribute('data-name');
       if (name != null) {
         images[`/node_modules/@ionic/core/dist/ionic/svg/${name}.svg`]().then((url: string) => {
@@ -210,4 +211,5 @@ export const redrawIconImages = () => {
         });
       }
     });
+  });
 };
