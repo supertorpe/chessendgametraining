@@ -582,6 +582,7 @@ class PositionController extends BaseController {
     }
     const promo = (promotion == 'r' || promotion == 'n' || promotion == 'b' || promotion == 'q') ? promotion : undefined;
     this.board.move(from as Key, to as Key);
+    const prevFen = this.chess.fen();
     this.chess.move({ from: from as Square, to: to as Square, promotion: promo });
     const turn = this.chess.turn() === 'w' ? 'white' : 'black';
     this.board.set({
@@ -592,7 +593,7 @@ class PositionController extends BaseController {
       }
     });
 
-    this.updateMoveList('', from, to);
+    this.updateMoveList(prevFen, from, to);
 
     if (this.checkEnding()) {
       this.board.set({ viewOnly: true });
