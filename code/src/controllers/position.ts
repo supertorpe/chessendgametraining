@@ -113,6 +113,36 @@ class PositionController extends BaseController {
     }).then(alert => alert.present());
   }
 
+  private showPruneDialog(idx: number) {
+    alertController.create({
+      header: window.AlpineI18n.t('position.confirm-prune.header'),
+      message: window.AlpineI18n.t('position.confirm-prune.message'),
+      buttons: [
+        {
+          text: window.AlpineI18n.t('position.confirm-prune.no'),
+          role: 'cancel',
+          cssClass: 'overlay-button',
+          handler: () => {
+          }
+        }, {
+          text: window.AlpineI18n.t('position.confirm-prune.yes'),
+          cssClass: 'overlay-button',
+          handler: () => {
+            this.pruneMove(idx);
+          }
+        }
+      ]
+    }).then(alert => alert.present());
+  }
+
+  private pruneMove(idx: number) {
+    const order = this.moveList[idx].order;
+    do {
+      this.moveList.splice(idx, 1);
+    } while(this.moveList.length > idx && this.moveList[idx].order > order);
+    this.gotoMove(idx-1);
+  }
+
   private gotoMove(idx: number) {
     if (idx >= 0 && !this.moveList[idx].fen) return;
     this.movePointer.value = idx;
@@ -301,6 +331,9 @@ class PositionController extends BaseController {
       },
       gotoMove(idx: number) {
         self.gotoMove.call(self, idx);
+      },
+      showPruneDialog(idx: number) {
+        self.showPruneDialog.call(self, idx);
       },
       stop() {
         self.stop.call(self);

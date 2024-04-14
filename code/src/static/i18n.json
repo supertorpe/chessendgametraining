@@ -79,13 +79,19 @@
                 "header": "Attention",
                 "message": "Sure to abandon the game?",
                 "no": "No",
-                "yes": "yes"
+                "yes": "Yes"
             },
             "confirm-restart": {
                 "header": "Attention",
                 "message": "Sure to restart the game?",
                 "no": "No",
-                "yes": "yes"
+                "yes": "Yes"
+            },
+            "confirm-prune": {
+                "header": "Attention",
+                "message": "Sure to delete this move and the folllowing ones?",
+                "no": "No",
+                "yes": "Yes"
             }
         },
         "settings": {
@@ -237,6 +243,12 @@
             "confirm-restart": {
                 "header": "Atención",
                 "message": "¿Seguro de reiniciar la partida?",
+                "no": "No",
+                "yes": "Sí"
+            },
+            "confirm-prune": {
+                "header": "Atención",
+                "message": "¿Seguro de eliminar este movimiento y los siguientes?",
                 "no": "No",
                 "yes": "Sí"
             }
