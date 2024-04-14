@@ -126,7 +126,7 @@ class PositionController extends BaseController {
       fen: this.chess.fen(),
       turnColor: turn,
       lastMove: [],
-      viewOnly: false,
+      viewOnly: this.chess.game_over(),
       movable: {
         dests: this.toDests()
       }
@@ -397,40 +397,11 @@ class PositionController extends BaseController {
         this.movePointer.value++;
       }
     }
-
-    //  setTimeout(() => {
-    /*
-          const movelist = document.querySelector('.info_moves') as HTMLDivElement;
-          if (movelist) {
-            const rect = movelist.getBoundingClientRect();
-            const offsetTop = rect.top + document.body.scrollTop;
-            //movelist.scrollTop = movelist.scrollHeight * 2;
-            movelist.scrollTo(0, offsetTop);
-          }
-    */
-
-    // const movelist = document.querySelector('.info_moves') as HTMLIonListElement;
-    // const item = document.getElementById(`item-${this.movePointer.value}`) as HTMLElement;
-
-
-    // if (item) {
-    //   const y = item.offsetTop;
-    //   // @ts-ignore
-    //   movelist.scrollTo({top: y})
-    /*
-    const offsetTop = item.offsetTop - movelist.offsetTop;
-    movelist.scrollTo({
-      top: offsetTop,
-      left: 0,
-      behavior: 'smooth' // Optional: smooth scrolling animation
-  });*/
-    // }
-
-    // }, 200);
-
     if (!this.checkEnding()) {
       soundService.playAudio('move');
       this.getOpponentMove();
+    } else {
+      this.moveList[this.movePointer.value].fen = this.chess.fen();
     }
   }
 
