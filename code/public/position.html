@@ -6,7 +6,7 @@
             </ion-buttons>
             <template x-if="customFen">
                 <ion-title class="ion-text-center">
-                    <ion-label class="responsive-text" x-text="fen"></ion-label>
+                    <ion-label class="responsive-text" x-text="$t('position.custom-position')"></ion-label>
                 </ion-title>
             </template>
             <template x-if="!customFen">
@@ -25,7 +25,7 @@
             </template>
             <template x-if="!customFen">
                 <ion-title class="ion-text-center">
-                    <ion-router-link x-bind:href="listUrl" color="dark" data-navigo>
+                    <ion-router-link x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" color="dark" data-navigo>
                         <!--
                         <template x-for="imageUrl in subcategory.imageUrls">
                             <img x-bind:src="imageUrl" alt="ariaDescriptionFromIcon(imageUrl)"

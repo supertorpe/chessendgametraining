@@ -43,6 +43,7 @@
                 "title": "Endgame position with {kind} - Chess Endgame Training",
                 "meta_description": "Position to practice chess endgame: {kind}"
             },
+            "custom-position": "Custom position",
             "white": "white",
             "black": "black",
             "to": "to",
@@ -202,6 +203,7 @@
                 "title": "Posición con {kind} - Finales de Ajedrez",
                 "meta_description": "Posición para practicar el fin de juego de ajedrez: {kind}"
             },
+            "custom-position": "Posición personalizada",
             "white": "blancas",
             "black": "negras",
             "to": "buscan",

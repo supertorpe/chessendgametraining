@@ -242,7 +242,7 @@ class PositionController extends BaseController {
     const customFen = ($routeParams['fen1'] !== undefined);
     if (customFen) {
       this.fen = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
-      this.target = $routeParams['target'];
+      this.target = $routeParams['target'] || 'checkmate';
       this.seo = this.fen;
     } else {
       idxCategory = parseInt($routeParams['idxCategory']);
@@ -324,7 +324,6 @@ class PositionController extends BaseController {
       idxLastGame: idxLastGame,
       showNavPrev: idxSubcategory > 0 || idxCategory > 0 || idxGame > 0,
       showNavNext: !(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory && idxGame === idxLastGame),
-      listUrl: `/list/${idxCategory}/${idxSubcategory}`,
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
       showPreviousPosition() {
@@ -350,7 +349,6 @@ class PositionController extends BaseController {
               self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
               self.fen = self.position.fen;
               self.target = self.position.target;
-              this.listUrl = `/list/${this.idxCategory}/${this.idxSubcategory}`;
               self.resetPosition.call(self);
             }
           });
@@ -379,7 +377,6 @@ class PositionController extends BaseController {
               self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
               self.fen = self.position.fen;
               self.target = self.position.target;
-              this.listUrl = `/list/${this.idxCategory}/${this.idxSubcategory}`;
               self.resetPosition.call(self);
             }
           });
@@ -519,7 +516,7 @@ class PositionController extends BaseController {
       this.solving.value = false;
       const goalAchieved = ('checkmate' !== this.target && !this.chess.in_checkmate() ||
         'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn()));
-      const record = goalAchieved && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
+      const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
 
       if (goalAchieved) {
         soundService.playAudio('success');
@@ -528,12 +525,14 @@ class PositionController extends BaseController {
       }
 
       // update database status
-      if (!goalAchieved && !this.position.record) {
-        this.position.record = -1;
-        endgameDatabaseService.save();
-      } else if (record) {
-        this.position.record = this.moveList[this.movePointer.value].order;
-        endgameDatabaseService.save();
+      if (this.position) {
+        if (!goalAchieved && !this.position.record) {
+          this.position.record = -1;
+          endgameDatabaseService.save();
+        } else if (record) {
+          this.position.record = this.moveList[this.movePointer.value].order;
+          endgameDatabaseService.save();
+        }
       }
 
       let header;
