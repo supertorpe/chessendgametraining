@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, redrawIconImages, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, urlIcon } from '../commons';
 import { Category, EndgameDatabase, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
@@ -235,9 +235,13 @@ class PositionController extends BaseController {
 
   onEnter($routeParams?: any): void {
     const self = this;
+    // prevent menu swipe gesture
     menuController.get(MAIN_MENU_ID).then(function (menu) {
       if (menu) menu.swipeGesture = false;
     });
+    // prevent screen off
+    requestWakeLock();
+
     this.useSyzygy = configurationService.configuration.useSyzygy;
     const endgameDatabase = endgameDatabaseService.endgameDatabase;
     let categories = endgameDatabase.categories;
@@ -349,11 +353,8 @@ class PositionController extends BaseController {
       },
       showPreviousPosition() {
         if (this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0) {
-          self.onExit().then(value => {
+          self.showExitDialog().then(value => {
             if (value) {
-              menuController.get(MAIN_MENU_ID).then(function (menu) {
-                if (menu) menu.swipeGesture = false;
-              });
               this.idxGame--;
               if (this.idxGame < 0) {
                 this.idxSubcategory--;
@@ -377,11 +378,8 @@ class PositionController extends BaseController {
       },
       showNextPosition() {
         if (!(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame)) {
-          self.onExit().then(value => {
+          self.showExitDialog().then(value => {
             if (value) {
-              menuController.get(MAIN_MENU_ID).then(function (menu) {
-                if (menu) menu.swipeGesture = false;
-              });
               this.idxGame++;
               if (this.idxGame > this.idxLastGame) {
                 this.idxSubcategory++;
@@ -890,7 +888,7 @@ class PositionController extends BaseController {
     return { 'kind': this.seo };
   }
 
-  onExit(): Promise<boolean> {
+  private showExitDialog(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
       if (this.moveList.length == 0) {
         resolve(true);
@@ -914,9 +912,6 @@ class PositionController extends BaseController {
               this.waitingForOpponent.value = false;
               redrawIconImages();
               stockfishService.postMessage('stop');
-              menuController.get(MAIN_MENU_ID).then(function (menu) {
-                if (menu) menu.swipeGesture = true;
-              });
               resolve(true);
             }
           }
@@ -924,6 +919,19 @@ class PositionController extends BaseController {
       });
       alert.present();
     });
+  }
+
+  onExit(): Promise<boolean> {
+    return this.showExitDialog().then((result) => {
+      if (result) {
+        menuController.get(MAIN_MENU_ID).then(function (menu) {
+          if (menu) menu.swipeGesture = true;
+        });
+        releaseWakeLock();
+      }
+      return result;
+    });
+    
   }
 
 }

@@ -7,4 +7,5 @@ export * from './board-theme-switcher-service';
 export * from './syzygy-service';
 export * from './stockfish-service';
 export * from './sound-service';
+export * from './wakelock-service';
 export * from './services';
