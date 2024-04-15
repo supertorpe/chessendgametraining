@@ -67,26 +67,25 @@
                     </template>
                     <ion-item lines="none"></ion-item>
                 </ion-list>
-                <template x-if="position.waitingForOpponent.value || position.solving.value">
-                    <ion-buttons class="action_buttons">
+                <ion-buttons class="action_buttons">
+                    <template x-if="position.waitingForOpponent.value || position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="thinking">
                             <ion-spinner name="circular"></ion-spinner>
                         </ion-button>
-                        <template x-if="position.askingForHint.value || position.solving.value">
-                            <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
-                                x-on:click="stop()">
-                                <ion-icon class="aura" data-name="stop"></ion-icon>
-                            </ion-button>
-                        </template>
-                    </ion-buttons>
-                </template>
-                <template x-if="!position.waitingForOpponent.value && !position.solving.value">
-                    <ion-buttons class="action_buttons">
+                    </template>
+                    <template x-if="position.askingForHint.value || position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
+                            x-on:click="stop()">
+                            <ion-icon class="aura" data-name="stop"></ion-icon>
+                        </ion-button>
+                    </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
                             x-on:click="showRestartDialog()">
                             <ion-icon class="aura" data-name="power"></ion-icon>
                         </ion-button>
-                        <!--
+                    </template>
+                    <!--
                     <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
                         <ion-icon class="aura" data-name="arrow-undo"></ion-icon>
                     </ion-button>
@@ -94,17 +93,20 @@
                         <ion-icon class="aura" data-name="swap-vertical"></ion-icon>
                     </ion-button>
                     -->
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark"
                             x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
                             x-on:click="hint()">
                             <ion-icon class="aura" data-name="bulb"></ion-icon>
                         </ion-button>
+                    </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark"
                             x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
                             x-on:click="solve()">
                             <ion-icon class="aura" data-name="color-wand"></ion-icon>
                         </ion-button>
-                </template>
+                    </template>
                 </ion-buttons>
                 <!--
                     <ion-grid>

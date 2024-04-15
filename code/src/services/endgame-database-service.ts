@@ -47,6 +47,10 @@ class EndgameDatabaseService {
         return storageService.get('ENDGAME_DATABASE');
     }
 
+    public save(): Promise<EndgameDatabase> {
+        return storageService.set('ENDGAME_DATABASE', this._endgameDatabase);
+    }
+
     private enrich(database: EndgameDatabase, pieceTheme: string) {
         const color = themeSwitcherService.currentTheme() == 'dark' ? 'w' : 'b';
         database.count = database.categories.length;

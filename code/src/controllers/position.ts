@@ -17,6 +17,7 @@ class PositionController extends BaseController {
   private chess: ChessInstance = Chess();
   private board!: Api;
   private boardConfig!: Config;
+  private position!: Position;
   private fen!: string;
   private moveList: MoveItem[] = Alpine.reactive([]);
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
@@ -28,6 +29,7 @@ class PositionController extends BaseController {
   private waitingForOpponent = Alpine.reactive({ value: false });
   private askingForHint = Alpine.reactive({ value: false });
   private solving = Alpine.reactive({ value: false });
+  private assistanceUsed = false;
 
   constructor() {
     super();
@@ -60,7 +62,7 @@ class PositionController extends BaseController {
       infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
     infoMoves.style.height = `${infoWrapper.clientHeight - (infoTarget.clientHeight)}px`;
-    actionButtons.style.width = infoWrapper.style.width;
+    actionButtons.style.width = `${infoWrapper.clientWidth}px`;
   }
 
   private toDests(): Map<Key, Key[]> {
@@ -90,6 +92,7 @@ class PositionController extends BaseController {
     });
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
+    this.assistanceUsed = false;
   }
 
   private showRestartDialog() {
@@ -233,7 +236,6 @@ class PositionController extends BaseController {
     let category: Category;
     let subcategory: Subcategory;
     let idxGame: number;
-    let game: Position;
     let idxLastSubcategory: number;
     let idxLastGame: number;
 
@@ -248,11 +250,11 @@ class PositionController extends BaseController {
       category = categories[idxCategory];
       subcategory = category.subcategories[idxSubcategory];
       idxGame = parseInt($routeParams['idxGame']);
-      game = subcategory.games[idxGame];
+      this.position = subcategory.games[idxGame];
       idxLastSubcategory = category.count - 1;
       idxLastGame = subcategory.count - 1;
-      this.fen = game.fen;
-      this.target = game.target;
+      this.fen = this.position.fen;
+      this.target = this.position.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
     }
 
@@ -313,7 +315,7 @@ class PositionController extends BaseController {
       idxGame: idxGame,
       category: category,
       subcategory: subcategory,
-      game: game,
+      game: this.position,
       moveList: self.moveList,
       movePointer: self.movePointer,
       move: move,
@@ -345,7 +347,10 @@ class PositionController extends BaseController {
               }
               this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
               this.showNavNext = true;
-              self.fen = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame].fen;
+              self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
+              self.fen = self.position.fen;
+              self.target = self.position.target;
+              this.listUrl = `/list/${this.idxCategory}/${this.idxSubcategory}`;
               self.resetPosition.call(self);
             }
           });
@@ -371,7 +376,10 @@ class PositionController extends BaseController {
               }
               this.showNavPrev = true;
               this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
-              self.fen = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame].fen;
+              self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
+              self.fen = self.position.fen;
+              self.target = self.position.target;
+              this.listUrl = `/list/${this.idxCategory}/${this.idxSubcategory}`;
               self.resetPosition.call(self);
             }
           });
@@ -509,29 +517,51 @@ class PositionController extends BaseController {
     if (result) {
       this.gameOver.value = true;
       this.solving.value = false;
-      if ('checkmate' !== this.target && !this.chess.in_checkmate() ||
-        'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn())) {
+      const goalAchieved = ('checkmate' !== this.target && !this.chess.in_checkmate() ||
+        'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn()));
+      const record = goalAchieved && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
+
+      if (goalAchieved) {
         soundService.playAudio('success');
       } else {
         soundService.playAudio('fail');
       }
 
-      let message;
+      // update database status
+      if (!goalAchieved && !this.position.record) {
+        this.position.record = -1;
+        endgameDatabaseService.save();
+      } else if (record) {
+        this.position.record = this.moveList[this.movePointer.value].order;
+        endgameDatabaseService.save();
+      }
+
+      let header;
       if (this.chess.in_checkmate())
-        message = 'position.checkmate';
+        header = 'position.checkmate';
       else if (this.chess.in_stalemate())
-        message = 'position.stalemate';
+        header = 'position.stalemate';
       else if (this.chess.insufficient_material())
-        message = 'position.insufficent-material';
+        header = 'position.insufficent-material';
       else if (this.chess.in_threefold_repetition())
-        message = 'position.three-repetition';
+        header = 'position.three-repetition';
       else if (this.chess.in_draw())
-        message = 'position.rule-fifty';
+        header = 'position.rule-fifty';
       else
-        message = 'position.game-over';
+        header = 'position.game-over';
+
+      let message;
+      if (!goalAchieved)
+        message = 'position.keep-practicing';
+      else if (this.assistanceUsed)
+        message = 'position.used-assistance';
+      else if (record)
+        message = 'position.new-record';
+      else
+        message = 'position.goal-achieved';
 
       alertController.create({
-        header: window.AlpineI18n.t('position.game-over'),
+        header: window.AlpineI18n.t(header),
         message: window.AlpineI18n.t(`${message}`),
         buttons: [
           {
@@ -544,7 +574,6 @@ class PositionController extends BaseController {
     }
     return result;
   }
-
 
   private numberOfPieces(fen: string) {
     return fen.substring(0, fen.indexOf(" ")).replace(/\d/g, "").replace(/\//g, "").length;
@@ -575,6 +604,7 @@ class PositionController extends BaseController {
 
   private processOpponentMove(from: string, to: string, promotion: string | undefined) {
     this.waitingForOpponent.value = false;
+    if (this.askingForHint.value || this.solving.value) this.assistanceUsed = true;
     redrawIconImages();
     if (this.askingForHint.value) {
       this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
