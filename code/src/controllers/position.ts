@@ -427,6 +427,7 @@ class PositionController extends BaseController {
         requestAnimationFrame(() => {
           self.resizeBoard();
         });
+        this.$nextTick().then(() => { routeService.updatePageLinks(); });
         ['manualMode'].forEach((item) => {
           this.$watch(item, (_value) => {
             redrawIconImages();
