@@ -31,6 +31,7 @@ class PositionController extends BaseController {
   private solvingTrivial = false;
   private assistanceUsed = false;
   private trivialPositionInvitationShown = false;
+  private mateDistance = 0;
 
   constructor() {
     super();
@@ -628,6 +629,7 @@ class PositionController extends BaseController {
   private getOpponentMove() {
     let moveFunk;
     let wait = false;
+    this.mateDistance = 0;
     if (this.useSyzygy && pieceTotalCount(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
       wait = this.solving.value;
@@ -667,7 +669,7 @@ class PositionController extends BaseController {
     } else {
       soundService.playAudio('move');
       if (this.solving.value) this.getOpponentMove();
-      else  if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
+      else if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
         this.trivialPositionInvitationShown = true;
         alertController.create({
           header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
@@ -678,7 +680,7 @@ class PositionController extends BaseController {
               role: 'cancel',
               cssClass: 'overlay-button',
               handler: () => {
-                
+
               }
             }, {
               text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
@@ -690,6 +692,22 @@ class PositionController extends BaseController {
             }
           ]
         }).then(alert => alert.present());
+      } else if (this.mateDistance != 0) {
+        if (this.player == 'w' && this.mateDistance > 0 || this.player == 'b' && this.mateDistance < 0) {
+          toastController.create({
+            message: window.AlpineI18n.t('position.mate-in', {moves: Math.abs(this.mateDistance)}),
+            position: 'middle',
+            color: 'success',
+            duration: 1000
+          }).then(toast => toast.present());
+        } else {
+          toastController.create({
+            message: window.AlpineI18n.t('position.receive-mate-in'),
+            position: 'middle',
+            color: 'warning',
+            duration: 1000
+          }).then(toast => toast.present());
+        }
       }
     }
   }
@@ -820,6 +838,11 @@ class PositionController extends BaseController {
       const to = match[2];
       const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
       this.processOpponentMove(from, to, promotion);
+    } else if (match = message.match(/^info .*\bscore (\w+) (-?\d+)/)) {
+      if (match[1] == 'mate') {
+        const score = parseInt(match[2]) * (this.chess.turn() == 'w' ? 1 : -1);
+        if (this.mateDistance == 0 || Math.abs(score) < this.mateDistance) this.mateDistance = score;
+      }
     }
   }
 
