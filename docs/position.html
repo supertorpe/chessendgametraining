@@ -24,17 +24,9 @@
                 </ion-buttons>
             </template>
             <template x-if="!customFen">
-                <ion-title class="ion-text-center">
-                    <ion-router-link x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" color="dark" data-navigo>
-                        <!--
-                        <template x-for="imageUrl in subcategory.imageUrls">
-                            <img x-bind:src="imageUrl" alt="ariaDescriptionFromIcon(imageUrl)"
-                                class="responsive-thumbnail aura" />
-                        </template>
-                        -->
+                <ion-title class="ion-text-center" x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" data-navigo>
                         <ion-label class="responsive-text"
                             x-text="' [ ' + (idxGame + 1) + ' / ' + (idxLastGame + 1) + ' ]'"></ion-label>
-                    </ion-router-link>
                 </ion-title>
             </template>
         </ion-toolbar>
