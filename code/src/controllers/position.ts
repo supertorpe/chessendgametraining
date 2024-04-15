@@ -696,14 +696,14 @@ class PositionController extends BaseController {
         if (this.player == 'w' && this.mateDistance > 0 || this.player == 'b' && this.mateDistance < 0) {
           toastController.create({
             message: window.AlpineI18n.t('position.mate-in', {moves: Math.abs(this.mateDistance)}),
-            position: 'middle',
+            position: 'top',
             color: 'success',
             duration: 1000
           }).then(toast => toast.present());
         } else {
           toastController.create({
             message: window.AlpineI18n.t('position.receive-mate-in'),
-            position: 'middle',
+            position: 'top',
             color: 'warning',
             duration: 1000
           }).then(toast => toast.present());
@@ -723,6 +723,7 @@ class PositionController extends BaseController {
         const from = match[1];
         const to = match[2];
         const promotion = match[3];
+        if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm;
         this.processOpponentMove(from, to, promotion);
       })
       ).catch((_err) => {
