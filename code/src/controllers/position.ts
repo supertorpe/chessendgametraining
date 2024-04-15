@@ -599,7 +599,6 @@ class PositionController extends BaseController {
       const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
 
       if (goalAchieved) {
-        this.mustShowExitDialog = false;
         soundService.playAudio('success');
       } else {
         soundService.playAudio('fail');
@@ -635,10 +634,13 @@ class PositionController extends BaseController {
         message = 'position.keep-practicing';
       else if (this.assistanceUsed)
         message = 'position.used-assistance';
-      else if (record)
+      else if (record) {
+        this.mustShowExitDialog = false;
         message = 'position.new-record';
-      else
+      }  else {
+        this.mustShowExitDialog = false;
         message = 'position.goal-achieved';
+      }
 
       alertController.create({
         header: window.AlpineI18n.t(header),
