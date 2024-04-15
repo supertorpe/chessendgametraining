@@ -109,3 +109,41 @@ export const setupSEO = (template: string, params: any) => {
     setTitle(window.AlpineI18n.t(`${page}.seo.title`, params));
     setMeta('description', window.AlpineI18n.t(`${page}.seo.meta_description`, params));
 };
+
+export const pieceTotalCount = (fen: string) => {
+    return fen.substring(0, fen.indexOf(" ")).replace(/\d/g, "").replace(/\//g, "").length;
+};
+
+export const pieceCount = (fen: string): { [key: string]: number } => {
+    const pieceCount: { [key: string]: number } = {
+        'P': 0, // White pawn
+        'N': 0, // White knight
+        'B': 0, // White bishop
+        'R': 0, // White rook
+        'Q': 0, // White queen
+        'K': 0, // White king
+        'p': 0, // Black pawn
+        'n': 0, // Black knight
+        'b': 0, // Black bishop
+        'r': 0, // Black rook
+        'q': 0, // Black queen
+        'k': 0  // Black king
+    };
+
+    const rows = fen.split(' ')[0].split('/'); // Split FEN into rows
+    rows.forEach((row) => {
+        let file = 0;
+        for (let i = 0; i < row.length; i++) {
+            const char = row[i];
+            if (!isNaN(parseInt(char))) {
+                file += parseInt(char); // If it's a number, skip that many files
+            } else {
+                pieceCount[char]++; // Increment count for the piece
+                file++; // Move to the next file
+            }
+        }
+    });
+
+    return pieceCount;
+}
+

@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, urlIcon } from '../commons';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, urlIcon } from '../commons';
 import { Category, EndgameDatabase, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -21,15 +21,16 @@ class PositionController extends BaseController {
   private fen!: string;
   private moveList: MoveItem[] = Alpine.reactive([]);
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
-  private player!: "white" | "black";
-  //private engine!: "white" | "black";
+  private player!: "w" | "b";
   private target!: string;
   private useSyzygy = false;
   private gameOver = Alpine.reactive({ value: false });
   private waitingForOpponent = Alpine.reactive({ value: false });
   private askingForHint = Alpine.reactive({ value: false });
   private solving = Alpine.reactive({ value: false });
+  private solvingTrivial = false;
   private assistanceUsed = false;
+  private trivialPositionInvitationShown = false;
 
   constructor() {
     super();
@@ -81,6 +82,7 @@ class PositionController extends BaseController {
     stockfishService.postMessage('stop');
     this.chess.load(this.fen);
     const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+    this.player = this.chess.turn() == 'w' ? 'w' : 'b';
     this.board.set({
       fen: this.chess.fen(),
       turnColor: turn,
@@ -93,6 +95,8 @@ class PositionController extends BaseController {
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
     this.assistanceUsed = false;
+    this.solvingTrivial = false;
+    this.trivialPositionInvitationShown = this.isTrivialPosition();
   }
 
   private showRestartDialog() {
@@ -262,11 +266,11 @@ class PositionController extends BaseController {
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
     this.gameOver.value = false;
+    this.player = this.chess.turn() == 'w' ? 'w' : 'b';
+    this.trivialPositionInvitationShown = this.isTrivialPosition();
 
     const turnWhite = this.chess.turn() == 'w';
     const turnColor: Color = (turnWhite ? 'white' : 'black');
-    this.player = turnColor;
-    //this.engine = this.player == 'white' ? 'black' : 'white';
     const move = (turnWhite ? 'white' : 'black');
     const targetImage = urlIcon(turnWhite ? 'wK.svg' : 'bK.svg', configurationService.configuration.pieceTheme);
     this.boardConfig = {
@@ -443,7 +447,7 @@ class PositionController extends BaseController {
     if (orig == 'a0' || dest == 'a0') return;
     // check promotion
     if (this.chess.get(orig)?.type == 'p' && (dest.charAt(1) == '8' || dest.charAt(1) == '1')) {
-      routeService.openModal('promotion', 'promotion.html', promotionController, false, true, this.player[0]).then((data: any) => {
+      routeService.openModal('promotion', 'promotion.html', promotionController, false, true, this.player).then((data: any) => {
         this.registerMove(orig, dest, data.piece);
       });
     } else {
@@ -491,6 +495,18 @@ class PositionController extends BaseController {
     }
   }
 
+  // The opponent has only its king and the player has, at least, one queen or one rook
+  private isTrivialPosition() {
+    const pieceCounts = pieceCount(this.chess.fen());
+    let playerHasRookOrQueen = false;
+    for (const piece in pieceCounts) {
+      const isPlayerPiece = (piece == piece.toUpperCase() && this.player === 'w') || (piece === piece.toLowerCase() && this.player === 'b');
+      if (!isPlayerPiece && piece.toUpperCase() != 'K' && pieceCounts[piece] > 0) return false;
+      if (isPlayerPiece && (piece.toUpperCase() == 'Q' || piece.toUpperCase() == 'R') && pieceCounts[piece] > 0) playerHasRookOrQueen = true;
+    }
+    return playerHasRookOrQueen;
+  }
+
   private registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
     const prevFen = this.chess.fen();
     this.chess.move({
@@ -505,7 +521,32 @@ class PositionController extends BaseController {
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
-      this.getOpponentMove();
+      if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
+        this.trivialPositionInvitationShown = true;
+        alertController.create({
+          header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
+          message: window.AlpineI18n.t('position.confirm-trivial-position.message'),
+          buttons: [
+            {
+              text: window.AlpineI18n.t('position.confirm-trivial-position.no'),
+              role: 'cancel',
+              cssClass: 'overlay-button',
+              handler: () => {
+                this.getOpponentMove();
+              }
+            }, {
+              text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
+              cssClass: 'overlay-button',
+              handler: () => {
+                this.solvingTrivial = true;
+                this.solve();
+              }
+            }
+          ]
+        }).then(alert => alert.present());
+      } else {
+        this.getOpponentMove();
+      }
     }
   }
 
@@ -515,7 +556,7 @@ class PositionController extends BaseController {
       this.gameOver.value = true;
       this.solving.value = false;
       const goalAchieved = ('checkmate' !== this.target && !this.chess.in_checkmate() ||
-        'checkmate' === this.target && this.chess.in_checkmate() && !this.player.startsWith(this.chess.turn()));
+        'checkmate' === this.target && this.chess.in_checkmate() && this.player != this.chess.turn());
       const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
 
       if (goalAchieved) {
@@ -525,7 +566,7 @@ class PositionController extends BaseController {
       }
 
       // update database status
-      if (this.position) {
+      if (this.position && !this.assistanceUsed) {
         if (!goalAchieved && !this.position.record) {
           this.position.record = -1;
           endgameDatabaseService.save();
@@ -574,10 +615,6 @@ class PositionController extends BaseController {
     return result;
   }
 
-  private numberOfPieces(fen: string) {
-    return fen.substring(0, fen.indexOf(" ")).replace(/\d/g, "").replace(/\//g, "").length;
-  }
-
   private getHint() {
     this.askingForHint.value = true;
     this.getOpponentMove();
@@ -591,7 +628,7 @@ class PositionController extends BaseController {
   private getOpponentMove() {
     let moveFunk;
     let wait = false;
-    if (this.useSyzygy && this.numberOfPieces(this.chess.fen()) <= 7) {
+    if (this.useSyzygy && pieceTotalCount(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
       wait = this.solving.value;
     } else {
@@ -603,7 +640,7 @@ class PositionController extends BaseController {
 
   private processOpponentMove(from: string, to: string, promotion: string | undefined) {
     this.waitingForOpponent.value = false;
-    if (this.askingForHint.value || this.solving.value) this.assistanceUsed = true;
+    if (!this.solvingTrivial && (this.askingForHint.value || this.solving.value)) this.assistanceUsed = true;
     redrawIconImages();
     if (this.askingForHint.value) {
       this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
@@ -630,6 +667,30 @@ class PositionController extends BaseController {
     } else {
       soundService.playAudio('move');
       if (this.solving.value) this.getOpponentMove();
+      else  if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
+        this.trivialPositionInvitationShown = true;
+        alertController.create({
+          header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
+          message: window.AlpineI18n.t('position.confirm-trivial-position.message'),
+          buttons: [
+            {
+              text: window.AlpineI18n.t('position.confirm-trivial-position.no'),
+              role: 'cancel',
+              cssClass: 'overlay-button',
+              handler: () => {
+                
+              }
+            }, {
+              text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
+              cssClass: 'overlay-button',
+              handler: () => {
+                this.solvingTrivial = true;
+                this.solve();
+              }
+            }
+          ]
+        }).then(alert => alert.present());
+      }
     }
   }
 

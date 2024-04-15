@@ -93,6 +93,12 @@
                 "message": "Sure to delete this move and the folllowing ones?",
                 "no": "No",
                 "yes": "Yes"
+            },
+            "confirm-trivial-position": {
+                "header": "Attention",
+                "message": "You have reached a trivial position. Do you want to solve the rest automatically?",
+                "no": "No",
+                "yes": "Yes"
             }
         },
         "settings": {
@@ -251,6 +257,12 @@
             "confirm-prune": {
                 "header": "Atención",
                 "message": "¿Seguro de eliminar este movimiento y los siguientes?",
+                "no": "No",
+                "yes": "Sí"
+            },
+            "confirm-trivial-position": {
+                "header": "Atención",
+                "message": "Ha llegado a una posición trivial. ¿Quiere resolver el resto automáticamente?",
                 "no": "No",
                 "yes": "Sí"
             }
