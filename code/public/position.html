@@ -85,14 +85,6 @@
                             <ion-icon class="aura" data-name="power"></ion-icon>
                         </ion-button>
                     </template>
-                    <!--
-                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
-                        <ion-icon class="aura" data-name="arrow-undo"></ion-icon>
-                    </ion-button>
-                    <ion-button size="small" fill="clear" expand="full" color="dark" disabled="true">
-                        <ion-icon class="aura" data-name="swap-vertical"></ion-icon>
-                    </ion-button>
-                    -->
                     <template x-if="!position.waitingForOpponent.value && !position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark"
                             x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
@@ -107,83 +99,15 @@
                             <ion-icon class="aura" data-name="color-wand"></ion-icon>
                         </ion-button>
                     </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark"
+                            x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
+                            x-on:click="toggleManualMode()">
+                            <ion-icon class="aura" data-name="person"></ion-icon>
+                            <ion-icon class="aura" x-bind:data-name="manualMode.value ? 'person': 'desktop-outline'"></ion-icon>
+                        </ion-button>
+                    </template>
                 </ion-buttons>
-                <!--
-                    <ion-grid>
-                        <ion-row>
-                            <ion-col size="2" class="ion-text-center">
-                                <ion-button size="small" fill="clear" color="dark" aria-label="restart" disabled="true">
-                                    <ion-icon slot="icon-only" class="aura" data-name="power"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2" class="ion-text-center">
-                                <ion-button size="small" fill="clear" color="dark" disabled="true">
-                                    <ion-icon slot="icon-only" class="aura" data-name="arrow-undo"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2" class="ion-text-center">
-                                <ion-button size="small" fill="clear" color="dark" disabled="true">
-                                    <ion-icon slot="icon-only" class="aura" data-name="swap-vertical"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2" class="ion-text-center">
-                                <ion-button size="small" fill="clear" color="dark" disabled="true">
-                                    <ion-icon slot="icon-only" class="aura" data-name="bulb"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2" class="ion-text-center">
-                                <ion-button size="small" fill="clear" color="dark" disabled="true">
-                                    <ion-icon slot="icon-only" class="aura" data-name="color-wand"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                    -->
-                <!--
-                    <ion-grid>
-                        <ion-row>
-                            <ion-col size="2">
-                                <ion-button (click)="btnFlipClick()" size="small" fill="clear" color="dark">
-                                    <ion-icon slot="icon-only" data-name="sync"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-button [disabled]="autoplaying || chessboard.isShowingFirstPosition()"
-                                    (click)="btnShowFirstPositionClick()" size="small" fill="clear" color="dark">
-                                    <ion-icon slot="icon-only" name="play-skip-back-outline"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-button [disabled]="autoplaying || chessboard.isShowingFirstPosition()"
-                                    (click)="btnShowPreviousPositionClick()" size="small" fill="clear" color="dark">
-                                    <ion-icon slot="icon-only" name="play-back-outline"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-button *ngIf="!autoplaying" [disabled]="chessboard.isShowingLatestPosition()"
-                                    (click)="btnPlayClick()" size="small" fill="clear" color="dark">
-                                    <ion-icon slot="icon-only" name="play-outline"></ion-icon>
-                                </ion-button>
-                                <ion-button *ngIf="autoplaying" (click)="btnPauseClick()" size="small" fill="clear"
-                                    color="dark">
-                                    <ion-icon slot="icon-only" name="pause-outline"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-button [disabled]="autoplaying || chessboard.isShowingLatestPosition()"
-                                    (click)="btnShowNextPositionClick()" size="small" fill="clear" color="dark">
-                                    <ion-icon slot="icon-only" name="play-forward-outline"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                            <ion-col size="2">
-                                <ion-button [disabled]="autoplaying || chessboard.isShowingLatestPosition()"
-                                    (click)="btnShowLatestPositionClick()" size="small" fill="clear" color="dark">
-                                    <ion-icon slot="icon-only" name="play-skip-forward-outline"></ion-icon>
-                                </ion-button>
-                            </ion-col>
-                        </ion-row>
-                    </ion-grid>
-                    -->
             </div>
 
             <!--

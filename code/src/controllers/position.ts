@@ -32,6 +32,7 @@ class PositionController extends BaseController {
   private assistanceUsed = false;
   private trivialPositionInvitationShown = false;
   private mateDistance = 0;
+  private manualMode = Alpine.reactive({ value: false });
 
   constructor() {
     super();
@@ -90,6 +91,7 @@ class PositionController extends BaseController {
       lastMove: [],
       viewOnly: false,
       movable: {
+        color: turn,
         dests: this.toDests()
       }
     });
@@ -98,6 +100,7 @@ class PositionController extends BaseController {
     this.assistanceUsed = false;
     this.solvingTrivial = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
+    this.manualMode.value = false;
   }
 
   private showRestartDialog() {
@@ -196,6 +199,7 @@ class PositionController extends BaseController {
             lastMove: [move.from2 as Key, move.to2 as Key],
             viewOnly: this.gameOver.value,
             movable: {
+              color: turn,
               dests: this.toDests()
             }
           });
@@ -211,6 +215,7 @@ class PositionController extends BaseController {
         lastMove: [],
         viewOnly: false,
         movable: {
+          color: turn,
           dests: this.toDests()
         }
       });
@@ -323,6 +328,7 @@ class PositionController extends BaseController {
       game: this.position,
       moveList: self.moveList,
       movePointer: self.movePointer,
+      manualMode: self.manualMode,
       move: move,
       targetImage: targetImage,
       idxLastSubcategory: idxLastSubcategory,
@@ -331,6 +337,16 @@ class PositionController extends BaseController {
       showNavNext: !(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory && idxGame === idxLastGame),
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
+      toggleManualMode() {
+        this.manualMode.value = !this.manualMode.value;
+        toastController.create({
+          message: window.AlpineI18n.t(`position.mode-${this.manualMode.value ? 'manual' : 'engine'}`),
+          position: 'middle',
+          color: 'success',
+          duration: 2000
+        }).then(toast => toast.present());
+        if (self.movePointer.value >= 0 && !self.moveList[self.movePointer.value].move2) self.getOpponentMove();
+      },
       showPreviousPosition() {
         if (this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0) {
           self.onExit().then(value => {
@@ -410,6 +426,11 @@ class PositionController extends BaseController {
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
         requestAnimationFrame(() => {
           self.resizeBoard();
+        });
+        ['manualMode'].forEach((item) => {
+          this.$watch(item, (_value) => {
+            redrawIconImages();
+          });
         });
         this.$watch('movePointer', (_value) => {
           const movelist = document.querySelector('.info_moves') as HTMLIonListElement;
@@ -509,6 +530,22 @@ class PositionController extends BaseController {
   }
 
   private registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
+    const nextMove = () => {
+      if (!this.manualMode.value) {
+        this.getOpponentMove();
+      } else {
+        const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+        this.board.set({
+          fen: this.chess.fen(),
+          turnColor: turn,
+          viewOnly: false,
+          movable: {
+            color: turn,
+            dests: this.toDests()
+          }
+        });
+      }
+    };
     const prevFen = this.chess.fen();
     this.chess.move({
       from: source,
@@ -533,7 +570,7 @@ class PositionController extends BaseController {
               role: 'cancel',
               cssClass: 'overlay-button',
               handler: () => {
-                this.getOpponentMove();
+                nextMove();
               }
             }, {
               text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
@@ -546,7 +583,7 @@ class PositionController extends BaseController {
           ]
         }).then(alert => alert.present());
       } else {
-        this.getOpponentMove();
+        nextMove();
       }
     }
   }
@@ -658,6 +695,7 @@ class PositionController extends BaseController {
       fen: this.chess.fen(),
       turnColor: turn,
       movable: {
+        color: turn,
         dests: this.toDests()
       }
     });
@@ -695,7 +733,7 @@ class PositionController extends BaseController {
       } else if (this.mateDistance != 0) {
         if (this.player == 'w' && this.mateDistance > 0 || this.player == 'b' && this.mateDistance < 0) {
           toastController.create({
-            message: window.AlpineI18n.t('position.mate-in', {moves: Math.abs(this.mateDistance)}),
+            message: window.AlpineI18n.t('position.mate-in', { moves: Math.abs(this.mateDistance) }),
             position: 'top',
             color: 'success',
             duration: 1000
