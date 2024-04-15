@@ -33,6 +33,7 @@ class PositionController extends BaseController {
   private trivialPositionInvitationShown = false;
   private mateDistance = 0;
   private manualMode = Alpine.reactive({ value: false });
+  private mustShowExitDialog = true;
 
   constructor() {
     super();
@@ -101,6 +102,7 @@ class PositionController extends BaseController {
     this.solvingTrivial = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
+    this.mustShowExitDialog = true;
   }
 
   private showRestartDialog() {
@@ -597,6 +599,7 @@ class PositionController extends BaseController {
       const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
 
       if (goalAchieved) {
+        this.mustShowExitDialog = false;
         soundService.playAudio('success');
       } else {
         soundService.playAudio('fail');
@@ -890,7 +893,7 @@ class PositionController extends BaseController {
 
   private showExitDialog(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
-      if (this.moveList.length == 0) {
+      if (this.moveList.length == 0 || !this.mustShowExitDialog) {
         resolve(true);
         return;
       }

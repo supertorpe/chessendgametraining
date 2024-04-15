@@ -48,7 +48,7 @@
                         <ion-label x-text="position.fen"></ion-label>
                     </ion-item>
                     <template x-for="(move, idx) in moveList" :key="move.order + '.' + move.move1 + move.move2 + move.fen2">
-                        <ion-item x-bind:id="'item-' + movePointer.value" button="true"
+                        <ion-item x-bind:id="'item-' + movePointer.value" button="true" lines="none"
                             x-bind:color="idx == movePointer.value ? 'medium' : ''" x-on:click="gotoMove(idx)">
                             <ion-label x-text="(move.order) + '. '"></ion-label>
                             <ion-label class="text-figurine" x-text="move.move1"></ion-label>

@@ -7,7 +7,7 @@ import { settingsController } from './settings';
 
 class AppController extends BaseController {
     onEnter(_$routeParams?: any): void {
-        Alpine.data('info',  () => ({
+        Alpine.data('info', () => ({
             categories: clone(endgameDatabaseService.endgameDatabase.categories),
             categorySelected: '',
             selectCategory(category: string) {

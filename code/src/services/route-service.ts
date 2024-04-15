@@ -22,6 +22,7 @@ interface RouteMap {
 class RouteService {
 
     private navigo!: Navigo;
+    private routeMap!: RouteMap;
     private menuRegistered = false;
     private templates = new Map<string, string>();
     
@@ -117,7 +118,12 @@ class RouteService {
         this.navigo.updatePageLinks();
     }
 
+    public navigate(path: string) {
+        this.navigo.navigate(path);
+    }
+
     public init(routeMap: RouteMap) {
+        this.routeMap = routeMap;
         this.navigo = new Navigo(routeMap.mainRoute.path, { hash: routeMap.hash });
         const mainRoute = this.open(routeMap.mainRoute);
         routeMap.routes.forEach((route) => {

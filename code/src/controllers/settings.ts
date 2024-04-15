@@ -56,6 +56,12 @@ class SettingsController extends BaseController {
                 configurationService.configuration.boardTheme = boardTheme;
                 boardThemeSwitcherService.setTheme(boardTheme);
             },
+            // goto position
+            gotoPosition: configurationService.configuration.automaticShowFirstPosition,
+            gotoPositionChanged(checked: boolean) {
+                this.gotoPosition = checked;
+                configurationService.configuration.automaticShowFirstPosition = checked;
+            },
             // play sounds
             playSounds: configurationService.configuration.playSounds,
             playSoundsChanged(checked: boolean) {
@@ -109,6 +115,9 @@ class SettingsController extends BaseController {
                 const togglePlaySounds = document.getElementById('togglePlaySounds') as IonToggle;
                 togglePlaySounds.addEventListener('ionChange', () => { this.playSoundsChanged(togglePlaySounds.checked); });
                 
+                const toggleGotoPosition = document.getElementById('toggleGotoPosition') as IonToggle;
+                toggleGotoPosition.addEventListener('ionChange', () => { this.gotoPositionChanged(toggleGotoPosition.checked); });
+
                 const toggleUseSyzygy = document.getElementById('toggleUseSyzygy') as IonToggle;
                 toggleUseSyzygy.addEventListener('ionChange', () => { this.useSyzygyChanged(toggleUseSyzygy.checked); });
           
