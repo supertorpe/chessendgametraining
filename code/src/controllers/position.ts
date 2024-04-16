@@ -22,7 +22,7 @@ class PositionController extends BaseController {
   private moveList: MoveItem[] = Alpine.reactive([]);
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
   private player!: "w" | "b";
-  private target!: string;
+  //private target!: string;
   private useSyzygy = false;
   private gameOver = Alpine.reactive({ value: false });
   private waitingForOpponent = Alpine.reactive({ value: false });
@@ -259,7 +259,7 @@ class PositionController extends BaseController {
     const customFen = ($routeParams['fen1'] !== undefined);
     if (customFen) {
       this.fen = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
-      this.target = $routeParams['target'] || 'checkmate';
+      //this.target = $routeParams['target'] || 'checkmate';
       this.seo = this.fen;
     } else {
       idxCategory = parseInt($routeParams['idxCategory']);
@@ -271,7 +271,7 @@ class PositionController extends BaseController {
       idxLastSubcategory = category.count - 1;
       idxLastGame = subcategory.count - 1;
       this.fen = this.position.fen;
-      this.target = this.position.target;
+      //this.target = this.position.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
     }
 
@@ -284,7 +284,7 @@ class PositionController extends BaseController {
 
     const turnWhite = this.chess.turn() == 'w';
     const turnColor: Color = (turnWhite ? 'white' : 'black');
-    const move = (turnWhite ? 'white' : 'black');
+    //const move = (turnWhite ? 'white' : 'black');
     const targetImage = urlIcon(turnWhite ? 'wK.svg' : 'bK.svg', configurationService.configuration.pieceTheme);
     this.boardConfig = {
       fen: this.chess.fen(),
@@ -326,7 +326,7 @@ class PositionController extends BaseController {
       pieceTheme: configurationService.configuration.pieceTheme,
       customFen: customFen,
       fen: this.fen,
-      target: this.target,
+      target: customFen ? ($routeParams['target'] || 'checkmate') : this.position.target,
       idxCategory: idxCategory,
       idxSubcategory: idxSubcategory,
       idxGame: idxGame,
@@ -336,7 +336,7 @@ class PositionController extends BaseController {
       moveList: self.moveList,
       movePointer: self.movePointer,
       manualMode: self.manualMode,
-      move: move,
+      move: turnColor,
       targetImage: targetImage,
       idxLastSubcategory: idxLastSubcategory,
       idxLastGame: idxLastGame,
@@ -373,7 +373,9 @@ class PositionController extends BaseController {
               this.showNavNext = true;
               self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
               self.fen = self.position.fen;
-              self.target = self.position.target;
+              this.target = self.position.target;
+              this.chess.load(self.fen);
+              this.move = this.chess.turn() === 'w' ? 'white' : 'black';
               self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
               setupSEO('list.html', self.getSEOParams());
               window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
@@ -401,7 +403,9 @@ class PositionController extends BaseController {
               this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
               self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
               self.fen = self.position.fen;
-              self.target = self.position.target;
+              this.target = self.position.target;
+              this.chess.load(self.fen);
+              this.move = this.chess.turn() === 'w' ? 'white' : 'black';
               self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
               setupSEO('list.html', self.getSEOParams());
               window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
