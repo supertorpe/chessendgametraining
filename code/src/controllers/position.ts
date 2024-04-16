@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, urlIcon } from '../commons';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, setupSEO, urlIcon } from '../commons';
 import { Category, EndgameDatabase, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -374,6 +374,9 @@ class PositionController extends BaseController {
               self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
               self.fen = self.position.fen;
               self.target = self.position.target;
+              self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
+              setupSEO('list.html', self.getSEOParams());
+              window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
               self.resetPosition.call(self);
             }
           });
@@ -399,6 +402,9 @@ class PositionController extends BaseController {
               self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
               self.fen = self.position.fen;
               self.target = self.position.target;
+              self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
+              setupSEO('list.html', self.getSEOParams());
+              window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
               self.resetPosition.call(self);
             }
           });
