@@ -1,12 +1,12 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, setupSEO, urlIcon } from '../commons';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, setupSEO } from '../commons';
 import { Category, EndgameDatabase, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
-import { colors, MoveMetadata, Color, Key } from 'chessground/types';
+import { MoveMetadata, Color, Key } from 'chessground/types';
 import { Config } from 'chessground/config';
 import { promotionController } from './promotion';
 import { alertController, menuController, toastController } from '@ionic/core';
@@ -22,7 +22,8 @@ class PositionController extends BaseController {
   private moveList: MoveItem[] = Alpine.reactive([]);
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
   private player!: "w" | "b";
-  //private target!: string;
+  private target = Alpine.reactive({ value: '' });
+  private move = Alpine.reactive({ value: '' });
   private useSyzygy = false;
   private gameOver = Alpine.reactive({ value: false });
   private waitingForOpponent = Alpine.reactive({ value: false });
@@ -81,11 +82,12 @@ class PositionController extends BaseController {
   private resetPosition() {
     this.waitingForOpponent.value = false;
     redrawIconImages();
-    this.gameOver.value = false;
     stockfishService.postMessage('stop');
     this.chess.load(this.fen);
-    const turn = this.chess.turn() === 'w' ? 'white' : 'black';
-    this.player = this.chess.turn() == 'w' ? 'w' : 'b';
+    this.gameOver.value = false;
+    this.player = this.chess.turn();
+    const turn = this.player == 'w' ? 'white' : 'black';
+    this.move.value = turn;
     this.board.set({
       fen: this.chess.fen(),
       turnColor: turn,
@@ -96,6 +98,8 @@ class PositionController extends BaseController {
         dests: this.toDests()
       }
     });
+    if (this.board.state.orientation != turn)
+      this.board.toggleOrientation();
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
     this.assistanceUsed = false;
@@ -168,7 +172,7 @@ class PositionController extends BaseController {
       const move = this.moveList[idx];
       this.chess.load(move.prevFen);
       this.gameOver.value = this.chess.game_over();
-      const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+      const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       this.board.set({
         fen: this.chess.fen(),
         turnColor: turn,
@@ -181,7 +185,7 @@ class PositionController extends BaseController {
       setTimeout(() => {
         this.chess.load(move.fen1);
         this.gameOver.value = this.chess.game_over();
-        const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+        const turn = this.chess.turn() == 'w' ? 'white' : 'black';
         this.board.set({
           fen: this.chess.fen(),
           turnColor: turn,
@@ -194,7 +198,7 @@ class PositionController extends BaseController {
         setTimeout(() => {
           this.chess.load(move.fen2);
           this.gameOver.value = this.chess.game_over();
-          const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+          const turn = this.chess.turn() == 'w' ? 'white' : 'black';
           this.board.set({
             fen: this.chess.fen(),
             turnColor: turn,
@@ -210,7 +214,7 @@ class PositionController extends BaseController {
     } else {
       this.chess.load(this.fen);
       this.gameOver.value = this.chess.game_over();
-      const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+      const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       this.board.set({
         fen: this.chess.fen(),
         turnColor: turn,
@@ -259,7 +263,7 @@ class PositionController extends BaseController {
     const customFen = ($routeParams['fen1'] !== undefined);
     if (customFen) {
       this.fen = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
-      //this.target = $routeParams['target'] || 'checkmate';
+      this.target.value = $routeParams['target'] || 'checkmate';
       this.seo = this.fen;
     } else {
       idxCategory = parseInt($routeParams['idxCategory']);
@@ -271,7 +275,7 @@ class PositionController extends BaseController {
       idxLastSubcategory = category.count - 1;
       idxLastGame = subcategory.count - 1;
       this.fen = this.position.fen;
-      //this.target = this.position.target;
+      this.target.value = this.position.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
     }
 
@@ -279,17 +283,16 @@ class PositionController extends BaseController {
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
     this.gameOver.value = false;
-    this.player = this.chess.turn() == 'w' ? 'w' : 'b';
+    this.player = this.chess.turn();
     this.trivialPositionInvitationShown = this.isTrivialPosition();
 
     const turnWhite = this.chess.turn() == 'w';
     const turnColor: Color = (turnWhite ? 'white' : 'black');
-    //const move = (turnWhite ? 'white' : 'black');
-    const targetImage = urlIcon(turnWhite ? 'wK.svg' : 'bK.svg', configurationService.configuration.pieceTheme);
+    this.move.value = (turnWhite ? 'white' : 'black');
     this.boardConfig = {
       fen: this.chess.fen(),
-      orientation: (this.chess.turn() == 'w' ? colors[0] : colors[1]),
       viewOnly: false,
+      orientation: turnColor,
       turnColor: turnColor,
       premovable: {
         enabled: false
@@ -326,7 +329,8 @@ class PositionController extends BaseController {
       pieceTheme: configurationService.configuration.pieceTheme,
       customFen: customFen,
       fen: this.fen,
-      target: customFen ? ($routeParams['target'] || 'checkmate') : this.position.target,
+      target: self.target,
+      move: self.move,
       idxCategory: idxCategory,
       idxSubcategory: idxSubcategory,
       idxGame: idxGame,
@@ -336,8 +340,6 @@ class PositionController extends BaseController {
       moveList: self.moveList,
       movePointer: self.movePointer,
       manualMode: self.manualMode,
-      move: turnColor,
-      targetImage: targetImage,
       idxLastSubcategory: idxLastSubcategory,
       idxLastGame: idxLastGame,
       showNavPrev: idxSubcategory > 0 || idxCategory > 0 || idxGame > 0,
@@ -354,64 +356,42 @@ class PositionController extends BaseController {
         }).then(toast => toast.present());
         if (self.movePointer.value >= 0 && !self.moveList[self.movePointer.value].move2) self.getOpponentMove();
       },
-      showPreviousPosition() {
-        if (this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0) {
-          self.showExitDialog().then(value => {
-            if (value) {
-              this.idxGame--;
-              if (this.idxGame < 0) {
-                this.idxSubcategory--;
-                if (this.idxSubcategory < 0) {
-                  this.idxCategory--;
-                  this.idxSubcategory = categories[this.idxCategory].count - 1;
-                  this.idxLastSubcategory = this.idxSubcategory;
-                }
-                this.idxGame = categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
-                this.idxLastGame = this.idxGame;
+      movePosition(direction: number) {
+        self.showExitDialog().then(value => {
+          if (value) {
+            this.idxGame += direction;
+            if (this.idxGame < 0 || this.idxGame > this.idxLastGame) {
+              this.idxSubcategory += direction;
+              if (this.idxSubcategory < 0 || this.idxSubcategory > this.idxLastSubcategory) {
+                this.idxCategory += direction;
+                this.idxSubcategory = direction > 0 ? 0 : categories[this.idxCategory].count - 1;
+                this.idxLastSubcategory = categories[this.idxCategory].count - 1;
               }
-              this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
-              this.showNavNext = true;
-              self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
-              self.fen = self.position.fen;
-              this.target = self.position.target;
-              this.chess.load(self.fen);
-              this.move = this.chess.turn() === 'w' ? 'white' : 'black';
-              self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
-              setupSEO('list.html', self.getSEOParams());
-              window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
-              self.resetPosition.call(self);
+              this.idxGame = direction > 0 ? 0 : categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
+              this.idxLastGame = categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
             }
-          });
+            this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
+            this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
+            self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
+            self.target.value = self.position.target;
+            self.fen = self.position.fen;
+            self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
+            setupSEO('list.html', self.getSEOParams());
+            window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
+            self.resetPosition.call(self);
+          }
+        });
+      },
+      showPreviousPosition() {
+        const canMovePrevious = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
+        if (canMovePrevious) {
+          this.movePosition(-1);
         }
       },
       showNextPosition() {
-        if (!(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame)) {
-          self.showExitDialog().then(value => {
-            if (value) {
-              this.idxGame++;
-              if (this.idxGame > this.idxLastGame) {
-                this.idxSubcategory++;
-                if (this.idxSubcategory > this.idxLastSubcategory) {
-                  this.idxCategory++;
-                  this.idxSubcategory = 0;
-                  this.idxLastSubcategory = categories[this.idxCategory].count - 1;
-                }
-                this.idxGame = 0;
-                this.idxLastGame = categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
-              }
-              this.showNavPrev = true;
-              this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
-              self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
-              self.fen = self.position.fen;
-              this.target = self.position.target;
-              this.chess.load(self.fen);
-              this.move = this.chess.turn() === 'w' ? 'white' : 'black';
-              self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
-              setupSEO('list.html', self.getSEOParams());
-              window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
-              self.resetPosition.call(self);
-            }
-          });
+        const canMoveNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
+        if (canMoveNext) {
+          this.movePosition(1);
         }
       },
       showRestartDialog() {
@@ -491,8 +471,20 @@ class PositionController extends BaseController {
 
   private updateMoveList(prevFen: string, from: string, to: string) {
     const history = this.chess.history();
-    if (this.chess.turn() === 'w') {
-      const move = this.moveList[this.movePointer.value];
+    if (this.chess.turn() == 'w') {
+      let move: MoveItem;
+      if (this.movePointer.value < 0) {
+        move = {
+          order: 1,
+          prevFen: prevFen,
+          move1: '...', from1: '', to1: '', fen1: prevFen,
+          move2: '', from2: '', to2: '', fen2: ''
+        };
+        this.moveList.push(move)
+        this.movePointer.value = 0;
+      } else {
+        move = this.moveList[this.movePointer.value];
+      }
       move.move2 = history[history.length - 1];
       move.from2 = from;
       move.to2 = to;
@@ -534,7 +526,7 @@ class PositionController extends BaseController {
     const pieceCounts = pieceCount(this.chess.fen());
     let playerHasRookOrQueen = false;
     for (const piece in pieceCounts) {
-      const isPlayerPiece = (piece == piece.toUpperCase() && this.player === 'w') || (piece === piece.toLowerCase() && this.player === 'b');
+      const isPlayerPiece = (piece == piece.toUpperCase() && this.player == 'w') || (piece == piece.toLowerCase() && this.player == 'b');
       if (!isPlayerPiece && piece.toUpperCase() != 'K' && pieceCounts[piece] > 0) return false;
       if (isPlayerPiece && (piece.toUpperCase() == 'Q' || piece.toUpperCase() == 'R') && pieceCounts[piece] > 0) playerHasRookOrQueen = true;
     }
@@ -546,7 +538,7 @@ class PositionController extends BaseController {
       if (!this.manualMode.value) {
         this.getOpponentMove();
       } else {
-        const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+        const turn = this.chess.turn() == 'w' ? 'white' : 'black';
         this.board.set({
           fen: this.chess.fen(),
           turnColor: turn,
@@ -606,8 +598,9 @@ class PositionController extends BaseController {
       this.gameOver.value = true;
       this.solving.value = false;
       this.solvingTrivial = false;
-      const goalAchieved = ('checkmate' !== this.target && !this.chess.in_checkmate() ||
-        'checkmate' === this.target && this.chess.in_checkmate() && this.player != this.chess.turn());
+
+      const goalAchieved = ('checkmate' !== this.target.value && !this.chess.in_checkmate() ||
+        'checkmate' == this.target.value && this.chess.in_checkmate() && this.player != this.chess.turn());
       const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
 
       if (goalAchieved) {
@@ -649,7 +642,7 @@ class PositionController extends BaseController {
       else if (record) {
         this.mustShowExitDialog = false;
         message = 'position.new-record';
-      }  else {
+      } else {
         this.mustShowExitDialog = false;
         message = 'position.goal-achieved';
       }
@@ -664,7 +657,6 @@ class PositionController extends BaseController {
           }
         ]
       }).then(alert => alert.present());
-
     }
     return result;
   }
@@ -706,10 +698,12 @@ class PositionController extends BaseController {
     this.board.move(from as Key, to as Key);
     const prevFen = this.chess.fen();
     this.chess.move({ from: from as Square, to: to as Square, promotion: promo });
-    const turn = this.chess.turn() === 'w' ? 'white' : 'black';
+    const ended = this.checkEnding();
+    const turn = this.chess.turn() == 'w' ? 'white' : 'black';
     this.board.set({
       fen: this.chess.fen(),
       turnColor: turn,
+      viewOnly: ended,
       movable: {
         color: turn,
         dests: this.toDests()
@@ -718,9 +712,7 @@ class PositionController extends BaseController {
 
     this.updateMoveList(prevFen, from, to);
 
-    if (this.checkEnding()) {
-      this.board.set({ viewOnly: true });
-    } else {
+    if (!ended) {
       soundService.playAudio('move');
       if (this.solving.value) this.getOpponentMove();
       else if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
@@ -790,92 +782,6 @@ class PositionController extends BaseController {
         }).then(toast => toast.present());
         this.getStockfishMove();
       });
-
-    /*
-{
-  "checkmate": false,
-  "stalemate": false,
-  "variant_win": false,
-  "variant_loss": false,
-  "insufficient_material": false,
-  "dtz": -14,
-  "precise_dtz": -14,
-  "dtm": -14,
-  "category": "loss",
-  "moves": [
-    {
-      "uci": "d7c7",
-      "san": "Kc7",
-      "zeroing": false,
-      "checkmate": false,
-      "stalemate": false,
-      "variant_win": false,
-      "variant_loss": false,
-      "insufficient_material": false,
-      "dtz": 13,
-      "precise_dtz": 13,
-      "dtm": 13,
-      "category": "win"
-    },
-    {
-      "uci": "d7e7",
-      "san": "Ke7",
-      "zeroing": false,
-      "checkmate": false,
-      "stalemate": false,
-      "variant_win": false,
-      "variant_loss": false,
-      "insufficient_material": false,
-      "dtz": 13,
-      "precise_dtz": 13,
-      "dtm": 13,
-      "category": "win"
-    },
-    {
-      "uci": "d7c8",
-      "san": "Kc8",
-      "zeroing": false,
-      "checkmate": false,
-      "stalemate": false,
-      "variant_win": false,
-      "variant_loss": false,
-      "insufficient_material": false,
-      "dtz": 11,
-      "precise_dtz": 11,
-      "dtm": 11,
-      "category": "win"
-    },
-    {
-      "uci": "d7d8",
-      "san": "Kd8",
-      "zeroing": false,
-      "checkmate": false,
-      "stalemate": false,
-      "variant_win": false,
-      "variant_loss": false,
-      "insufficient_material": false,
-      "dtz": 11,
-      "precise_dtz": 11,
-      "dtm": 11,
-      "category": "win"
-    },
-    {
-      "uci": "d7e8",
-      "san": "Ke8",
-      "zeroing": false,
-      "checkmate": false,
-      "stalemate": false,
-      "variant_win": false,
-      "variant_loss": false,
-      "insufficient_material": false,
-      "dtz": 11,
-      "precise_dtz": 11,
-      "dtm": 11,
-      "category": "win"
-    }
-  ]
-}
-    */
   }
 
   private getStockfishMove() {
@@ -948,7 +854,7 @@ class PositionController extends BaseController {
       }
       return result;
     });
-    
+
   }
 
 }

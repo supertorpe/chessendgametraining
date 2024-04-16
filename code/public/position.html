@@ -38,9 +38,8 @@
             </div>
             <div class="info_wrapper">
                 <ion-item id="info_target" class="ion-text-center">
-                    <!--<img class="medium-thumbnail aura" x-bind:src="targetImage"></img>-->
                     <ion-label
-                        x-text="$t('position.' + move) + ' ' + $t('position.to') + ' ' + $t('position.' + target)"></ion-label>
+                        x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
                 </ion-item>
                 <ion-list class="info_moves">
                     <ion-item button="true" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
