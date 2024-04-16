@@ -3,11 +3,15 @@ import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, routeService } from '../services';
 
 class HomeController extends BaseController {
+    private firstPositionShowed = false;
+
     onEnter(_$routeParams?: any): void {
+        const self = this;
         Alpine.data('info', () => ({
             categories: endgameDatabaseService.endgameDatabase.categories,
             init() {
-                if (configurationService.configuration.automaticShowFirstPosition) {
+                if (!self.firstPositionShowed && configurationService.configuration.automaticShowFirstPosition) {
+                    self.firstPositionShowed = true;
                     for (const [idxCategory, category] of endgameDatabaseService.endgameDatabase.categories.entries()) {
                         for (const [idxSubcategory, subcategory] of category.subcategories.entries()) {
                             for (const [idxGame, game] of subcategory.games.entries()) {
