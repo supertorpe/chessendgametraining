@@ -228,6 +228,7 @@ class PositionController extends BaseController {
     this.waitingForOpponent.value = false;
     this.askingForHint.value = false;
     this.solving.value = false;
+    this.solvingTrivial = false;
     redrawIconImages();
     stockfishService.postMessage('stop');
     if (!this.moveList[this.movePointer.value].move2) {
@@ -594,6 +595,7 @@ class PositionController extends BaseController {
     if (result) {
       this.gameOver.value = true;
       this.solving.value = false;
+      this.solvingTrivial = false;
       const goalAchieved = ('checkmate' !== this.target && !this.chess.in_checkmate() ||
         'checkmate' === this.target && this.chess.in_checkmate() && this.player != this.chess.turn());
       const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
@@ -671,7 +673,7 @@ class PositionController extends BaseController {
     let moveFunk;
     let wait = false;
     this.mateDistance = 0;
-    if (this.useSyzygy && pieceTotalCount(this.chess.fen()) <= 7) {
+    if (!this.solvingTrivial && this.useSyzygy && pieceTotalCount(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
       wait = this.solving.value;
     } else {
@@ -870,7 +872,7 @@ class PositionController extends BaseController {
     stockfishService.postMessage(`position fen ${this.chess.fen()}`);
     this.waitingForOpponent.value = true;
     redrawIconImages();
-    stockfishService.postMessage(`go depth ${configurationService.configuration.stockfishDepth} movetime ${configurationService.configuration.stockfishMovetime * 1000}`);
+    stockfishService.postMessage(`go depth ${this.solvingTrivial ? 30 : configurationService.configuration.stockfishDepth} movetime ${1000 * (this.solvingTrivial ? 2 : configurationService.configuration.stockfishMovetime)}`);
   }
 
   private stockfishMessage(message: string) {
