@@ -791,6 +791,18 @@ class PositionController extends BaseController {
     stockfishService.postMessage(`position fen ${this.chess.fen()}`);
     this.waitingForOpponent.value = true;
     redrawIconImages();
+    if (!this.stockfishWarningShowed) {
+      this.stockfishWarnTimeout = setTimeout(() => {
+        this.stockfishWarningShowed = true;
+        this.stockfishWarnTimeout = null;
+        toastController.create({
+          message: window.AlpineI18n.t('position.stockfish-slow'),
+          position: 'middle',
+          color: 'warning',
+          duration: 3000
+        }).then(toast => toast.present());
+      }, 5000);
+    }
     stockfishService.postMessage(`go depth ${this.solvingTrivial ? 30 : configurationService.configuration.stockfishDepth} movetime ${1000 * (this.solvingTrivial ? 2 : configurationService.configuration.stockfishMovetime)}`);
   }
 
@@ -798,6 +810,10 @@ class PositionController extends BaseController {
     if (!this.waitingForOpponent.value) return;
     let match;
     if (match = message.match(/^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?/)) {
+      if (this.stockfishWarnTimeout) {
+        clearTimeout(this.stockfishWarnTimeout);
+        this.stockfishWarnTimeout = null;
+      }
       const from = match[1];
       const to = match[2];
       const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;

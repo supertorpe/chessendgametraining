@@ -77,7 +77,7 @@
             "black-advantage": "Black advantage",
             "querying-syzygy": "Querying Syzygy...",
             "syzygy-error": "Syzygy error. Switching to Stockfish",
-            "stockfish-slow": "Stockfish is working slow. Consider lowering the search depth in configuration screen.",            
+            "stockfish-slow": "Stockfish is working slow. Consider lowering the search depth and/or move time in settings screen.",
             "confirm-exit": {
                 "header": "Attention",
                 "message": "Sure to abandon the game?",
@@ -251,7 +251,7 @@
             "black-advantage": "Ventaja negras",
             "querying-syzygy": "Consultando Syzygy...",
             "syzygy-error": "Error en Syzygy. Cambiando a Stockfish",
-            "stockfish-slow": "Stockfish está tardando mucho. Puede bajar la profundidad de búsqueda en la pantalla de configuración.",
+            "stockfish-slow": "Stockfish está tardando mucho. Puede bajar la profundidad y/o tiempo de búsqueda en la pantalla de configuración.",
             "confirm-exit": {
                 "header": "Atención",
                 "message": "¿Seguro de abandonar la partida?",
