@@ -35,6 +35,8 @@ class PositionController extends BaseController {
   private mateDistance = 0;
   private manualMode = Alpine.reactive({ value: false });
   private mustShowExitDialog = true;
+  private stockfishWarningShowed = false;
+  private stockfishWarnTimeout: number | null = null;
 
   constructor() {
     super();
@@ -133,18 +135,19 @@ class PositionController extends BaseController {
 
   private showPruneDialog(idx: number) {
     if (this.solving.value || this.waitingForOpponent.value) return;
+    const prefix = (idx == this.moveList.length - 1 ? 'position.confirm-prune-one' : 'position.confirm-prune');
     alertController.create({
-      header: window.AlpineI18n.t('position.confirm-prune.header'),
-      message: window.AlpineI18n.t('position.confirm-prune.message'),
+      header: window.AlpineI18n.t(`${prefix}.header`),
+      message: window.AlpineI18n.t(`${prefix}.message`),
       buttons: [
         {
-          text: window.AlpineI18n.t('position.confirm-prune.no'),
+          text: window.AlpineI18n.t(`${prefix}.no`),
           role: 'cancel',
           cssClass: 'overlay-button',
           handler: () => {
           }
         }, {
-          text: window.AlpineI18n.t('position.confirm-prune.yes'),
+          text: window.AlpineI18n.t(`${prefix}.yes`),
           cssClass: 'overlay-button',
           handler: () => {
             this.pruneMove(idx);
