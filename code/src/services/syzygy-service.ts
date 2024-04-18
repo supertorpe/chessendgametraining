@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "../commons";
+
 class SyzygyService {
    
     public async init(): Promise<any> {
@@ -5,11 +7,11 @@ class SyzygyService {
     }
 
     public get(fen: string): Promise<Response> {
-        return fetch(`https://tablebase.lichess.ovh/standard?fen=${fen}`, {
+        return fetchWithTimeout(`https://tablebase.lichess.ovh/standard?fen=${fen}`, {
             method: 'GET',
-            cache: 'force-cache'
+            cache: 'force-cache',
+            timeout: 2000
         });
-
     }
 }
 

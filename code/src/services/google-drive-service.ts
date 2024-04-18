@@ -1,3 +1,5 @@
+import { fetchWithTimeout } from "../commons/fetch-timeout";
+
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const CLIENT_ID = import.meta.env.GOOGLE_CLIENT_ID;
 
@@ -60,7 +62,7 @@ class GoogleDriveService {
         const searchUrl = new URL(url);
         searchUrl.search = new URLSearchParams(queryParams).toString();
 
-        const response = await fetch(searchUrl.toString(), {
+        const response = await fetchWithTimeout(searchUrl.toString(), {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this.access_token}`
@@ -81,7 +83,7 @@ class GoogleDriveService {
             'mimeType': 'application/vnd.google-apps.folder'
         };
 
-        const response = await fetch(url, {
+        const response = await fetchWithTimeout(url, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${this.access_token}`,
@@ -120,7 +122,7 @@ class GoogleDriveService {
         };
         const searchUrl = new URL(url);
         searchUrl.search = new URLSearchParams(queryParams).toString();
-        const response = await fetch(searchUrl.toString(), {
+        const response = await fetchWithTimeout(searchUrl.toString(), {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this.access_token}`
@@ -136,7 +138,7 @@ class GoogleDriveService {
     public async getFileContent(fileId: string): Promise<string | null> {
         this.checkInitialized();
         const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
-        const response = await fetch(url, {
+        const response = await fetchWithTimeout(url, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this.access_token}`
@@ -160,7 +162,7 @@ class GoogleDriveService {
         const formData = new FormData();
         formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
         formData.append('file', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
-        const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        const response = await fetchWithTimeout('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${this.access_token}`,
@@ -183,7 +185,7 @@ class GoogleDriveService {
         formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
         formData.append('file', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
-        const response = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`, {
+        const response = await fetchWithTimeout(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${this.access_token}`,
