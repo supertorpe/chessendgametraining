@@ -779,8 +779,8 @@ class PositionController extends BaseController {
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
-        // stockfish search more interesting lines when every move leads to a draw
-        if (data.category == 'draw' && data.moves.every((move: {category:string}) => move.category === "draw")) {
+        // stockfish search more interesting lines when there aren't any winning line
+        if (data.category == 'loss' || (data.category == 'draw' && data.moves.every((move: {category:string}) => move.category === "draw"))) {
           this.getStockfishMove();
         } else {
           const bestmove = data.moves[0].uci;
