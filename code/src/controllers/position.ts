@@ -1,8 +1,8 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, clone, pieceCount, pieceTotalCount, setupSEO } from '../commons';
-import { Category, EndgameDatabase, MoveItem, Position, Subcategory } from '../model';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, pieceCount, pieceTotalCount, setupSEO } from '../commons';
+import { Category, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -84,7 +84,9 @@ class PositionController extends BaseController {
   private resetPosition() {
     this.waitingForOpponent.value = false;
     redrawIconImages();
-    stockfishService.postMessage('stop');
+    this.stopStockfish();
+    stockfishService.postMessage('ucinewgame');
+    stockfishService.postMessage('isready');
     this.chess.load(this.fen);
     this.gameOver.value = false;
     this.player = this.chess.turn();
@@ -109,6 +111,14 @@ class PositionController extends BaseController {
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
     this.mustShowExitDialog = true;
+  }
+
+  private stopStockfish() {
+    stockfishService.postMessage('stop');
+    if (this.stockfishWarnTimeout) {
+      clearTimeout(this.stockfishWarnTimeout);
+      this.stockfishWarnTimeout = null;
+    }
   }
 
   private showRestartDialog() {
@@ -166,14 +176,19 @@ class PositionController extends BaseController {
   }
 
   private gotoMove(idx: number) {
-    if (this.solving.value || this.waitingForOpponent.value) return;
-    if (idx >= 0 && !this.moveList[idx].fen2) return;
+    if (this.movePointer.value == idx || this.solving.value || this.waitingForOpponent.value) return;
     this.movePointer.value = idx;
     redrawIconImages();
-    stockfishService.postMessage('stop');
+    this.stopStockfish();
     if (idx > -1) {
-      const move = this.moveList[idx];
-      this.chess.load(move.prevFen);
+      this.chess.load(this.fen);
+      const moves = this.getMoves()?.split(' ');
+      moves?.forEach((move) => {
+        if (move.trim()) {
+          this.chess.move(move.trim());
+        }
+      });
+
       this.gameOver.value = this.chess.game_over();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       this.board.set({
@@ -182,38 +197,10 @@ class PositionController extends BaseController {
         lastMove: [],
         viewOnly: this.gameOver.value,
         movable: {
+          color: turn,
           dests: this.toDests()
         }
       });
-      setTimeout(() => {
-        this.chess.load(move.fen1);
-        this.gameOver.value = this.chess.game_over();
-        const turn = this.chess.turn() == 'w' ? 'white' : 'black';
-        this.board.set({
-          fen: this.chess.fen(),
-          turnColor: turn,
-          lastMove: [move.from1 as Key, move.to1 as Key],
-          viewOnly: this.gameOver.value,
-          movable: {
-            dests: this.toDests()
-          }
-        });
-        setTimeout(() => {
-          this.chess.load(move.fen2);
-          this.gameOver.value = this.chess.game_over();
-          const turn = this.chess.turn() == 'w' ? 'white' : 'black';
-          this.board.set({
-            fen: this.chess.fen(),
-            turnColor: turn,
-            lastMove: [move.from2 as Key, move.to2 as Key],
-            viewOnly: this.gameOver.value,
-            movable: {
-              color: turn,
-              dests: this.toDests()
-            }
-          });
-        }, 200);
-      }, 200);
     } else {
       this.chess.load(this.fen);
       this.gameOver.value = this.chess.game_over();
@@ -237,7 +224,7 @@ class PositionController extends BaseController {
     this.solving.value = false;
     this.solvingTrivial = false;
     redrawIconImages();
-    stockfishService.postMessage('stop');
+    this.stopStockfish();
     if (!this.moveList[this.movePointer.value].move2) {
       this.pruneMove(this.movePointer.value);
     }
@@ -281,7 +268,8 @@ class PositionController extends BaseController {
       this.target.value = this.position.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
     }
-
+    stockfishService.postMessage('ucinewgame');
+    stockfishService.postMessage('isready');
     this.chess.load(this.fen);
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
@@ -435,12 +423,6 @@ class PositionController extends BaseController {
             movelist.scrollTo({ top: y, behavior: 'smooth' });
           }
         });
-        endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {
-          const categories = database.categories;
-          this.category = clone(categories[idxCategory]);
-          this.subcategory = clone(this.category.subcategories[idxSubcategory]);
-          this.game = clone(this.subcategory.games[idxGame]);
-        });
         configurationService.configuration.configurationChangedEmitter.addEventListener((event) => {
           switch (event.field) {
             case 'boardTheme': this.boardTheme = event.config.boardTheme; break;
@@ -472,30 +454,29 @@ class PositionController extends BaseController {
     }
   }
 
-  private updateMoveList(prevFen: string, from: string, to: string) {
-    const history = this.chess.history();
+  private updateMoveList(prevFen: string, from: string, to: string, promotion: string) {
+    const history = this.chess.history({ verbose: true });
     if (this.chess.turn() == 'w') {
       let move: MoveItem;
       if (this.movePointer.value < 0) {
         move = {
           order: 1,
           prevFen: prevFen,
-          move1: '...', from1: '', to1: '', fen1: prevFen,
-          move2: '', from2: '', to2: '', fen2: ''
+          move1: '...', san1: '...',
+          move2: '', san2: ''
         };
         this.moveList.push(move)
         this.movePointer.value = 0;
       } else {
         move = this.moveList[this.movePointer.value];
       }
-      move.move2 = history[history.length - 1];
-      move.from2 = from;
-      move.to2 = to;
-      move.fen2 = this.chess.fen();
+      move.move2 = `${from}${to}${promotion || ''}`;
+      move.san2 = history[history.length - 1].san;
     } else {
       // look for moveItem
+      const historyItem = history[history.length - 1];
       const itemOrder = this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1;
-      const move1 = history[history.length - 1];
+      const move1 = `${historyItem.from}${historyItem.to}${historyItem.promotion || ''}`;
       const itemIndex = this.moveList.findIndex(item => item.order == itemOrder && item.move1 == move1 && item.prevFen == prevFen);
       if (itemIndex > -1) {
         this.movePointer.value = itemIndex;
@@ -503,8 +484,8 @@ class PositionController extends BaseController {
         const moveItem: MoveItem = {
           order: itemOrder,
           prevFen: prevFen,
-          move1: move1, from1: from, to1: to, fen1: this.chess.fen(),
-          move2: '', from2: '', to2: '', fen2: ''
+          move1: move1, san1: historyItem.san,
+          move2: '', san2: ''
         };
         if (this.movePointer.value === this.moveList.length - 1) {
           // If movePointer is pointing to the last item, simply push the new item to the end of the array
@@ -518,10 +499,26 @@ class PositionController extends BaseController {
           this.movePointer.value++;
         }
       }
-      if (this.chess.game_over()) {
-        this.moveList[this.movePointer.value].fen2 = this.chess.fen();
-      }
     }
+  }
+
+  private getMoves() {
+    let pointer = this.movePointer.value;
+    if (pointer == -1) return null;
+    let result = '';
+    let previousOrder = 0;
+    do {
+      let move = this.moveList[pointer];
+      if (previousOrder > 0 && move.order != previousOrder - 1) {
+        pointer--;
+        continue;
+      }
+      if (move.san2 != '' && (pointer != this.movePointer.value || this.chess.turn() != 'b')) result = `${move.san2} ${result}`;
+      if (move.san1 != '...' && move.san1 != '') result = `${move.san1} ${result}`;
+      previousOrder = move.order;
+      pointer--;
+    } while (previousOrder != 1)
+    return result;
   }
 
   // The opponent has only its king and the player has, at least, one queen or one rook
@@ -536,6 +533,19 @@ class PositionController extends BaseController {
     return playerHasRookOrQueen;
   }
 
+  // One of the players has only its king
+/*
+  private onePlayerWithOnlyKing() {
+    const pieceCounts = pieceCount(this.chess.fen());
+    let whiteHasOtherPieces = false;
+    let blackHasOtherPieces = false;
+    for (const piece in pieceCounts) {
+      whiteHasOtherPieces = whiteHasOtherPieces || (piece == piece.toUpperCase() && piece.toUpperCase() != 'K' && pieceCounts[piece] > 0);
+      blackHasOtherPieces = blackHasOtherPieces || (piece == piece.toLowerCase() && piece.toLowerCase() != 'k' && pieceCounts[piece] > 0);
+    }
+    return !(whiteHasOtherPieces && blackHasOtherPieces);
+  }
+*/
   private registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
     const nextMove = () => {
       if (!this.manualMode.value) {
@@ -562,7 +572,7 @@ class PositionController extends BaseController {
     if (promotion)
       this.board.set({ fen: this.chess.fen() });
 
-    this.updateMoveList(prevFen, source, target);
+    this.updateMoveList(prevFen, source, target, promotion || '');
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
@@ -604,7 +614,8 @@ class PositionController extends BaseController {
 
       const goalAchieved = ('checkmate' !== this.target.value && !this.chess.in_checkmate() ||
         'checkmate' == this.target.value && this.chess.in_checkmate() && this.player != this.chess.turn());
-      const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || this.moveList[this.movePointer.value].order < this.position.record);
+      const moveCount = this.chess.history().length;
+      const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || moveCount < this.position.record);
 
       if (goalAchieved) {
         soundService.playAudio('success');
@@ -618,7 +629,7 @@ class PositionController extends BaseController {
           this.position.record = -1;
           endgameDatabaseService.save();
         } else if (record) {
-          this.position.record = this.moveList[this.movePointer.value].order;
+          this.position.record = moveCount;
           endgameDatabaseService.save();
         }
       }
@@ -678,6 +689,7 @@ class PositionController extends BaseController {
     let moveFunk;
     let wait = false;
     this.mateDistance = 0;
+    // not use syzygy when solving a trivial position
     if (!this.solvingTrivial && this.useSyzygy && pieceTotalCount(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
       wait = this.solving.value;
@@ -701,6 +713,9 @@ class PositionController extends BaseController {
     this.board.move(from as Key, to as Key);
     const prevFen = this.chess.fen();
     this.chess.move({ from: from as Square, to: to as Square, promotion: promo });
+
+    this.updateMoveList(prevFen, from, to, promotion || '');
+
     const ended = this.checkEnding();
     const turn = this.chess.turn() == 'w' ? 'white' : 'black';
     this.board.set({
@@ -712,9 +727,6 @@ class PositionController extends BaseController {
         dests: this.toDests()
       }
     });
-
-    this.updateMoveList(prevFen, from, to);
-
     if (!ended) {
       soundService.playAudio('move');
       if (this.solving.value) this.getOpponentMove();
@@ -767,13 +779,18 @@ class PositionController extends BaseController {
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
-        const bestmove = data.moves[0].uci;
-        let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
-        const from = match[1];
-        const to = match[2];
-        const promotion = match[3];
-        if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm;
-        this.processOpponentMove(from, to, promotion);
+        // stockfish search more interesting lines when every move leads to a draw
+        if (data.category == 'draw' && data.moves.every((move: {category:string}) => move.category === "draw")) {
+          this.getStockfishMove();
+        } else {
+          const bestmove = data.moves[0].uci;
+          let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
+          const from = match[1];
+          const to = match[2];
+          const promotion = match[3];
+          if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm;
+          this.processOpponentMove(from, to, promotion);
+        }
       })
       ).catch((_err) => {
         this.useSyzygy = false;
@@ -788,7 +805,11 @@ class PositionController extends BaseController {
   }
 
   private getStockfishMove() {
-    stockfishService.postMessage(`position fen ${this.chess.fen()}`);
+    const history = this.chess.history({ verbose: true });
+    let moves = '';
+    history.forEach(move => moves += ` ${move.from}${move.to}${move.promotion || ''}`);
+    const command = `position fen ${this.fen} ${moves ? 'moves ' + moves : ''}`;
+    stockfishService.postMessage(command);
     this.waitingForOpponent.value = true;
     redrawIconImages();
     if (!this.stockfishWarningShowed) {
@@ -803,7 +824,11 @@ class PositionController extends BaseController {
         }).then(toast => toast.present());
       }, 5000);
     }
-    stockfishService.postMessage(`go depth ${this.solvingTrivial ? 30 : configurationService.configuration.stockfishDepth} movetime ${1000 * (this.solvingTrivial ? 2 : configurationService.configuration.stockfishMovetime)}`);
+    if (this.solvingTrivial) {
+      stockfishService.postMessage('go depth 60 movetime 1000');
+    } else {
+      stockfishService.postMessage(`go depth ${configurationService.configuration.stockfishDepth} movetime ${1000 * configurationService.configuration.stockfishMovetime}`);
+    }
   }
 
   private stockfishMessage(message: string) {
@@ -853,7 +878,7 @@ class PositionController extends BaseController {
             handler: () => {
               this.waitingForOpponent.value = false;
               redrawIconImages();
-              stockfishService.postMessage('stop');
+              this.stopStockfish();
               resolve(true);
             }
           }

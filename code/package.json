@@ -12,7 +12,7 @@
     "alpinejs": "^3.13.8",
     "alpinejs-i18n": "^2.4.2",
     "chess.js": "^0.13.4",
-    "chessground": "^9.0.4",
+    "chessground": "^9.0.5",
     "howler": "^2.2.4",
     "navigo": "^8.11.1",
     "stockfish": "^16.0.0",
@@ -25,7 +25,7 @@
     "@types/howler": "^2.2.11",
     "sass": "^1.75.0",
     "typescript": "^5.4.5",
-    "vite": "^5.2.8",
+    "vite": "^5.2.9",
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-static-copy": "^1.0.2"
   }
