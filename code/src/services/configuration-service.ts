@@ -44,9 +44,16 @@ class ConfigurationService {
                     );
                     this._configuration.configurationChangedEmitter.addEventListener((event: ConfigurationChangedEvent) => this.configurationChanged(event));
                     if (this._configuration.syncGoogleDrive) {
-                        this.loadFromGoogleDrive();
+                        this.loadFromGoogleDrive()
+                            .then(() => resolve(this._configuration))
+                            .catch((error) => {
+                                console.log(error);
+                                resolve(this._configuration);
+                            }
+                            );
+                    } else {
+                        resolve(this._configuration);
                     }
-                    resolve(this._configuration);
                 } else {
                     this._configuration = DEFAULT_CONFIG;
                     this._configuration.configurationChangedEmitter.addEventListener((event: ConfigurationChangedEvent) => this.configurationChanged(event));
@@ -69,58 +76,44 @@ class ConfigurationService {
         }
     };
 
-    private loadFromGoogleDrive() {
-        const self = this;
-        googleDriveService.init().then((token) => {
-            console.log(`GOOGLE TOKEN: ${token}`);
-            if (token) {
-                googleDriveService.findFolder(GOOGLE_DRIVE_FOLDER).then((folderId) => {
-                    if (folderId) {
-                        googleDriveService.findFile(GOOGLE_DRIVE_CONFIG_FILE, folderId).then((fileId) => {
-                            if (fileId) {
-                                googleDriveService.getFileContent(fileId).then((fileContent) => {
-                                    if (fileContent) {
-                                        const remoteConfig = JSON.parse(fileContent);
-                                        self.loadingFromGoogleDrive = true;
-                                        if ('useSyzygy' in remoteConfig) self._configuration.useSyzygy = remoteConfig.useSyzygy;
-                                        if ('stockfishDepth' in remoteConfig) self._configuration.stockfishDepth = remoteConfig.stockfishDepth;
-                                        if ('stockfishMovetime' in remoteConfig) self._configuration.stockfishMovetime = remoteConfig.stockfishMovetime;
-                                        if ('automaticShowFirstPosition' in remoteConfig) self._configuration.automaticShowFirstPosition = remoteConfig.automaticShowFirstPosition;
-                                        if ('preventScreenOff' in remoteConfig) self._configuration.preventScreenOff = remoteConfig.preventScreenOff;
-                                        if ('colorTheme' in remoteConfig) self._configuration.colorTheme = remoteConfig.colorTheme;
-                                        if ('playSounds' in remoteConfig) self._configuration.playSounds = remoteConfig.playSounds;
-                                        if ('fullScreen' in remoteConfig) self._configuration.fullScreen = remoteConfig.fullScreen;
-                                        if ('highlightSquares' in remoteConfig) self._configuration.highlightSquares = remoteConfig.highlightSquares;
-                                        if ('pieceTheme' in remoteConfig) self._configuration.pieceTheme = remoteConfig.pieceTheme;
-                                        if ('boardTheme' in remoteConfig) self._configuration.boardTheme = remoteConfig.boardTheme;
-                                        if ('syncGoogleDrive' in remoteConfig) self._configuration.syncGoogleDrive = remoteConfig.syncGoogleDrive;
-                                        self.loadingFromGoogleDrive = false;
-                                    }
-                                });
-                            }
-                        });
-                    }
+    private loadFromGoogleDrive(): Promise<Configuration> {
+        return new Promise<Configuration>((resolve, reject) => {
+            const self = this;
+            googleDriveService.getFile<Configuration>(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_CONFIG_FILE)
+                .then((remoteConfig) => {
+                    self.loadingFromGoogleDrive = true;
+                    if ('useSyzygy' in remoteConfig) self._configuration.useSyzygy = remoteConfig.useSyzygy;
+                    if ('stockfishDepth' in remoteConfig) self._configuration.stockfishDepth = remoteConfig.stockfishDepth;
+                    if ('stockfishMovetime' in remoteConfig) self._configuration.stockfishMovetime = remoteConfig.stockfishMovetime;
+                    if ('automaticShowFirstPosition' in remoteConfig) self._configuration.automaticShowFirstPosition = remoteConfig.automaticShowFirstPosition;
+                    if ('preventScreenOff' in remoteConfig) self._configuration.preventScreenOff = remoteConfig.preventScreenOff;
+                    if ('colorTheme' in remoteConfig) self._configuration.colorTheme = remoteConfig.colorTheme;
+                    if ('playSounds' in remoteConfig) self._configuration.playSounds = remoteConfig.playSounds;
+                    if ('fullScreen' in remoteConfig) self._configuration.fullScreen = remoteConfig.fullScreen;
+                    if ('highlightSquares' in remoteConfig) self._configuration.highlightSquares = remoteConfig.highlightSquares;
+                    if ('pieceTheme' in remoteConfig) self._configuration.pieceTheme = remoteConfig.pieceTheme;
+                    if ('boardTheme' in remoteConfig) self._configuration.boardTheme = remoteConfig.boardTheme;
+                    if ('syncGoogleDrive' in remoteConfig) self._configuration.syncGoogleDrive = remoteConfig.syncGoogleDrive;
+                    self.loadingFromGoogleDrive = false;
+                    storageService.set('CONFIGURATION', this._configuration.serialize());
+                    resolve(remoteConfig);
                 })
-                googleDriveService.createFolderIfNotExists(GOOGLE_DRIVE_FOLDER).then((folderId) => {
-                    googleDriveService.uploadJsonToFolder(this._configuration.serialize(), GOOGLE_DRIVE_CONFIG_FILE, folderId);
+                .catch(error => {
+                    console.log(error);
+                    reject(error);
                 });
-            }
         });
     }
 
     public save(): Promise<Configuration> {
-        if (this._configuration.syncGoogleDrive) {
-            googleDriveService.init().then((token) => {
-                console.log(`GOOGLE TOKEN: ${token}`);
-                if (token) {
-                    googleDriveService.createFolderIfNotExists(GOOGLE_DRIVE_FOLDER).then((folderId) => {
-                        googleDriveService.uploadJsonToFolder(this._configuration.serialize(), GOOGLE_DRIVE_CONFIG_FILE, folderId);
-                    });
-                }
-            });
-
-        }
-        return storageService.set('CONFIGURATION', this._configuration.serialize());
+        return new Promise<Configuration>((resolve) => {
+            const promises: Promise<any>[] = [];
+            if (this._configuration.syncGoogleDrive) {
+                promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_CONFIG_FILE, this._configuration.serialize()));
+            }
+            promises.push(storageService.set('CONFIGURATION', this._configuration.serialize()));
+            Promise.all(promises).then(() => resolve(this._configuration));
+        });
     }
 
 }

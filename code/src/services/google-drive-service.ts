@@ -5,10 +5,13 @@ const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 class GoogleDriveService {
 
-    private access_token!: string;
+    private access_token!: string | undefined;
 
-    public init(): Promise<string | undefined> {
+    private init(): Promise<string | undefined> {
         return new Promise<string | undefined>(resolve => {
+            if (this.access_token == undefined) {
+                this.access_token = localStorage.getItem("GOOGLE_ACCESS_TOKEN") || undefined;
+            }
             if (this.access_token !== undefined) {
                 resolve(this.access_token);
                 return;
@@ -24,6 +27,7 @@ class GoogleDriveService {
                     prompt: '',
                     callback: async (response) => {
                         this.access_token = response.access_token;
+                        localStorage.setItem("GOOGLE_ACCESS_TOKEN", this.access_token);
                         resolve(response.access_token);
                     },
                     error_callback: (error) => {
@@ -36,19 +40,8 @@ class GoogleDriveService {
             document.body.appendChild(script);
         });
     };
-/*
-    private checkInitialized(): Promise<boolean> {
-        return new Promise<boolean>(resolve => {
-            if (this.access_token === undefined) {
-                this.init().then(value => resolve(value !== undefined));
-            } else {
-                resolve(true);
-            }
-        });
-    }
-*/
-    public async createFolderIfNotExists(folderName: string): Promise<string> {
-        //await this.checkInitialized();
+
+    private async createFolderIfNotExists(folderName: string): Promise<string> {
         // Check if the folder already exists
         const folderId = await this.findFolder(folderName);
         if (folderId) {
@@ -62,8 +55,7 @@ class GoogleDriveService {
         return newFolderId;
     }
 
-    public async findFolder(folderName: string): Promise<string | null> {
-        //await this.checkInitialized();
+    private async findFolder(folderName: string): Promise<string | null> {
         const url = `https://www.googleapis.com/drive/v3/files`;
         const queryParams = {
             q: `name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`
@@ -84,8 +76,7 @@ class GoogleDriveService {
         return data.files.length > 0 ? data.files[0].id : null;
     }
 
-    public async createFolder(folderName: string): Promise<string> {
-        //await this.checkInitialized();
+    private async createFolder(folderName: string): Promise<string> {
         const url = 'https://www.googleapis.com/drive/v3/files';
         const metadata = {
             'name': folderName,
@@ -107,8 +98,7 @@ class GoogleDriveService {
         return data.id;
     }
 
-    public async uploadJsonToFolder(jsonData: any, filename: string, folderId: string): Promise<string> {
-        //await this.checkInitialized();
+    private async uploadJsonToFolder(jsonData: any, filename: string, folderId: string): Promise<string> {
         // Check if the file already exists in the folder
         const existingFileId = await this.findFile(filename, folderId);
         if (existingFileId) {
@@ -123,8 +113,7 @@ class GoogleDriveService {
         return newFileId;
     }
 
-    public async findFile(filename: string, folderId: string): Promise<string | null> {
-        //await this.checkInitialized();
+    private async findFile(filename: string, folderId: string): Promise<string | null> {
         const url = 'https://www.googleapis.com/drive/v3/files';
         const queryParams = {
             q: `name='${filename}' and '${folderId}' in parents and trashed=false`
@@ -144,8 +133,7 @@ class GoogleDriveService {
         return data.files.length > 0 ? data.files[0].id : null;
     }
 
-    public async getFileContent(fileId: string): Promise<string | null> {
-        //await this.checkInitialized();
+    private async getFileContent(fileId: string): Promise<string | null> {
         const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
         const response = await fetchWithTimeout(url, {
             method: 'GET',
@@ -156,12 +144,10 @@ class GoogleDriveService {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const data = await response.text();
-        return data;
+        return await response.text();
     }
 
-    public async createFile(jsonData: any, filename: string, folderId: string): Promise<string> {
-        //await this.checkInitialized();
+    private async createFile(jsonData: any, filename: string, folderId: string): Promise<string> {
         const metadata = {
             'name': filename,
             'parents': [folderId],
@@ -184,8 +170,7 @@ class GoogleDriveService {
         return data.id;
     }
 
-    public async updateFileContent(fileId: string, jsonData: any, filename: string): Promise<void> {
-        //await this.checkInitialized();
+    private async updateFileContent(fileId: string, jsonData: any, filename: string): Promise<void> {
         const metadata = {
             'name': filename
         };
@@ -203,6 +188,40 @@ class GoogleDriveService {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+    }
+
+    public getFile<T>(foldername: string, filename: string): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            const MSG_ERROR = `Error loading file ${foldername}/${filename}`;
+            this.init().then((token) => {
+                if (!token) { reject(MSG_ERROR); return; }
+                this.findFolder(foldername).then((folderId) => {
+                    if (!folderId) { reject(MSG_ERROR); return; }
+                    this.findFile(filename, folderId).then((fileId) => {
+                        if (!fileId) { reject(MSG_ERROR); return; }
+                        this.getFileContent(fileId).then((fileContent) => {
+                            if (!fileContent) { reject(MSG_ERROR); return; }
+                            const result: T = JSON.parse(fileContent);
+                            resolve(result);
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    public putFile<T>(foldername: string, filename: string, fileContent: T): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            const MSG_ERROR = `Error loading file ${foldername}/${filename}`;
+            this.init().then((token) => {
+                if (!token) { reject(MSG_ERROR); return; }
+                this.createFolderIfNotExists(foldername).then((folderId) => {
+                    this.uploadJsonToFolder(fileContent, filename, folderId).then(() => {
+                        resolve(fileContent);
+                    });
+                });
+            });
+        });
     }
 }
 
