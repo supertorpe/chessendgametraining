@@ -1,4 +1,5 @@
 import { BOARD_THEMES, PIECE_THEMES, EventEmitter } from '../commons';
+import { boardThemeSwitcherService, themeSwitcherService } from '../services';
 
 export type ConfigurationField =
 
@@ -62,7 +63,7 @@ export class Configuration {
     set preventScreenOff(value: boolean) { this._preventScreenOff = value; this._configurationChangedEmitter.notify({ config: this, field: 'preventScreenOff' }); }
 
     get colorTheme(): string { return this._colorTheme; }
-    set colorTheme(value: string) { this._colorTheme = value; this._configurationChangedEmitter.notify({ config: this, field: 'colorTheme' }); }
+    set colorTheme(value: string) { this._colorTheme = value; themeSwitcherService.setTheme(value); this._configurationChangedEmitter.notify({ config: this, field: 'colorTheme' }); }
 
     get playSounds(): boolean { return this._playSounds; }
     set playSounds(value: boolean) { this._playSounds = value; this._configurationChangedEmitter.notify({ config: this, field: 'playSounds' }); }
@@ -77,7 +78,7 @@ export class Configuration {
     set pieceTheme(value: string) { this._pieceTheme = value; this._configurationChangedEmitter.notify({ config: this, field: 'pieceTheme' }); }
 
     get boardTheme(): string { return this._boardTheme; }
-    set boardTheme(value: string) { this._boardTheme = value; this._configurationChangedEmitter.notify({ config: this, field: 'boardTheme' }); }
+    set boardTheme(value: string) { this._boardTheme = value; boardThemeSwitcherService.setTheme(value); this._configurationChangedEmitter.notify({ config: this, field: 'boardTheme' }); }
 
     get syncGoogleDrive(): boolean { return this._syncGoogleDrive; }
     set syncGoogleDrive(value: boolean) { this._syncGoogleDrive = value; this._configurationChangedEmitter.notify({ config: this, field: 'syncGoogleDrive' }); }

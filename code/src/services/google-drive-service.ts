@@ -36,7 +36,7 @@ class GoogleDriveService {
             document.body.appendChild(script);
         });
     };
-
+/*
     private checkInitialized(): Promise<boolean> {
         return new Promise<boolean>(resolve => {
             if (this.access_token === undefined) {
@@ -46,9 +46,9 @@ class GoogleDriveService {
             }
         });
     }
-
+*/
     public async createFolderIfNotExists(folderName: string): Promise<string> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         // Check if the folder already exists
         const folderId = await this.findFolder(folderName);
         if (folderId) {
@@ -63,7 +63,7 @@ class GoogleDriveService {
     }
 
     public async findFolder(folderName: string): Promise<string | null> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         const url = `https://www.googleapis.com/drive/v3/files`;
         const queryParams = {
             q: `name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`
@@ -85,7 +85,7 @@ class GoogleDriveService {
     }
 
     public async createFolder(folderName: string): Promise<string> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         const url = 'https://www.googleapis.com/drive/v3/files';
         const metadata = {
             'name': folderName,
@@ -108,7 +108,7 @@ class GoogleDriveService {
     }
 
     public async uploadJsonToFolder(jsonData: any, filename: string, folderId: string): Promise<string> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         // Check if the file already exists in the folder
         const existingFileId = await this.findFile(filename, folderId);
         if (existingFileId) {
@@ -124,7 +124,7 @@ class GoogleDriveService {
     }
 
     public async findFile(filename: string, folderId: string): Promise<string | null> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         const url = 'https://www.googleapis.com/drive/v3/files';
         const queryParams = {
             q: `name='${filename}' and '${folderId}' in parents and trashed=false`
@@ -145,7 +145,7 @@ class GoogleDriveService {
     }
 
     public async getFileContent(fileId: string): Promise<string | null> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
         const response = await fetchWithTimeout(url, {
             method: 'GET',
@@ -161,7 +161,7 @@ class GoogleDriveService {
     }
 
     public async createFile(jsonData: any, filename: string, folderId: string): Promise<string> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         const metadata = {
             'name': filename,
             'parents': [folderId],
@@ -185,7 +185,7 @@ class GoogleDriveService {
     }
 
     public async updateFileContent(fileId: string, jsonData: any, filename: string): Promise<void> {
-        await this.checkInitialized();
+        //await this.checkInitialized();
         const metadata = {
             'name': filename
         };

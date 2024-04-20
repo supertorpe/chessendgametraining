@@ -1,5 +1,5 @@
 import { PIECE_THEMES, BOARD_THEMES } from '../commons';
-import { redrawIconImages, themeSwitcherService, configurationService, boardThemeSwitcherService } from '../services';
+import { redrawIconImages, themeSwitcherService, configurationService } from '../services';
 import { BaseController } from './controller';
 import Alpine from 'alpinejs';
 import { toastController } from '@ionic/core';
@@ -24,7 +24,6 @@ class SettingsController extends BaseController {
                 this.showBoardThemes = false;
             },
             setTheme(theme: string) {
-                themeSwitcherService.setTheme(theme);
                 configurationService.configuration.colorTheme = theme;
                 this.color = themeSwitcherService.currentTheme() == 'dark' ? 'w' : 'b';
             },
@@ -54,7 +53,6 @@ class SettingsController extends BaseController {
             setBoardTheme(boardTheme: string) {
                 this.currentBoardTheme = boardTheme;
                 configurationService.configuration.boardTheme = boardTheme;
-                boardThemeSwitcherService.setTheme(boardTheme);
             },
             // goto position
             gotoPosition: configurationService.configuration.automaticShowFirstPosition,
