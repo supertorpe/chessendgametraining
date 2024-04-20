@@ -877,7 +877,11 @@ class PositionController extends BaseController {
   private showExitDialog(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
       if (this.moveList.length == 0 || !this.mustShowExitDialog) {
-        resolve(true);
+        if (this.stockfishWarmup) {
+          stockfishService.stopWarmup().then(() => {this.stockfishWarmup = false; resolve(true); });
+        } else {
+          resolve(true);
+        }
         return;
       }
       const alert = await alertController.create({
@@ -895,10 +899,14 @@ class PositionController extends BaseController {
             text: window.AlpineI18n.t('position.confirm-exit.yes'),
             cssClass: 'overlay-button',
             handler: () => {
-              this.waitingForOpponent.value = false;
-              redrawIconImages();
-              this.stopStockfish();
-              resolve(true);
+              if (this.stockfishWarmup) {
+                stockfishService.stopWarmup().then(() => {this.stockfishWarmup = false; resolve(true); });
+              } else {
+                this.waitingForOpponent.value = false;
+                redrawIconImages();
+                this.stopStockfish();
+                resolve(true);
+              }
             }
           }
         ]
