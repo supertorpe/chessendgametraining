@@ -804,7 +804,7 @@ class PositionController extends BaseController {
           const from = match[1];
           const to = match[2];
           const promotion = match[3];
-          if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm * (this.chess.turn() == this.player ? 1 : -1);
+          if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm * (this.chess.turn() == this.player ? -1 : 1) * (this.player == 'b' ? -1 : 1);
           this.processOpponentMove(from, to, promotion);
         }
       })
