@@ -7,6 +7,7 @@ class StockfishService {
     private stockfish: any;
     private _version!: string;
     private _messageEmitter: EventEmitter<string> = new EventEmitter<string>();
+    private avoidNotifications = false;
 
     constructor() { }
 
@@ -17,11 +18,33 @@ class StockfishService {
         this.stockfish.postMessage(message);
     }
 
+    public warmup(fen: string) {
+        this.avoidNotifications = true;
+        this.postMessage(`position fen ${fen}`);
+        this.postMessage('go infinite');
+    }
+
+    public stopWarmup(): Promise<void> {
+        return new Promise(resolve => {
+            const stockfishListener = (event: MessageEvent<string>) => {
+                if (event.data.startsWith('bestmove')) {
+                    this.avoidNotifications = false;
+                    this.stockfish.removeEventListener('message', stockfishListener);
+                    resolve();
+                }
+            }
+            this.stockfish.addEventListener('message', stockfishListener);
+            this.postMessage('stop');
+        });
+    }
+
     private initStockfish(engineUrl: string, nnue: boolean) {
         const self = this;
         this.stockfish = new Worker(engineUrl);
         this.stockfish.addEventListener('message', function (event: MessageEvent<string>) {
-            self._messageEmitter.notify(event.data);
+            console.log(event.data);
+            if (!self.avoidNotifications)
+                self._messageEmitter.notify(event.data);
         });
         this.stockfish.postMessage('uci');
         if (nnue) this.stockfish.postMessage('setoption name Use NNUE value true');
@@ -78,9 +101,8 @@ class StockfishService {
         return new Promise(resolve => {
             const stockfishListener = (message: string) => {
                 if (!this._version) this._version = message;
-                console.log(message);
                 if ('uciok' == message) {
-                    //this._messageEmitter.removeEventListener(stockfishListener);
+                    this._messageEmitter.removeEventListener(stockfishListener);
                     resolve(true);
                 }
             }

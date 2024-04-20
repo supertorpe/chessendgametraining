@@ -244,7 +244,7 @@
             "three-repetition": "Triple repetición",
             "rule-fifty": "Tablas: regla 50 movimientos",
             "game-over": "Fin del juego",
-            "mate-in": "Puedes conseguir mate en {}",
+            "mate-in": "Puedes conseguir mate en {moves}",
             "receive-mate-in": "Vas a recibir mate",
             "unfeasible-mate": "Mate inviable",
             "white-advantage": "Ventaja blancas",

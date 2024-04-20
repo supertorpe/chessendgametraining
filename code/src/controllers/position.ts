@@ -35,6 +35,8 @@ class PositionController extends BaseController {
   private mateDistance = 0;
   private manualMode = Alpine.reactive({ value: false });
   private mustShowExitDialog = true;
+  private stopping = Alpine.reactive({ value: false });
+  private stockfishWarmup = false;
   private stockfishWarningShowed = false;
   private stockfishWarnTimeout: number | null = null;
 
@@ -81,12 +83,20 @@ class PositionController extends BaseController {
     return dests;
   }
 
-  private resetPosition() {
+  private initStockfishGame() {
+    this.stockfishWarmup = true;
+    stockfishService.postMessage('ucinewgame');
+    stockfishService.postMessage('isready');
+    stockfishService.warmup(this.fen);
+  }
+
+  private resetPosition(newGame: boolean) {
     this.waitingForOpponent.value = false;
     redrawIconImages();
     this.stopStockfish();
-    stockfishService.postMessage('ucinewgame');
-    stockfishService.postMessage('isready');
+    if (newGame) {
+      this.initStockfishGame();
+    }
     this.chess.load(this.fen);
     this.gameOver.value = false;
     this.player = this.chess.turn();
@@ -136,7 +146,7 @@ class PositionController extends BaseController {
           text: window.AlpineI18n.t('position.confirm-restart.yes'),
           cssClass: 'overlay-button',
           handler: () => {
-            this.resetPosition();
+            this.resetPosition(false);
           }
         }
       ]
@@ -216,18 +226,12 @@ class PositionController extends BaseController {
         }
       });
     }
+    this.trivialPositionInvitationShown = this.isTrivialPosition();
   }
 
   private stop() {
-    this.waitingForOpponent.value = false;
-    this.askingForHint.value = false;
-    this.solving.value = false;
-    this.solvingTrivial = false;
-    redrawIconImages();
+    this.stopping.value = true;
     this.stopStockfish();
-    if (!this.moveList[this.movePointer.value].move2) {
-      this.pruneMove(this.movePointer.value);
-    }
   }
 
   onEnter($routeParams?: any): void {
@@ -268,8 +272,7 @@ class PositionController extends BaseController {
       this.target.value = this.position.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
     }
-    stockfishService.postMessage('ucinewgame');
-    stockfishService.postMessage('isready');
+    this.initStockfishGame();
     this.chess.load(this.fen);
     this.moveList.splice(0, this.moveList.length);
     this.movePointer.value = -1;
@@ -345,7 +348,7 @@ class PositionController extends BaseController {
           color: 'success',
           duration: 2000
         }).then(toast => toast.present());
-        if (self.movePointer.value >= 0 && !self.moveList[self.movePointer.value].move2) self.getOpponentMove();
+        if (this.chess.turn() != self.player) self.getOpponentMove();
       },
       movePosition(direction: number) {
         self.showExitDialog().then(value => {
@@ -369,7 +372,7 @@ class PositionController extends BaseController {
             self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
             setupSEO('list.html', self.getSEOParams());
             window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
-            self.resetPosition.call(self);
+            self.resetPosition.call(self, true);
           }
         });
       },
@@ -546,7 +549,10 @@ class PositionController extends BaseController {
     return !(whiteHasOtherPieces && blackHasOtherPieces);
   }
 */
-  private registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
+  private async registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
+    if (this.stockfishWarmup) {
+      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    }
     const nextMove = () => {
       if (!this.manualMode.value) {
         this.getOpponentMove();
@@ -686,6 +692,15 @@ class PositionController extends BaseController {
   }
 
   private getOpponentMove() {
+    if (this.stopping.value && this.chess.turn() == this.player) {
+      this.stopping.value = false;
+      this.waitingForOpponent.value = false;
+      this.askingForHint.value = false;
+      this.solving.value = false;
+      this.solvingTrivial = false;
+      redrawIconImages();
+      return;
+    }
     let moveFunk;
     let wait = false;
     this.mateDistance = 0;
@@ -729,8 +744,9 @@ class PositionController extends BaseController {
     });
     if (!ended) {
       soundService.playAudio('move');
-      if (this.solving.value) this.getOpponentMove();
-      else if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
+      if (this.solving.value) {
+        this.getOpponentMove();
+      } else if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
         this.trivialPositionInvitationShown = true;
         alertController.create({
           header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
@@ -804,7 +820,10 @@ class PositionController extends BaseController {
       });
   }
 
-  private getStockfishMove() {
+  private async getStockfishMove() {
+    if (this.stockfishWarmup) {
+      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    }
     const history = this.chess.history({ verbose: true });
     let moves = '';
     history.forEach(move => moves += ` ${move.from}${move.to}${move.promotion || ''}`);
