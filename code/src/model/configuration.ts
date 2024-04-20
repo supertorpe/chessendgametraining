@@ -2,7 +2,8 @@ import { BOARD_THEMES, PIECE_THEMES, EventEmitter } from '../commons';
 
 export type ConfigurationField =
 
-    'useSyzygy' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'preventScreenOff' | 'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme';
+    'useSyzygy' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'preventScreenOff' |
+    'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive';
 
 export type ConfigurationChangedEvent = { config: Configuration, field: ConfigurationField };
 
@@ -21,7 +22,8 @@ export class Configuration {
         private _fullScreen: boolean,
         private _highlightSquares: boolean,
         private _pieceTheme: string,
-        private _boardTheme: string
+        private _boardTheme: string,
+        private _syncGoogleDrive: boolean
     ) { }
 
     public serialize() {
@@ -36,7 +38,8 @@ export class Configuration {
             fullScreen: this._fullScreen,
             highlightSquares: this._highlightSquares,
             pieceTheme: this._pieceTheme,
-            boardTheme: this._boardTheme
+            boardTheme: this._boardTheme,
+            syncGoogleDrive: this._syncGoogleDrive
         };
     }
 
@@ -76,6 +79,9 @@ export class Configuration {
     get boardTheme(): string { return this._boardTheme; }
     set boardTheme(value: string) { this._boardTheme = value; this._configurationChangedEmitter.notify({ config: this, field: 'boardTheme' }); }
 
+    get syncGoogleDrive(): boolean { return this._syncGoogleDrive; }
+    set syncGoogleDrive(value: boolean) { this._syncGoogleDrive = value; this._configurationChangedEmitter.notify({ config: this, field: 'syncGoogleDrive' }); }
+
 }
 
 export const DEFAULT_CONFIG = new Configuration(
@@ -89,5 +95,6 @@ export const DEFAULT_CONFIG = new Configuration(
     true,
     true,
     PIECE_THEMES[0],
-    BOARD_THEMES[0].name
+    BOARD_THEMES[0].name,
+    false
 );

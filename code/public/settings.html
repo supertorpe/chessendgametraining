@@ -73,6 +73,10 @@
       <ion-toggle id="toggleHighlightSquares" slot="end" x-bind:aria-label="$t('settings.highlight-squares')" x-bind:checked="highlightSquares" color="medium"></ion-toggle>
     </ion-item>
     <ion-item>
+      <ion-label x-text="$t('settings.sync-google-drive')"></ion-label>
+      <ion-toggle id="toggleSyncGoogleDrive" slot="end" x-bind:aria-label="$t('settings.sync-google-drive')" x-bind:checked="syncGoogleDrive" color="medium"></ion-toggle>
+    </ion-item>
+    <ion-item>
       <ion-label x-text="$t('settings.use-syzygy')"></ion-label>
       <ion-toggle id="toggleUseSyzygy" slot="end" x-bind:aria-label="$t('settings.use-syzygy')" x-bind:checked="useSyzygy" color="medium"></ion-toggle>
     </ion-item>

@@ -74,6 +74,12 @@ class SettingsController extends BaseController {
                 this.highlightSquares = checked;
                 configurationService.configuration.highlightSquares = checked;
             },
+             // sync google drive
+             syncGoogleDrive: configurationService.configuration.syncGoogleDrive,
+             syncGoogleDriveChanged(checked: boolean) {
+                 this.syncGoogleDrive = checked;
+                 configurationService.configuration.syncGoogleDrive = checked;
+             },
             // use syzygy
             useSyzygy: configurationService.configuration.useSyzygy,
             useSyzygyChanged(checked: boolean) {
@@ -112,6 +118,9 @@ class SettingsController extends BaseController {
                 const toggleHighlightSquares = document.getElementById('toggleHighlightSquares') as IonToggle;
                 toggleHighlightSquares.addEventListener('ionChange', () => { this.highlightSquaresChanged(toggleHighlightSquares.checked); });
                 
+                const toggleSyncGoogleDrive = document.getElementById('toggleSyncGoogleDrive') as IonToggle;
+                toggleSyncGoogleDrive.addEventListener('ionChange', () => { this.syncGoogleDriveChanged(toggleSyncGoogleDrive.checked); });
+
                 const togglePlaySounds = document.getElementById('togglePlaySounds') as IonToggle;
                 togglePlaySounds.addEventListener('ionChange', () => { this.playSoundsChanged(togglePlaySounds.checked); });
                 

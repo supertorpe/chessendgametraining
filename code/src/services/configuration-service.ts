@@ -1,5 +1,7 @@
 import { Configuration, DEFAULT_CONFIG } from '../model';
 import { storageService } from './storage-service';
+import { googleDriveService } from './google-drive-service';
+import { GOOGLE_DRIVE_CONFIG_FILE, GOOGLE_DRIVE_FOLDER } from '../commons';
 
 class ConfigurationService {
 
@@ -24,6 +26,7 @@ class ConfigurationService {
                     if (config.highlightSquares === undefined) config.highlightSquares = DEFAULT_CONFIG.highlightSquares;
                     if (config.pieceTheme === undefined) config.pieceTheme = DEFAULT_CONFIG.pieceTheme;
                     if (config.boardTheme === undefined) config.boardTheme = DEFAULT_CONFIG.boardTheme;
+                    if (config.syncGoogleDrive === undefined) config.syncGoogleDrive = DEFAULT_CONFIG.syncGoogleDrive;
                     this._configuration = new Configuration(
                         config.useSyzygy,
                         config.stockfishDepth,
@@ -35,7 +38,8 @@ class ConfigurationService {
                         config.fullScreen,
                         config.highlightSquares,
                         config.pieceTheme,
-                        config.boardTheme
+                        config.boardTheme,
+                        config.syncGoogleDrive
                     );
                     resolve(this._configuration);
                 } else {
@@ -49,6 +53,17 @@ class ConfigurationService {
     }
 
     public save(): Promise<Configuration> {
+        if (this._configuration.syncGoogleDrive) {
+            googleDriveService.init().then((token) => {
+                console.log(`GOOGLE TOKEN: ${token}`);
+                if (token) {
+                    googleDriveService.createFolderIfNotExists(GOOGLE_DRIVE_FOLDER).then((folderId) => {
+                        googleDriveService.uploadJsonToFolder(this._configuration.serialize(), GOOGLE_DRIVE_CONFIG_FILE, folderId);
+                    });
+                }
+            });
+            
+        }
         return storageService.set('CONFIGURATION', this._configuration.serialize());
     }
 
