@@ -66,6 +66,7 @@
                     </template>
                     <template x-if="position.askingForHint.value || position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
+                            x-bind:disabled="position.stopping.value"
                             x-on:click="stop()">
                             <ion-icon class="aura" data-name="stop"></ion-icon>
                         </ion-button>
