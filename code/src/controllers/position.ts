@@ -373,7 +373,7 @@ class PositionController extends BaseController {
             self.fen = self.position.fen;
             self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
             setupSEO('list.html', self.getSEOParams());
-            window.history.replaceState(self.seo, self.seo, `/chessendgametraining/#/chessendgametraining/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
+            window.history.replaceState(self.seo, self.seo, `/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
             self.resetPosition.call(self, true);
           }
         });

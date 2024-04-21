@@ -1,9 +1,9 @@
 import { appController, homeController, aboutController, settingsController, listController, positionController, promotionController } from './controllers';
 
 export const ROUTE_MAP = {
-    hash: true,
+    hash: false,
     mainRoute: {
-        path: '/chessendgametraining/',
+        path: '/',
         template: 'app.html',
         tag: 'ion-app',
         controller: appController,

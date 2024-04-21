@@ -1,9 +1,9 @@
 {
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0-beta.1",
   "scripts": {
-    "dev": "vite --host --base=/chessendgametraining",
-    "build": "tsc && vite build --base=/chessendgametraining/",
-    "serve": "vite preview --host --base=/chessendgametraining/"
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "serve": "vite preview --host"
   },
   "type": "module",
   "dependencies": {

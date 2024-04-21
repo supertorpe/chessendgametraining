@@ -45,8 +45,8 @@
             "i18n": "about.howlerjs"
         },
         {
-            "url": "https://github.com/josephrocca/clip-image-sorter/blob/main/enable-threads.js",
-            "i18n": "about.enable-threads"
+            "url": "https://github.com/InYourHead/dom-to-image",
+            "i18n": "about.dom-to-image"
         },
         {
             "url": "https://vitejs.dev",

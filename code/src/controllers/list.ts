@@ -51,7 +51,7 @@ class ListController extends BaseController {
                     self.title = this.title;
                     self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
                     setupSEO('list.html', self.getSEOParams());
-                    window.history.replaceState(this.title, this.title, `/chessendgametraining/#/chessendgametraining/list/${this.idxCategory}/${this.idxSubcategory}`);
+                    window.history.replaceState(this.title, this.title, `/list/${this.idxCategory}/${this.idxSubcategory}`);
                 }
             },
             showNext() {
@@ -72,7 +72,7 @@ class ListController extends BaseController {
                     self.title = this.title;
                     self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
                     setupSEO('list.html', self.getSEOParams());
-                    window.history.replaceState(this.title, this.title, `/chessendgametraining/#/chessendgametraining/list/${this.idxCategory}/${this.idxSubcategory}`);
+                    window.history.replaceState(this.title, this.title, `/list/${this.idxCategory}/${this.idxSubcategory}`);
                 }
             },
             ariaDescriptionFromIcon: ariaDescriptionFromIcon,

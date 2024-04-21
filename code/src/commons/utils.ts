@@ -110,22 +110,14 @@ export const setupSEO = (template: string, params: any) => {
     setMeta('description', window.AlpineI18n.t(`${page}.seo.meta_description`, params));
 };
 
-export const { loadScript } = new class {
-    private scripts: string[] = [];
-    loadScript = (url: string): Promise<void> => {
-        return new Promise<void>(resolve => {
-            if (this.scripts.includes(url)) {
-                resolve();
-            } else {
-                this.scripts.push(url);
-                const script = document.createElement("script");
-                script.src = url;
-                script.async = true;
-                script.onload = () => { resolve(); };
-                document.body.appendChild(script);
-            }
-        });
-    }
+export const loadScript = (url: string): Promise<void> => {
+    return new Promise<void>(resolve => {
+        const script = document.createElement("script");
+        script.src = url;
+        script.async = true;
+        script.onload = () => { resolve(); };
+        document.body.appendChild(script);
+    });
 };
 
 export const pieceTotalCount = (fen: string) => {
