@@ -13,6 +13,7 @@
     "alpinejs-i18n": "^2.4.2",
     "chess.js": "^0.13.4",
     "chessground": "^9.0.5",
+    "dom-to-image-hm": "git+https://github.com/InYourHead/dom-to-image.git",
     "howler": "^2.2.4",
     "navigo": "^8.11.1",
     "stockfish": "^16.0.0",

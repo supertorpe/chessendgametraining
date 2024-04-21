@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, imgurService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, pieceCount, pieceTotalCount, setupSEO } from '../commons';
 import { Category, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
@@ -10,6 +10,8 @@ import { MoveMetadata, Color, Key } from 'chessground/types';
 import { Config } from 'chessground/config';
 import { promotionController } from './promotion';
 import { alertController, menuController, toastController } from '@ionic/core';
+import { settingsController } from './settings';
+import domtoimage from 'dom-to-image-hm';
 
 class PositionController extends BaseController {
 
@@ -406,6 +408,60 @@ class PositionController extends BaseController {
       solve() {
         self.solve.call(self);
       },
+      showSettings() {
+        routeService.openModal('settings', 'settings.html', settingsController, true, false);
+      },
+      showClipboardDialog() {
+        alertController.create({
+          header: window.AlpineI18n.t('position.clipboard.header'),
+          message: window.AlpineI18n.t('position.clipboard.message'),
+          buttons: [
+            {
+              text: 'FEN',
+              cssClass: 'overlay-button',
+              handler: () => {
+                self.copyToClipboard('fen', self.chess.fen());
+              }
+            }, {
+              text: 'IMG',
+              cssClass: 'overlay-button',
+              handler: async () => {
+                const toast1 = await toastController.create({
+                  message: window.AlpineI18n.t('position.clipboard.img-capture'),
+                  position: 'middle',
+                  color: 'success'
+                });
+                toast1.present();
+                domtoimage.toPng(document.getElementById('__chessboard__')).then((dataUrl: string) => {
+                  toast1.dismiss();
+                  self.saveBase64AsFile(dataUrl, 'chessboard.png');
+                });
+              }
+            }, {
+              text: 'IMG BBCODE',
+              cssClass: 'overlay-button',
+              handler: async () => {
+                const toast1 = await toastController.create({
+                  message: window.AlpineI18n.t('position.clipboard.img-capture'),
+                  position: 'middle',
+                  color: 'success'
+                });
+                toast1.present();
+                domtoimage.toPng(document.getElementById('__chessboard__')).then(async (dataUrl: string) => {
+                  toast1.dismiss();
+                  const toast2 = await toastController.create({
+                    message: window.AlpineI18n.t('position.clipboard.img-uploading'),
+                    position: 'middle',
+                    color: 'success'
+                  });
+                  toast2.present();
+                  imgurService.upload(dataUrl);
+                });
+              }
+            }
+          ]
+        }).then(alert => alert.present());
+      },
       init() {
         self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
@@ -537,18 +593,18 @@ class PositionController extends BaseController {
   }
 
   // One of the players has only its king
-/*
-  private onePlayerWithOnlyKing() {
-    const pieceCounts = pieceCount(this.chess.fen());
-    let whiteHasOtherPieces = false;
-    let blackHasOtherPieces = false;
-    for (const piece in pieceCounts) {
-      whiteHasOtherPieces = whiteHasOtherPieces || (piece == piece.toUpperCase() && piece.toUpperCase() != 'K' && pieceCounts[piece] > 0);
-      blackHasOtherPieces = blackHasOtherPieces || (piece == piece.toLowerCase() && piece.toLowerCase() != 'k' && pieceCounts[piece] > 0);
+  /*
+    private onePlayerWithOnlyKing() {
+      const pieceCounts = pieceCount(this.chess.fen());
+      let whiteHasOtherPieces = false;
+      let blackHasOtherPieces = false;
+      for (const piece in pieceCounts) {
+        whiteHasOtherPieces = whiteHasOtherPieces || (piece == piece.toUpperCase() && piece.toUpperCase() != 'K' && pieceCounts[piece] > 0);
+        blackHasOtherPieces = blackHasOtherPieces || (piece == piece.toLowerCase() && piece.toLowerCase() != 'k' && pieceCounts[piece] > 0);
+      }
+      return !(whiteHasOtherPieces && blackHasOtherPieces);
     }
-    return !(whiteHasOtherPieces && blackHasOtherPieces);
-  }
-*/
+  */
   private async registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
     if (this.stockfishWarmup) {
       await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
@@ -796,7 +852,7 @@ class PositionController extends BaseController {
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
         // stockfish search more interesting lines when there aren't any winning line
-        if (data.category == 'loss' || (data.category == 'draw' && data.moves.every((move: {category:string}) => move.category === "draw"))) {
+        if (data.category == 'loss' || (data.category == 'draw' && data.moves.every((move: { category: string }) => move.category === "draw"))) {
           this.getStockfishMove();
         } else {
           const bestmove = data.moves[0].uci;
@@ -870,6 +926,41 @@ class PositionController extends BaseController {
     }
   }
 
+  private copyToClipboard(what: string, text: string) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+    } else {
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+    this.showToastClipboard(what);
+  }
+
+  private saveBase64AsFile(base64: string, fileName: string) {
+    const link = document.createElement("a");
+    document.body.appendChild(link); // for Firefox
+    link.setAttribute("href", base64);
+    link.setAttribute("download", fileName);
+    link.click();
+    this.showToastClipboard('img');
+  }
+
+  private async showToastClipboard(what: string) {
+    toastController.create({
+      message: window.AlpineI18n.t(`position.clipboard.${what}`),
+      position: 'middle',
+      color: 'success',
+      duration: 1000
+    }).then(toast => toast.present());
+  }
+
   getSEOParams(): any {
     return { 'kind': this.seo };
   }
@@ -878,7 +969,7 @@ class PositionController extends BaseController {
     return new Promise<boolean>(async resolve => {
       if (this.moveList.length == 0 || !this.mustShowExitDialog) {
         if (this.stockfishWarmup) {
-          stockfishService.stopWarmup().then(() => {this.stockfishWarmup = false; resolve(true); });
+          stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
         } else {
           resolve(true);
         }
@@ -900,7 +991,7 @@ class PositionController extends BaseController {
             cssClass: 'overlay-button',
             handler: () => {
               if (this.stockfishWarmup) {
-                stockfishService.stopWarmup().then(() => {this.stockfishWarmup = false; resolve(true); });
+                stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
               } else {
                 this.waitingForOpponent.value = false;
                 redrawIconImages();

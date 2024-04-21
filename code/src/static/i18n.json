@@ -60,7 +60,6 @@
             "congratulations": "Congratulations",
             "review": "review",
             "next-puzzle": "next puzzle",
-            "fen-clipboard": "FEN copied to clipboard",
             "in": "in",
             "ups": "Oooops!",
             "keep-practicing": "keep practicing, you'll get it!",
@@ -107,6 +106,15 @@
                 "message": "You have reached a trivial position. Do you want to solve the rest automatically?",
                 "no": "No",
                 "yes": "Yes"
+            },
+            "clipboard": {
+                "header": "Copy",
+                "message": "What do you want to copy?",
+                "fen": "FEN copied to clipboard",
+                "img": "Image downloaded",
+                "img-bbcode": "BBCode for the image copied to the clipboard",
+                "img-capture": "Capturing board...",
+                "img-uploading": "Uploading image to server..."
             }
         },
         "settings": {
@@ -235,7 +243,6 @@
             "congratulations": "Enhorabuena",
             "review": "revisar",
             "next-puzzle": "siguiente puzzle",
-            "fen-clipboard": "FEN copiado al portapapeles",
             "in": "en",
             "ups": "¡Ohhh!",
             "keep-practicing": "sigue practicando, ¡lo conseguirás!",
@@ -282,6 +289,15 @@
                 "message": "Ha llegado a una posición trivial. ¿Quiere resolver el resto automáticamente?",
                 "no": "No",
                 "yes": "Sí"
+            },
+            "clipboard": {
+                "header": "Copiar",
+                "message": "¿Qué desea copiar?",
+                "fen": "FEN copiado al portapapeles",
+                "img": "Imagen descargada",
+                "img-bbcode": "BBCode con la imagen copiada al portapapeles",
+                "img-capture": "Capturando tablero...",
+                "img-uploading": "Subiendo imagen al servidor..."
             }
         },
         "settings": {

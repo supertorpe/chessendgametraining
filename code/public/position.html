@@ -102,38 +102,19 @@
                     </template>
                 </ion-buttons>
             </div>
-
-            <!--
-            <ion-fab #fab vertical="bottom" horizontal="end" slot="fixed" style="bottom: 55px;">
+            <ion-fab #fab vertical="bottom" horizontal="end" slot="fixed" style="bottom: 25px;">
                 <ion-fab-button color="light" size="small">
                     <ion-icon data-name="caret-up" class="aura"></ion-icon>
                 </ion-fab-button>
                 <ion-fab-list side="top">
-                    <ion-fab-button color="dark">
-                        <ion-icon data-name="flag" class="aura"></ion-icon>
+                    <ion-fab-button color="dark" x-on:click="showSettings()">
+                        <ion-icon data-name="settings-sharp" class="aura"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button color="dark" x-on:click="showClipboardDialog()">
+                        <ion-icon data-name="clipboard-outline" class="aura"></ion-icon>
                     </ion-fab-button>
                 </ion-fab-list>
             </ion-fab>
-            -->
-            <!--
-            <ion-fab #fab vertical="bottom" horizontal="end" slot="fixed" style="bottom: 25px;">
-                <ion-fab-button color="light" size="small" [disabled]="autoplaying">
-                    <ion-icon name="caret-up-outline"></ion-icon>
-                </ion-fab-button>
-                <ion-fab-list side="top">
-                    <ion-fab-button [ngClass]="{'ion-hide': embed}"
-                        *ngIf="(game.status == 'WTR' || game.status == 'WOD' || game.status == 'BRD' || game.status == 'WRU' || game.status == 'BNU' || game.status == 'BTR' || game.status == 'BOD' || game.status == 'WRD' || game.status == 'BRU' || game.status == 'WNU') && (playerType == 'w' || playerType == 'b')"
-                        color="dark" (click)="btnFlagClick()"><ion-icon
-                            name="flag-outline"></ion-icon></ion-fab-button>
-                    <ion-fab-button color="dark" (click)="btnAnalysisClick()"><ion-icon
-                            name="flask-outline"></ion-icon></ion-fab-button>
-                    <ion-fab-button color="dark" (click)="btnCopyClipboardClick()"><ion-icon
-                            name="clipboard-outline"></ion-icon></ion-fab-button>
-                    <ion-fab-button color="dark" (click)="btnSettingsClick()"><ion-icon
-                            name="options"></ion-icon></ion-fab-button>
-                </ion-fab-list>
-            </ion-fab>
-            -->
         </div>
     </ion-content>
 </ion-page>

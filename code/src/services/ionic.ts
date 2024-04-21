@@ -200,7 +200,7 @@ tryDefine(IonToggle, 'ion-toggle');
 tryDefine(IonToolbar, 'ion-toolbar');
 // tryDefine(IonVirtualScroll, 'ion-virtual-scroll');
 
-const images = import.meta.glob('/node_modules/@ionic/core/dist/ionic/svg/(close|home-sharp|information-circle|settings-sharp|save|caret-down|caret-forward|caret-up|arrow-back|arrow-forward|power|bulb|color-wand|stop|trash|person|desktop-outline).svg', { as: 'url' });
+const images = import.meta.glob('/node_modules/@ionic/core/dist/ionic/svg/(close|home-sharp|information-circle|settings-sharp|save|caret-down|caret-forward|caret-up|arrow-back|arrow-forward|power|bulb|color-wand|stop|trash|person|desktop-outline|clipboard-outline).svg', { as: 'url' });
 export const redrawIconImages = () => {
   requestAnimationFrame(() => {
     document.querySelectorAll('ion-icon').forEach((el) => {
