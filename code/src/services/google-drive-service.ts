@@ -1,3 +1,4 @@
+import { loadScript } from "../commons";
 import { fetchWithTimeout } from "../commons/fetch-timeout";
 
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
@@ -7,8 +8,12 @@ class GoogleDriveService {
 
     private access_token!: string | undefined;
 
-    private init(): Promise<string | undefined> {
-        return new Promise<string | undefined>(resolve => {
+    private init(renewAccessToken = false): Promise<string | undefined> {
+        return new Promise<string | undefined>(async resolve => {
+            if (renewAccessToken) {
+                localStorage.removeItem("GOOGLE_ACCESS_TOKEN");
+                this.access_token = undefined;
+            }
             if (this.access_token == undefined) {
                 this.access_token = localStorage.getItem("GOOGLE_ACCESS_TOKEN") || undefined;
             }
@@ -16,15 +21,12 @@ class GoogleDriveService {
                 resolve(this.access_token);
                 return;
             }
-            const script = document.createElement("script");
-            script.src = "https://accounts.google.com/gsi/client";
-            script.async = true;
-            script.onload = () => {
+            loadScript("https://accounts.google.com/gsi/client").then(() => {
                 //@ts-ignore
                 const client = google.accounts.oauth2.initTokenClient({
                     client_id: CLIENT_ID,
                     scope: SCOPE,
-                    prompt: '',
+                    prompt: renewAccessToken ? '' : 'consent',
                     callback: async (response) => {
                         this.access_token = response.access_token;
                         localStorage.setItem("GOOGLE_ACCESS_TOKEN", this.access_token);
@@ -35,9 +37,8 @@ class GoogleDriveService {
                         resolve(undefined);
                     }
                 });
-                client.requestAccessToken({ prompt: 'consent' });
-            };
-            document.body.appendChild(script);
+                client.requestAccessToken(/*{ prompt: 'consent' }*/);
+            });
         });
     };
 
@@ -55,7 +56,7 @@ class GoogleDriveService {
         return newFolderId;
     }
 
-    private async findFolder(folderName: string): Promise<string | null> {
+    private async findFolder(folderName: string, retry = false): Promise<string | null> {
         const url = `https://www.googleapis.com/drive/v3/files`;
         const queryParams = {
             q: `name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`
@@ -69,14 +70,16 @@ class GoogleDriveService {
                 'Authorization': `Bearer ${this.access_token}`
             }
         });
-        if (!response.ok) {
+        if (!retry && (response.status == 401 || response.status == 403)) {
+            return this.init(true).then(() => this.findFolder(folderName, true));
+        } else if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
         return data.files.length > 0 ? data.files[0].id : null;
     }
 
-    private async createFolder(folderName: string): Promise<string> {
+    private async createFolder(folderName: string, retry = false): Promise<string> {
         const url = 'https://www.googleapis.com/drive/v3/files';
         const metadata = {
             'name': folderName,
@@ -91,7 +94,9 @@ class GoogleDriveService {
             },
             body: JSON.stringify(metadata)
         });
-        if (!response.ok) {
+        if (!retry && (response.status == 401 || response.status == 403)) {
+            return this.init(true).then(() => this.createFolder(folderName, true));
+        } else if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
@@ -113,7 +118,7 @@ class GoogleDriveService {
         return newFileId;
     }
 
-    private async findFile(filename: string, folderId: string): Promise<string | null> {
+    private async findFile(filename: string, folderId: string, retry = false): Promise<string | null> {
         const url = 'https://www.googleapis.com/drive/v3/files';
         const queryParams = {
             q: `name='${filename}' and '${folderId}' in parents and trashed=false`
@@ -126,14 +131,16 @@ class GoogleDriveService {
                 'Authorization': `Bearer ${this.access_token}`
             }
         });
-        if (!response.ok) {
+        if (!retry && (response.status == 401 || response.status == 403)) {
+            return this.init(true).then(() => this.findFile(filename, folderId, true));
+        } else if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
         return data.files.length > 0 ? data.files[0].id : null;
     }
 
-    private async getFileContent(fileId: string): Promise<string | null> {
+    private async getFileContent(fileId: string, retry = false): Promise<string | null> {
         const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
         const response = await fetchWithTimeout(url, {
             method: 'GET',
@@ -141,13 +148,15 @@ class GoogleDriveService {
                 'Authorization': `Bearer ${this.access_token}`
             }
         });
-        if (!response.ok) {
+        if (!retry && (response.status == 401 || response.status == 403)) {
+            return this.init(true).then(() => this.getFileContent(fileId, true));
+        } else if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return await response.text();
     }
 
-    private async createFile(jsonData: any, filename: string, folderId: string): Promise<string> {
+    private async createFile(jsonData: any, filename: string, folderId: string, retry = false): Promise<string> {
         const metadata = {
             'name': filename,
             'parents': [folderId],
@@ -163,14 +172,16 @@ class GoogleDriveService {
             },
             body: formData
         });
-        if (!response.ok) {
+        if (!retry && (response.status == 401 || response.status == 403)) {
+            return this.init(true).then(() => this.createFile(jsonData, filename, folderId, true));
+        } else if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
         return data.id;
     }
 
-    private async updateFileContent(fileId: string, jsonData: any, filename: string): Promise<void> {
+    private async updateFileContent(fileId: string, jsonData: any, filename: string, retry = false): Promise<void> {
         const metadata = {
             'name': filename
         };
@@ -185,7 +196,9 @@ class GoogleDriveService {
             },
             body: formData
         });
-        if (!response.ok) {
+        if (!retry && (response.status == 401 || response.status == 403)) {
+            return this.init(true).then(() => this.updateFileContent(fileId, jsonData, filename, true));
+        } else if (!response.ok) {
             throw new Error('Network response was not ok');
         }
     }

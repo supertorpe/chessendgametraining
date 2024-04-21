@@ -102,12 +102,30 @@ const setTitle = (newTitle: string) => {
 
 const setMeta = (name: string, newValue: string) => {
     (window.document.getElementsByName(name)[0] as HTMLMetaElement).content = newValue;
-}
+};
 
 export const setupSEO = (template: string, params: any) => {
     const page = template.replace('.html', '');
     setTitle(window.AlpineI18n.t(`${page}.seo.title`, params));
     setMeta('description', window.AlpineI18n.t(`${page}.seo.meta_description`, params));
+};
+
+export const { loadScript } = new class {
+    private scripts: string[] = [];
+    loadScript = (url: string): Promise<void> => {
+        return new Promise<void>(resolve => {
+            if (this.scripts.includes(url)) {
+                resolve();
+            } else {
+                this.scripts.push(url);
+                const script = document.createElement("script");
+                script.src = url;
+                script.async = true;
+                script.onload = () => { resolve(); };
+                document.body.appendChild(script);
+            }
+        });
+    }
 };
 
 export const pieceTotalCount = (fen: string) => {
