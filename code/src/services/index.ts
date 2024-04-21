@@ -9,5 +9,4 @@ export * from './stockfish-service';
 export * from './sound-service';
 export * from './wakelock-service';
 export * from './google-drive-service';
-export * from './imgur-service';
 export * from './services';

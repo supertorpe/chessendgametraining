@@ -112,9 +112,9 @@
                 "message": "What do you want to copy?",
                 "fen": "FEN copied to clipboard",
                 "img": "Image downloaded",
-                "img-bbcode": "BBCode for the image copied to the clipboard",
                 "img-capture": "Capturing board...",
-                "img-uploading": "Uploading image to server..."
+                "ok": "OK",
+                "cancel": "Cancel"
             }
         },
         "settings": {
@@ -295,9 +295,9 @@
                 "message": "¿Qué desea copiar?",
                 "fen": "FEN copiado al portapapeles",
                 "img": "Imagen descargada",
-                "img-bbcode": "BBCode con la imagen copiada al portapapeles",
                 "img-capture": "Capturando tablero...",
-                "img-uploading": "Subiendo imagen al servidor..."
+                "ok": "OK",
+                "cancel": "Cancelar"
             }
         },
         "settings": {

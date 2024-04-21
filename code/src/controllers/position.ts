@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, imgurService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, pieceCount, pieceTotalCount, setupSEO } from '../commons';
 import { Category, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
@@ -415,48 +415,44 @@ class PositionController extends BaseController {
         alertController.create({
           header: window.AlpineI18n.t('position.clipboard.header'),
           message: window.AlpineI18n.t('position.clipboard.message'),
+          inputs: [
+            {
+              type: 'radio',
+              label: 'FEN',
+              value: 'FEN',
+              checked: true
+            },
+            {
+              type: 'radio',
+              label: 'IMG',
+              value: 'IMG',
+              checked: false
+            }
+          ],
           buttons: [
             {
-              text: 'FEN',
+              text: window.AlpineI18n.t('position.clipboard.cancel'),
+              role: 'cancel', 
+              cssClass: 'overlay-button'
+            },
+            {
+              text: window.AlpineI18n.t('position.clipboard.ok'),
               cssClass: 'overlay-button',
-              handler: () => {
-                self.copyToClipboard('fen', self.chess.fen());
-              }
-            }, {
-              text: 'IMG',
-              cssClass: 'overlay-button',
-              handler: async () => {
-                const toast1 = await toastController.create({
-                  message: window.AlpineI18n.t('position.clipboard.img-capture'),
-                  position: 'middle',
-                  color: 'success'
-                });
-                toast1.present();
-                domtoimage.toPng(document.getElementById('__chessboard__')).then((dataUrl: string) => {
-                  toast1.dismiss();
-                  self.saveBase64AsFile(dataUrl, 'chessboard.png');
-                });
-              }
-            }, {
-              text: 'IMG BBCODE',
-              cssClass: 'overlay-button',
-              handler: async () => {
-                const toast1 = await toastController.create({
-                  message: window.AlpineI18n.t('position.clipboard.img-capture'),
-                  position: 'middle',
-                  color: 'success'
-                });
-                toast1.present();
-                domtoimage.toPng(document.getElementById('__chessboard__')).then(async (dataUrl: string) => {
-                  toast1.dismiss();
-                  const toast2 = await toastController.create({
-                    message: window.AlpineI18n.t('position.clipboard.img-uploading'),
+              handler: async (data: string) => {
+                if (data == 'FEN') {
+                  self.copyToClipboard('fen', self.chess.fen());
+                } else if (data == 'IMG') {
+                  const toast1 = await toastController.create({
+                    message: window.AlpineI18n.t('position.clipboard.img-capture'),
                     position: 'middle',
                     color: 'success'
                   });
-                  toast2.present();
-                  imgurService.upload(dataUrl);
-                });
+                  toast1.present();
+                  domtoimage.toPng(document.getElementById('__chessboard__')).then((dataUrl: string) => {
+                    toast1.dismiss();
+                    self.saveBase64AsFile(dataUrl, 'chessboard.png');
+                  });
+                }
               }
             }
           ]
