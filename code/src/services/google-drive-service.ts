@@ -1,9 +1,6 @@
 import { fetchWithTimeout } from "../commons/fetch-timeout";
 import { configurationService } from "./configuration-service";
 
-const SCOPE = 'https://www.googleapis.com/auth/drive.file';
-const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
 class GoogleDriveService {
 
     private access_token!: string | undefined;
@@ -27,30 +24,11 @@ class GoogleDriveService {
                 resolve(this.access_token);
             };
             window.addEventListener('storage', storageListener);
-            window.open(`/gdrive/index.html?theme=${configurationService.configuration.colorTheme}&renew=${renewAccessToken}`, 'gdrive');
+            localStorage.setItem('theme', configurationService.configuration.colorTheme);
+            localStorage.setItem('renew', `${renewAccessToken}`);
+            window.open('/gdrive/index.html', 'gdrive');
         });
     };
-
-    public initTokenClient(renewAccessToken = false): Promise<string | undefined> {
-        return new Promise<string | undefined>(resolve => {
-            //@ts-ignore
-            const client = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPE,
-                prompt: renewAccessToken ? '' : 'consent',
-                callback: async (response) => {
-                    this.access_token = response.access_token;
-                    localStorage.setItem("GOOGLE_ACCESS_TOKEN", this.access_token);
-                    resolve(response.access_token);
-                },
-                error_callback: (error) => {
-                    console.log(`error_callback: ${JSON.stringify(error)}`);
-                    resolve(undefined);
-                }
-            });
-            client.requestAccessToken();
-        });
-    }
 
     private async createFolderIfNotExists(folderName: string): Promise<string> {
         // Check if the folder already exists

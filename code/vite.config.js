@@ -2,13 +2,20 @@ import { defineConfig, loadEnv } from 'vite';
 import { splitVendorChunkPlugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { resolve } from 'path'
 
 export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd(), '') };
   return defineConfig({
     build: {
       sourcemap: true,
-      outDir: '../docs'
+      outDir: '../docs',
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+          gdrive: resolve(__dirname, 'gdrive/index.html'),
+        },
+      },
     },
     plugins: [
       splitVendorChunkPlugin(),

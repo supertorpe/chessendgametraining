@@ -8,19 +8,6 @@
     ],
     "headers": [
       {
-        "source": "**/gdrive/**",
-        "headers": [
-          {
-            "key": "Cross-Origin-Embedder-Policy",
-            "value": "require-corp"
-          },
-          {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin-allow-popups"
-          }
-        ]
-      },
-      {
         "source": "**",
         "headers": [
           {
@@ -30,6 +17,19 @@
           {
             "key": "Cross-Origin-Opener-Policy",
             "value": "same-origin"
+          }
+        ]
+      },
+      {
+        "source": "/gdrive/index.html",
+        "headers": [
+          {
+            "key": "Cross-Origin-Embedder-Policy",
+            "value": "require-corp"
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin-allow-popups"
           }
         ]
       },
