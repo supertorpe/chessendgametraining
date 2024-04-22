@@ -10,12 +10,6 @@ export default ({ mode }) => {
     build: {
       sourcemap: true,
       outDir: '../docs',
-      rollupOptions: {
-        input: {
-          main: resolve(__dirname, 'index.html'),
-          gdrive: resolve(__dirname, 'gdrive/index.html'),
-        },
-      },
     },
     plugins: [
       splitVendorChunkPlugin(),
