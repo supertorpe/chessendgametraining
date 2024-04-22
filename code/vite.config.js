@@ -15,9 +15,13 @@ export default ({ mode }) => {
       {
         name: "configure-response-headers",
         configureServer: (server) => {
-          server.middlewares.use((_req, res, next) => {
+          server.middlewares.use((req, res, next) => {
             res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
-            res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+            if(req.url.includes('/gdrive/')) {
+              res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+            } else {
+              res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+            }
             next();
           });
         },

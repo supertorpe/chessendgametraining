@@ -1,5 +1,5 @@
-import { loadScript } from "../commons";
 import { fetchWithTimeout } from "../commons/fetch-timeout";
+import { configurationService } from "./configuration-service";
 
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -8,7 +8,7 @@ class GoogleDriveService {
 
     private access_token!: string | undefined;
 
-    private init(renewAccessToken = false): Promise<string | undefined> {
+    public init(renewAccessToken = false): Promise<string | undefined> {
         return new Promise<string | undefined>(async resolve => {
             if (renewAccessToken) {
                 localStorage.removeItem("GOOGLE_ACCESS_TOKEN");
@@ -21,26 +21,36 @@ class GoogleDriveService {
                 resolve(this.access_token);
                 return;
             }
-            loadScript("https://accounts.google.com/gsi/client").then(() => {
-                //@ts-ignore
-                const client = google.accounts.oauth2.initTokenClient({
-                    client_id: CLIENT_ID,
-                    scope: SCOPE,
-                    prompt: renewAccessToken ? '' : 'consent',
-                    callback: async (response) => {
-                        this.access_token = response.access_token;
-                        localStorage.setItem("GOOGLE_ACCESS_TOKEN", this.access_token);
-                        resolve(response.access_token);
-                    },
-                    error_callback: (error) => {
-                        console.log(`error_callback: ${JSON.stringify(error)}`);
-                        resolve(undefined);
-                    }
-                });
-                client.requestAccessToken(/*{ prompt: 'consent' }*/);
-            });
+            const storageListener = () => {
+                window.removeEventListener('storage', storageListener);
+                this.access_token = localStorage.getItem("GOOGLE_ACCESS_TOKEN") || undefined;
+                resolve(this.access_token);
+            };
+            window.addEventListener('storage', storageListener);
+            window.open(`/gdrive/index.html?theme=${configurationService.configuration.colorTheme}&renew=${renewAccessToken}`, 'gdrive');
         });
     };
+
+    public initTokenClient(renewAccessToken = false): Promise<string | undefined> {
+        return new Promise<string | undefined>(resolve => {
+            //@ts-ignore
+            const client = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPE,
+                prompt: renewAccessToken ? '' : 'consent',
+                callback: async (response) => {
+                    this.access_token = response.access_token;
+                    localStorage.setItem("GOOGLE_ACCESS_TOKEN", this.access_token);
+                    resolve(response.access_token);
+                },
+                error_callback: (error) => {
+                    console.log(`error_callback: ${JSON.stringify(error)}`);
+                    resolve(undefined);
+                }
+            });
+            client.requestAccessToken();
+        });
+    }
 
     private async createFolderIfNotExists(folderName: string): Promise<string> {
         // Check if the folder already exists

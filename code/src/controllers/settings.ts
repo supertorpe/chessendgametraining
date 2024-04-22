@@ -145,6 +145,20 @@ class SettingsController extends BaseController {
                         redrawIconImages();
                     });
                 });
+                configurationService.configuration.configurationChangedEmitter.addEventListener(async (event) => {
+                    switch (event.field) {
+                        case 'useSyzygy' : this.useSyzygy = event.config.useSyzygy; break;
+                        case 'stockfishDepth' : this.currentStockfishDepth = event.config.stockfishDepth; break;
+                        case 'stockfishMovetime' : this.currentStockfishMovetime = event.config.stockfishMovetime; break;
+                        case 'automaticShowFirstPosition' : this.gotoPosition = event.config.automaticShowFirstPosition; break;
+                        //case 'colorTheme' : this.currentTheme = event.config.colorTheme;
+                        case 'playSounds' : this.playSounds = event.config.playSounds; break;
+                        case 'highlightSquares' : this.highlightSquares = event.config.highlightSquares; break;
+                        case 'pieceTheme' : this.currentPieceTheme = event.config.pieceTheme; break;
+                        case 'boardTheme' : this.currentBoardTheme = event.config.boardTheme; break;
+                        case 'syncGoogleDrive' : this.syncGoogleDrive = event.config.syncGoogleDrive; break;
+                    }
+                });
             }
         }));
     }

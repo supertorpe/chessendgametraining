@@ -43,7 +43,10 @@ class EndgameDatabaseService {
                                 console.log(error);
                                 remoteDatabase = undefined;
                             }
-                            if (remoteDatabase) this.reconcileDatabases(localDatabase, remoteDatabase, endgameDatabase);
+                            if (remoteDatabase) {
+                                this._endgameDatabase = this.reconcileDatabases(localDatabase, remoteDatabase, endgameDatabase);
+                                this._endgameDatabaseChangedEmitter.notify(this._endgameDatabase);
+                            }
                         }
                         break;
                     }

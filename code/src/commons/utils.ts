@@ -110,16 +110,6 @@ export const setupSEO = (template: string, params: any) => {
     setMeta('description', window.AlpineI18n.t(`${page}.seo.meta_description`, params));
 };
 
-export const loadScript = (url: string): Promise<void> => {
-    return new Promise<void>(resolve => {
-        const script = document.createElement("script");
-        script.src = url;
-        script.async = true;
-        script.onload = () => { resolve(); };
-        document.body.appendChild(script);
-    });
-};
-
 export const pieceTotalCount = (fen: string) => {
     return fen.substring(0, fen.indexOf(" ")).replace(/\d/g, "").replace(/\//g, "").length;
 };
