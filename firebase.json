@@ -96,6 +96,40 @@
             "value": "max-age=300"
           }
         ]
+      },
+      {
+        "source": "/sitemap.xml",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/xml"
+          },
+          {
+            "key": "Cross-Origin-Embedder-Policy",
+            "value": null
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": null
+          }
+        ]
+      },
+      {
+        "source": "/robots.txt",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain"
+          },
+          {
+            "key": "Cross-Origin-Embedder-Policy",
+            "value": null
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": null
+          }
+        ]
       }
     ],
     "rewrites": [
