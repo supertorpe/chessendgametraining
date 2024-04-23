@@ -92,4 +92,4 @@ export const BOARD_THEMES = [
   export const GOOGLE_DRIVE_FOLDER = '.chess-endgame-training';
   export const GOOGLE_DRIVE_CONFIG_FILE = 'config.json';
   export const GOOGLE_DRIVE_DATABASE_FILE = 'endgames.json';
-  
+  export const GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE = 'endgames-timestamp.json';

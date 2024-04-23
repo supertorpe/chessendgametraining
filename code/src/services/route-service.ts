@@ -4,6 +4,7 @@ import { MenuI, menuController, modalController } from '@ionic/core';
 import { Controller } from '../controllers';
 import { MAIN_MENU_ID, setupSEO } from '../commons';
 import { redrawIconImages } from './ionic';
+import { googleDriveService } from './google-drive-service';
 
 interface RouteItem {
     path: string;
@@ -37,6 +38,7 @@ class RouteService {
     }
 
     private openRoute = (navigo: Navigo, template: string, targetElementSelector: string, controller: Controller, params?: any): Promise<void> => {
+        googleDriveService.checkNewAccessToken();
         this.closeMenu(MAIN_MENU_ID);
         return new Promise<void>(resolve => {
             const targetElement = document.querySelector(targetElementSelector);

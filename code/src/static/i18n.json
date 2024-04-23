@@ -10,7 +10,11 @@
             "settings": "Settings",
             "about": "About",
             "exit": "Exit",
-            "back-to-exit": "Press back again to exit"
+            "back-to-exit": "Press back again to exit",
+            "button-google-login": "Click here to login on Google",
+            "button-google-cancel": "Cancel",
+            "database-loading-google-drive": "Loading database from Google Drive",
+            "database-sync-google-drive": "Database synchronized with Google Drive"
         },
         "home": {
             "seo": {
@@ -193,7 +197,11 @@
             "settings": "Configuración",
             "about": "Acerca de",
             "exit": "Salir",
-            "back-to-exit": "Pulse 'atrás' de nuevo para salir"
+            "back-to-exit": "Pulse 'atrás' de nuevo para salir",
+            "button-google-login": "Pulsa aquí para identificarte en Google",
+            "button-google-cancel": "Cancelar",
+            "database-loading-google-drive": "Cargando base de datos de Google Drive",
+            "database-sync-google-drive": "Base de datos sincronizada con Google Drive"
         },
         "home": {
             "seo": {

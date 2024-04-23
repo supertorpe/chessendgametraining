@@ -4,9 +4,28 @@ import { configurationService } from "./configuration-service";
 class GoogleDriveService {
 
     private access_token!: string | undefined;
+    private initializing = false;
+
+    public checkNewAccessToken() {
+        if (localStorage.getItem("GOOGLE_ACCESS_TOKEN_LOADED") == 'TRUE') {
+            localStorage.removeItem("GOOGLE_ACCESS_TOKEN_LOADED");
+            configurationService.configuration.syncGoogleDrive = (localStorage.getItem("GOOGLE_ACCESS_TOKEN") != null);
+        }
+    }
 
     public init(renewAccessToken = false): Promise<string | undefined> {
         return new Promise<string | undefined>(async resolve => {
+            if (!this.initializing) {
+                this.initializing = true;
+            } else {
+                let i = 20;
+                while (this.initializing && i > 0) {
+                    i--;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                resolve(this.access_token);
+                return;
+            }
             if (renewAccessToken) {
                 localStorage.removeItem("GOOGLE_ACCESS_TOKEN");
                 this.access_token = undefined;
@@ -16,17 +35,31 @@ class GoogleDriveService {
             }
             if (this.access_token !== undefined) {
                 resolve(this.access_token);
+                this.initializing = false;
                 return;
             }
             const storageListener = () => {
                 window.removeEventListener('storage', storageListener);
                 this.access_token = localStorage.getItem("GOOGLE_ACCESS_TOKEN") || undefined;
                 resolve(this.access_token);
+                this.initializing = false;
             };
             window.addEventListener('storage', storageListener);
             localStorage.setItem('theme', configurationService.configuration.colorTheme);
             localStorage.setItem('renew', `${renewAccessToken}`);
-            window.open('/gdrive/index.html', 'gdrive');
+            if (!localStorage.getItem('button-ok-message') || localStorage.getItem('button-ok-message') == 'Google Login') {
+                let messageOk = 'Google Login';
+                let messageKo = 'Cancel';
+                try {
+                    messageOk = window.AlpineI18n.t('app.button-google-login');
+                    messageKo = window.AlpineI18n.t('app.button-google-cancel');
+                } catch {
+    
+                }
+                localStorage.setItem('button-ok-message', messageOk);
+                localStorage.setItem('button-ko-message', messageKo);
+            }
+            window.location.href = '/gdrive/index.html';
         });
     };
 
@@ -37,7 +70,6 @@ class GoogleDriveService {
             console.log('Folder already exists. Folder ID:', folderId);
             return folderId;
         }
-
         // If the folder doesn't exist, create it
         const newFolderId = await this.createFolder(folderName);
         console.log('Folder created successfully. Folder ID:', newFolderId);

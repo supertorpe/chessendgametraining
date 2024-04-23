@@ -13,7 +13,48 @@
           {
             "key": "Cross-Origin-Embedder-Policy",
             "value": "require-corp"
-          },
+          }
+        ]
+      },
+      {
+        "source": "/",
+        "headers": [
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin"
+          }
+        ]
+      },
+      {
+        "source": "/home",
+        "headers": [
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin"
+          }
+        ]
+      },
+      {
+        "source": "/about",
+        "headers": [
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin"
+          }
+        ]
+      },
+      {
+        "source": "/list/**",
+        "headers": [
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin"
+          }
+        ]
+      },
+      {
+        "source": "/position/**",
+        "headers": [
           {
             "key": "Cross-Origin-Opener-Policy",
             "value": "same-origin"
@@ -23,10 +64,6 @@
       {
         "source": "/gdrive/index.html",
         "headers": [
-          {
-            "key": "Cross-Origin-Embedder-Policy",
-            "value": "require-corp"
-          },
           {
             "key": "Cross-Origin-Opener-Policy",
             "value": "same-origin-allow-popups"
@@ -71,7 +108,23 @@
         "destination": "/robots.txt"
       },
       {
-        "source": "**",
+        "source": "/",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/home",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/about",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/list/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/position/**",
         "destination": "/index.html"
       }
     ]
