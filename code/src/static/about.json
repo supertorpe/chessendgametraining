@@ -13,7 +13,7 @@
             "i18n": "about.chessground-description"
         },
         {
-            "url": "https://github.com/nmrugg/stockfish.js",
+            "url": "https://github.com/lichess-org/lila-stockfish-web",
             "i18n": "about.stockfish-js-description"
         },
         {

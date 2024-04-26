@@ -12,63 +12,63 @@ export const ROUTE_MAP = {
     routes: [
         {
             path: '/',
-            template: 'home.html',
+            template: 'page-home.html',
             tag: 'ion-router-outlet',
             controller: homeController,
             hasParams: false
         },
         {
             path: '/home',
-            template: 'home.html',
+            template: 'page-home.html',
             tag: 'ion-router-outlet',
             controller: homeController,
             hasParams: false
         },
         {
             path: '/about',
-            template: 'about.html',
+            template: 'page-about.html',
             tag: 'ion-router-outlet',
             controller: aboutController,
             hasParams: false
         },
         {
             path: '/settings',
-            template: 'settings.html',
+            template: 'page-settings.html',
             tag: 'ion-router-outlet',
             controller: settingsController,
             hasParams: false
         },
         {
             path: '/list/:idxCategory/:idxSubcategory',
-            template: 'list.html',
+            template: 'page-list.html',
             tag: 'ion-router-outlet',
             controller: listController,
             hasParams: true
         },
         {
             path: '/position/:idxCategory/:idxSubcategory/:idxGame',
-            template: 'position.html',
+            template: 'page-position.html',
             tag: 'ion-router-outlet',
             controller: positionController,
             hasParams: true
         },
         {
             path: '/fen/:fen1/:fen2/:fen3/:fen4/:fen5/:fen6/:fen7/:fen8',
-            template: 'position.html',
+            template: 'page-position.html',
             tag: 'ion-router-outlet',
             controller: positionController,
             hasParams: true
         },
         {
             path: '/fen/:fen1/:fen2/:fen3/:fen4/:fen5/:fen6/:fen7/:fen8/:target',
-            template: 'position.html',
+            template: 'page-position.html',
             tag: 'ion-router-outlet',
             controller: positionController,
             hasParams: true
         },
         {
             path: '/promotion',
-            template: 'promotion.html',
+            template: 'page-promotion.html',
             tag: 'ion-router-outlet',
             controller: promotionController,
             hasParams: false

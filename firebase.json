@@ -13,48 +13,7 @@
           {
             "key": "Cross-Origin-Embedder-Policy",
             "value": "require-corp"
-          }
-        ]
-      },
-      {
-        "source": "/",
-        "headers": [
-          {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin"
-          }
-        ]
-      },
-      {
-        "source": "/home",
-        "headers": [
-          {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin"
-          }
-        ]
-      },
-      {
-        "source": "/about",
-        "headers": [
-          {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin"
-          }
-        ]
-      },
-      {
-        "source": "/list/**",
-        "headers": [
-          {
-            "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin"
-          }
-        ]
-      },
-      {
-        "source": "/position/**",
-        "headers": [
+          },
           {
             "key": "Cross-Origin-Opener-Policy",
             "value": "same-origin"
@@ -159,6 +118,10 @@
       },
       {
         "source": "/position/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/fen/**",
         "destination": "/index.html"
       }
     ]

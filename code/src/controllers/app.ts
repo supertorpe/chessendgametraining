@@ -20,7 +20,7 @@ class AppController extends BaseController {
             },
             ariaDescriptionFromIcon: ariaDescriptionFromIcon,
             showSettings() {
-                routeService.openModal('settings', 'settings.html', settingsController, true, false);
+                routeService.openModal('settings', 'page-settings.html', settingsController, true, false);
             },
             init() {
                 endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {

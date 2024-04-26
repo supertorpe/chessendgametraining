@@ -1,4 +1,5 @@
 import { EventEmitter } from '../commons';
+import StockfishWeb from 'lila-stockfish-web';
 
 declare var WebAssembly: any;
 
@@ -18,6 +19,10 @@ class StockfishService {
         this.stockfish.postMessage(message);
     }
 
+    public onMessage(message: string) {
+        if (!this.avoidNotifications) this._messageEmitter.notify(message);
+    }
+
     public warmup(fen: string) {
         this.avoidNotifications = true;
         this.postMessage(`position fen ${fen}`);
@@ -26,75 +31,50 @@ class StockfishService {
 
     public stopWarmup(): Promise<void> {
         return new Promise(resolve => {
-            const stockfishListener = (event: MessageEvent<string>) => {
-                if (event.data.startsWith('bestmove')) {
+            const stockfishListener = (msg: string) => {
+                if (msg.startsWith('bestmove')) {
                     this.avoidNotifications = false;
-                    this.stockfish.removeEventListener('message', stockfishListener);
+                    this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
                     resolve();
                 }
             }
-            this.stockfish.addEventListener('message', stockfishListener);
+            this.stockfish.listen =  (msg: string) => { stockfishListener(msg); }
             this.postMessage('stop');
         });
     }
 
-    private initStockfish(engineUrl: string, nnue: boolean) {
-        const self = this;
-        this.stockfish = new Worker(engineUrl);
-        this.stockfish.addEventListener('message', function (event: MessageEvent<string>) {
-            console.log(event.data);
-            if (!self.avoidNotifications)
-                self._messageEmitter.notify(event.data);
-        });
-        this.stockfish.postMessage('uci');
-        if (nnue) this.stockfish.postMessage('setoption name Use NNUE value true');
-    }
-
-    private async initStockfishNnue16() {
-        this.initStockfish('assets/stockfish/stockfish-nnue-16.js#stockfish-nnue-16.wasm', true);
-    }
-
-    private initStockfishNnue16NoSimd() {
-        this.initStockfish('assets/stockfish/stockfish-nnue-16-no-simd.js#stockfish-nnue-16-no-simd.wasm', true);
-    }
-
-    private initStockfishNnue16Single() {
-        this.initStockfish('assets/stockfish/stockfish-nnue-16-single.js#stockfish-nnue-16-single.wasm', true);
-    }
-
-    private initStockfishJs() {
-        this.initStockfish('assets/stockfish/stockfish.asm.js', false);
-    }
-
-    private sharedMemoryTest(): boolean {
-        if (typeof Atomics !== 'object') return false;
-        if (typeof SharedArrayBuffer !== 'function') return false;
-        let mem;
-        try {
-            mem = new WebAssembly.Memory({ shared: true, initial: 1, maximum: 2 });
-            if (!(mem.buffer instanceof SharedArrayBuffer)) return false;
-
-            window.postMessage(mem.buffer, '*');
-        } catch (_) {
-            return false;
-        }
-        return mem.buffer instanceof SharedArrayBuffer;
-    }
-
-    private detectFeatures(): string[] {
-        const result: string[] = [];
-        if (typeof WebAssembly === 'object' &&
-            typeof WebAssembly.validate === 'function' &&
-            WebAssembly.validate(Uint8Array.from([0, 97, 115, 109, 1, 0, 0, 0]))) {
-            result.push('wasm');
-            if (this.sharedMemoryTest()) {
-                result.push('sharedMem');
-                // i32x4.dot_i16x8_s, i32x4.trunc_sat_f64x2_u_zero
-                const sourceWithSimd = Uint8Array.from([0, 97, 115, 109, 1, 0, 0, 0, 1, 12, 2, 96, 2, 123, 123, 1, 123, 96, 1, 123, 1, 123, 3, 3, 2, 0, 1, 7, 9, 2, 1, 97, 0, 0, 1, 98, 0, 1, 10, 19, 2, 9, 0, 32, 0, 32, 1, 253, 186, 1, 11, 7, 0, 32, 0, 253, 253, 1, 11]); // prettier-ignore
-                if (WebAssembly.validate(sourceWithSimd)) result.push('simd');
+    private sharedWasmMemory = (lo: number, hi = 32767): WebAssembly.Memory => {
+        let shrink = 4; // 32767 -> 24576 -> 16384 -> 12288 -> 8192 -> 6144 -> etc
+        while (true) {
+            try {
+                return new WebAssembly.Memory({ shared: true, initial: lo, maximum: hi });
+            } catch (e) {
+                if (hi <= lo || !(e instanceof RangeError)) throw e;
+                hi = Math.max(lo, Math.ceil(hi - hi / shrink));
+                shrink = shrink === 4 ? 3 : 4;
             }
         }
-        return result;
+    };
+
+    private initStockfish() {
+        import('lila-stockfish-web/linrock-nnue-7.js').then((makeModule: any) => {
+            makeModule
+                .default({
+                    wasmMemory: this.sharedWasmMemory(1536!),
+                    onError: (msg: string) => console.log(msg),
+                    locateFile: (name: string) => `assets/stockfish/${name}`,
+                })
+                .then(async (stockfish: StockfishWeb) => {
+                    this.stockfish = stockfish;
+                    const response = await fetch(`assets/stockfish/${stockfish.getRecommendedNnue()}`);
+                    const buffer = await response.arrayBuffer();
+                    const uint8Array = new Uint8Array(buffer);
+                    stockfish.setNnueBuffer(uint8Array);
+                    stockfish.onError = (msg: string) => { console.log(msg); }
+                    stockfish.listen = (msg: string) => { this.onMessage(msg); }
+                    stockfish.postMessage('uci');
+                });
+        });
     }
 
     public init(): Promise<boolean> {
@@ -107,16 +87,7 @@ class StockfishService {
                 }
             }
             this._messageEmitter.addEventListener(stockfishListener);
-            const features = this.detectFeatures();
-            if (features.includes("simd"))
-                this.initStockfishNnue16();
-            else if (features.includes("sharedMem")) {
-                this.initStockfishNnue16NoSimd();
-            } else if (features.includes("wasm")) {
-                this.initStockfishNnue16Single();
-            } else {
-                this.initStockfishJs();
-            }
+            this.initStockfish();
         });
     }
 

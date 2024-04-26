@@ -105,7 +105,7 @@ const setMeta = (name: string, newValue: string) => {
 };
 
 export const setupSEO = (template: string, params: any) => {
-    const page = template.replace('.html', '');
+    const page = template.replace('.html', '').replace('page-', '');
     setTitle(window.AlpineI18n.t(`${page}.seo.title`, params));
     setMeta('description', window.AlpineI18n.t(`${page}.seo.meta_description`, params));
 };

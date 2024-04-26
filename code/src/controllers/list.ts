@@ -50,7 +50,7 @@ class ListController extends BaseController {
                     this.title = `${window.AlpineI18n.t(`category.${this.category.name}`)} [ ${this.idxSubcategory + 1} / ${this.idxLastSubcategory + 1} ]`;
                     self.title = this.title;
                     self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
-                    setupSEO('list.html', self.getSEOParams());
+                    setupSEO('page-list.html', self.getSEOParams());
                     window.history.replaceState(this.title, this.title, `/list/${this.idxCategory}/${this.idxSubcategory}`);
                 }
             },
@@ -71,7 +71,7 @@ class ListController extends BaseController {
                     this.title = `${window.AlpineI18n.t(`category.${this.category.name}`)} [ ${this.idxSubcategory + 1} / ${this.idxLastSubcategory + 1} ]`;
                     self.title = this.title;
                     self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
-                    setupSEO('list.html', self.getSEOParams());
+                    setupSEO('page-list.html', self.getSEOParams());
                     window.history.replaceState(this.title, this.title, `/list/${this.idxCategory}/${this.idxSubcategory}`);
                 }
             },

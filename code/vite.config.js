@@ -3,12 +3,24 @@ import { splitVendorChunkPlugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
+const setHeaders = (req, res) => {
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  if ('/gdrive/index.html' == req.url) {
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  } else {
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  }
+};
+
 export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd(), '') };
   return defineConfig({
     build: {
       sourcemap: true,
       outDir: '../docs',
+      rollupOptions: {
+        external: ['lila-stockfish-web/linrock-nnue-7.js'],
+      }
     },
     plugins: [
       splitVendorChunkPlugin(),
@@ -16,12 +28,16 @@ export default ({ mode }) => {
         name: "configure-response-headers",
         configureServer: (server) => {
           server.middlewares.use((req, res, next) => {
-            res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
-            if (req.url == '/' || req.url == '/home'  || req.url == '/about' || req.url.startsWith('/list/') || req.url.startsWith('/position/') || req.url.startsWith('/fen/')) {
-              res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-            } else if ('/gdrive/index.html' == req.url) {
-              res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-            }
+            setHeaders(req, res);
+            next();
+          });
+        },
+      },
+      {
+        name: "configure-preview-response-headers",
+        configurePreviewServer: (server) => {
+          server.middlewares.use((req, res, next) => {
+            setHeaders(req, res);
             next();
           });
         },
@@ -29,15 +45,12 @@ export default ({ mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: 'node_modules/stockfish/src/stockfish*',
-            dest: 'assets/stockfish/'
-          },
-          {
-            src: 'node_modules/stockfish11/src/stockfish.asm.js',
+            src: 'node_modules/lila-stockfish-web/linrock-nnue-7*',
             dest: 'assets/stockfish/'
           }
         ]
       }),
+
       VitePWA({
         devOptions: {
           enabled: true,
@@ -46,6 +59,10 @@ export default ({ mode }) => {
         registerType: 'autoUpdate',
         manifestFilename: 'manifest.json',
         includeAssets: ['*', '*/*', '*/*/*', '*/*/*/*'],
+        workbox: {
+          sourcemap: true,
+          cleanupOutdatedCaches: true,
+        },
         manifest: {
           name: 'Chess Endgame Trainer',
           short_name: 'Chess Endgame Trainer',
@@ -159,6 +176,8 @@ export default ({ mode }) => {
           ]
         }
       })
+
+
     ]
   })
 }

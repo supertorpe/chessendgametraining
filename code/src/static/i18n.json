@@ -13,7 +13,7 @@
             "back-to-exit": "Press back again to exit",
             "button-google-login": "Click here to login on Google",
             "button-google-cancel": "Cancel",
-            "database-loading-google-drive": "Loading database from Google Drive",
+            "database-loading-google-drive": "Synchronizing database with Google Drive",
             "database-sync-google-drive": "Database synchronized with Google Drive"
         },
         "home": {
@@ -165,7 +165,7 @@
             "eco-description": "ECO Chess Opening Codes: database of chess endgames",
             "chessjs-description": "chess.js: a Javascript chess library for chess move generation/validation, piece placement/movement, and check/checkmate/draw detection",
             "chessground-description": "chessground: a Javascript chess board",
-            "stockfish-js-description": "Stockfish.js: WASM implementation of Stockfish chess engine by Nathan Rugg (nmrugg)<br/>{stockfishRunningVersion}",
+            "stockfish-js-description": "lila-stockfish-web: WASM implementation of Stockfish chess engine used in Lichess",
             "syzygy-description": "Syzygy endgame tablebases: online database with information for all endgame positions with up to 7 pieces",
             "typescript": "TypeScript: JavaScript with syntax for types",
             "ionic": "Ionic Framework: the mobile sdk for the web",
@@ -200,8 +200,8 @@
             "back-to-exit": "Pulse 'atrás' de nuevo para salir",
             "button-google-login": "Pulsa aquí para identificarte en Google",
             "button-google-cancel": "Cancelar",
-            "database-loading-google-drive": "Cargando base de datos de Google Drive",
-            "database-sync-google-drive": "Base de datos sincronizada con Google Drive"
+            "database-loading-google-drive": "Sincronizando base de datos en Google Drive",
+            "database-sync-google-drive": "Base de datos sincronizada en Google Drive"
         },
         "home": {
             "seo": {
@@ -352,7 +352,7 @@
             "eco-description": "ECO Chess Opening Codes: base de datos de finales de ajedrez",
             "chessjs-description": "chess.js: librería Javascript para la generación / validación / posicionamiento de movimientos de piezas, y detección de jaque, mate y tablas",
             "chessground-description": "chessground: un tablero de ajedrez en Javascript",
-            "stockfish-js-description": "Stockfish.js: implementación WASM del motor de ajedrez Stockfish por Nathan Rugg (nmrugg)<br/>{stockfishRunningVersion}",
+            "stockfish-js-description": "lila-stockfish-web: implementación WASM del motor de ajedrez Stockfish usado en Lichess",
             "syzygy-description": "Syzygy endgame tablebases: base de datos online con información de todos los finales con hasta 7 piezas",
             "ionic": "Ionic Framework: el SDK móvil para la web",
             "typescript": "TypeScript: JavaScript con sintaxis para tipos",

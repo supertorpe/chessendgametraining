@@ -372,7 +372,7 @@ class PositionController extends BaseController {
             self.target.value = self.position.target;
             self.fen = self.position.fen;
             self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
-            setupSEO('list.html', self.getSEOParams());
+            setupSEO('page-list.html', self.getSEOParams());
             window.history.replaceState(self.seo, self.seo, `/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
             self.resetPosition.call(self, true);
           }
@@ -409,7 +409,7 @@ class PositionController extends BaseController {
         self.solve.call(self);
       },
       showSettings() {
-        routeService.openModal('settings', 'settings.html', settingsController, true, false);
+        routeService.openModal('settings', 'page-settings.html', settingsController, true, false);
       },
       showClipboardDialog() {
         alertController.create({
@@ -501,7 +501,7 @@ class PositionController extends BaseController {
     if (orig == 'a0' || dest == 'a0') return;
     // check promotion
     if (this.chess.get(orig)?.type == 'p' && (dest.charAt(1) == '8' || dest.charAt(1) == '1')) {
-      routeService.openModal('promotion', 'promotion.html', promotionController, false, true, this.player).then((data: any) => {
+      routeService.openModal('promotion', 'page-promotion.html', promotionController, false, true, this.player).then((data: any) => {
         this.registerMove(orig, dest, data.piece);
       });
     } else {
