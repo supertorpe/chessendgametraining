@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@ionic/core": "8.0.0-beta.2",
+    "@ionic/core": "^8.0.1",
     "@ionic/storage": "^4.0.0",
     "alpinejs": "^3.13.10",
     "alpinejs-i18n": "^2.4.2",
