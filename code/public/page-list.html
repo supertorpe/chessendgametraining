@@ -9,12 +9,12 @@
     </ion-header>
     <ion-toolbar color="light">
         <ion-buttons slot="start">
-            <ion-button aria-label="Previous category" x-show="showNavPrev" x-on:click="showPrevious()">
+            <ion-button aria-label="Previous category" x-bind:disabled="!showNavPrev" x-on:click="showPrevious()">
                 <ion-icon slot="icon-only" class="aura" data-name="arrow-back"></ion-icon>
             </ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-            <ion-button aria-label="Next category" x-show="showNavNext" x-on:click="showNext()">
+            <ion-button aria-label="Next category" x-bind:disabled="!showNavNext" x-on:click="showNext()">
                 <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
             </ion-button>
         </ion-buttons>

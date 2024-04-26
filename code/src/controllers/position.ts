@@ -19,8 +19,15 @@ class PositionController extends BaseController {
   private chess: ChessInstance = Chess();
   private board!: Api;
   private boardConfig!: Config;
+  //private endgameDatabase!: EndgameDatabase;
+  //private categories!: Category[];
   private position!: Position;
   private fen!: string;
+  private idxCategory: { value: number } = Alpine.reactive({ value: -1 });
+  private idxSubcategory: { value: number } = Alpine.reactive({ value: -1 });
+  private idxGame: { value: number } = Alpine.reactive({ value: -1 });
+  private idxLastSubcategory: { value: number } = Alpine.reactive({ value: -1 });
+  private idxLastGame: { value: number } = Alpine.reactive({ value: -1 });
   private moveList: MoveItem[] = Alpine.reactive([]);
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
   private player!: "w" | "b";
@@ -28,6 +35,8 @@ class PositionController extends BaseController {
   private move = Alpine.reactive({ value: '' });
   private useSyzygy = false;
   private gameOver = Alpine.reactive({ value: false });
+  private showNavPrev = Alpine.reactive({ value: false });
+  private showNavNext = Alpine.reactive({ value: false });
   private waitingForOpponent = Alpine.reactive({ value: false });
   private askingForHint = Alpine.reactive({ value: false });
   private solving = Alpine.reactive({ value: false });
@@ -155,6 +164,49 @@ class PositionController extends BaseController {
     }).then(alert => alert.present());
   }
 
+  private movePosition(direction: number) {
+    this.showExitDialog().then(value => {
+      if (value) {
+        const endgameDatabase = endgameDatabaseService.endgameDatabase;
+        const categories = endgameDatabase.categories;
+        this.idxGame.value += direction;
+        if (this.idxGame.value < 0 || this.idxGame.value > this.idxLastGame.value) {
+          this.idxSubcategory.value += direction;
+          if (this.idxSubcategory.value < 0 || this.idxSubcategory.value > this.idxLastSubcategory.value) {
+            this.idxCategory.value += direction;
+            this.idxSubcategory.value = direction > 0 ? 0 : categories[this.idxCategory.value].count - 1;
+            this.idxLastSubcategory.value = categories[this.idxCategory.value].count - 1;
+          }
+          this.idxGame.value = direction > 0 ? 0 : categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].count - 1;
+          this.idxLastGame.value = categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].count - 1;
+        }
+        this.showNavPrev.value = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
+        this.showNavNext.value = !(this.idxCategory.value === endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
+        this.position = categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].games[this.idxGame.value];
+        this.target.value = this.position.target;
+        this.fen = this.position.fen;
+        this.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory.value].name}`)} (${categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].name}) ${this.idxGame.value + 1}/${this.idxLastGame.value + 1}`;
+        setupSEO('page-list.html', this.getSEOParams());
+        window.history.replaceState(this.seo, this.seo, `/position/${this.idxCategory.value}/${this.idxSubcategory.value}/${this.idxGame.value}`);
+        this.resetPosition(true);
+      }
+    });
+  }
+
+  private showPreviousPosition() {
+    const canMovePrevious = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
+    if (canMovePrevious) {
+      this.movePosition(-1);
+    }
+  }
+
+  private showNextPosition() {
+    const canMoveNext = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
+    if (canMoveNext) {
+      this.movePosition(1);
+    }
+  }
+
   private showPruneDialog(idx: number) {
     if (this.solving.value || this.waitingForOpponent.value) return;
     const prefix = (idx == this.moveList.length - 1 ? 'position.confirm-prune-one' : 'position.confirm-prune');
@@ -246,15 +298,8 @@ class PositionController extends BaseController {
     requestWakeLock();
 
     this.useSyzygy = configurationService.configuration.useSyzygy;
-    const endgameDatabase = endgameDatabaseService.endgameDatabase;
-    let categories = endgameDatabase.categories;
-    let idxCategory: number;
-    let idxSubcategory: number;
     let category: Category;
     let subcategory: Subcategory;
-    let idxGame: number;
-    let idxLastSubcategory: number;
-    let idxLastGame: number;
 
     const customFen = ($routeParams['fen1'] !== undefined);
     if (customFen) {
@@ -262,17 +307,19 @@ class PositionController extends BaseController {
       this.target.value = $routeParams['target'] || 'checkmate';
       this.seo = this.fen;
     } else {
-      idxCategory = parseInt($routeParams['idxCategory']);
-      idxSubcategory = parseInt($routeParams['idxSubcategory']);
-      category = categories[idxCategory];
-      subcategory = category.subcategories[idxSubcategory];
-      idxGame = parseInt($routeParams['idxGame']);
-      this.position = subcategory.games[idxGame];
-      idxLastSubcategory = category.count - 1;
-      idxLastGame = subcategory.count - 1;
+      this.idxCategory.value = parseInt($routeParams['idxCategory']);
+      this.idxSubcategory.value = parseInt($routeParams['idxSubcategory']);
+      const category = endgameDatabaseService.endgameDatabase.categories[this.idxCategory.value];
+      const subcategory = category.subcategories[this.idxSubcategory.value];
+      this.idxGame.value = parseInt($routeParams['idxGame']);
+      this.position = subcategory.games[this.idxGame.value];
+      this.idxLastSubcategory.value = category.count - 1;
+      this.idxLastGame.value = subcategory.count - 1;
       this.fen = this.position.fen;
       this.target.value = this.position.target;
-      this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${idxGame + 1}/${idxLastGame + 1}`;
+      this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${this.idxGame.value + 1}/${this.idxLastGame.value + 1}`;
+      this.showNavPrev.value = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
+      this.showNavNext.value = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
     }
     this.initStockfishGame();
     this.chess.load(this.fen);
@@ -327,19 +374,19 @@ class PositionController extends BaseController {
       fen: this.fen,
       target: self.target,
       move: self.move,
-      idxCategory: idxCategory,
-      idxSubcategory: idxSubcategory,
-      idxGame: idxGame,
+      idxCategory: self.idxCategory,
+      idxSubcategory: self.idxSubcategory,
+      idxGame: self.idxGame,
       category: category,
       subcategory: subcategory,
       game: this.position,
       moveList: self.moveList,
       movePointer: self.movePointer,
       manualMode: self.manualMode,
-      idxLastSubcategory: idxLastSubcategory,
-      idxLastGame: idxLastGame,
-      showNavPrev: idxSubcategory > 0 || idxCategory > 0 || idxGame > 0,
-      showNavNext: !(idxCategory === endgameDatabase.count - 1 && idxSubcategory === idxLastSubcategory && idxGame === idxLastGame),
+      idxLastSubcategory: self.idxLastSubcategory,
+      idxLastGame: self.idxLastGame,
+      showNavPrev: self.showNavPrev,
+      showNavNext: self.showNavNext,
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
       toggleManualMode() {
@@ -352,43 +399,11 @@ class PositionController extends BaseController {
         }).then(toast => toast.present());
         if (this.chess.turn() != self.player) self.getOpponentMove();
       },
-      movePosition(direction: number) {
-        self.showExitDialog().then(value => {
-          if (value) {
-            this.idxGame += direction;
-            if (this.idxGame < 0 || this.idxGame > this.idxLastGame) {
-              this.idxSubcategory += direction;
-              if (this.idxSubcategory < 0 || this.idxSubcategory > this.idxLastSubcategory) {
-                this.idxCategory += direction;
-                this.idxSubcategory = direction > 0 ? 0 : categories[this.idxCategory].count - 1;
-                this.idxLastSubcategory = categories[this.idxCategory].count - 1;
-              }
-              this.idxGame = direction > 0 ? 0 : categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
-              this.idxLastGame = categories[this.idxCategory].subcategories[this.idxSubcategory].count - 1;
-            }
-            this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
-            this.showNavNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
-            self.position = categories[this.idxCategory].subcategories[this.idxSubcategory].games[this.idxGame];
-            self.target.value = self.position.target;
-            self.fen = self.position.fen;
-            self.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory].name}`)} (${categories[this.idxCategory].subcategories[this.idxSubcategory].name}) ${this.idxGame + 1}/${this.idxLastGame + 1}`;
-            setupSEO('page-list.html', self.getSEOParams());
-            window.history.replaceState(self.seo, self.seo, `/position/${this.idxCategory}/${this.idxSubcategory}/${this.idxGame}`);
-            self.resetPosition.call(self, true);
-          }
-        });
-      },
       showPreviousPosition() {
-        const canMovePrevious = this.idxSubcategory > 0 || this.idxCategory > 0 || this.idxGame > 0;
-        if (canMovePrevious) {
-          this.movePosition(-1);
-        }
+        self.showPreviousPosition.call(self);
       },
       showNextPosition() {
-        const canMoveNext = !(this.idxCategory === endgameDatabase.count - 1 && this.idxSubcategory === this.idxLastSubcategory && this.idxGame === this.idxLastGame);
-        if (canMoveNext) {
-          this.movePosition(1);
-        }
+        self.showNextPosition.call(self);
       },
       showRestartDialog() {
         self.showRestartDialog.call(self);
@@ -432,7 +447,7 @@ class PositionController extends BaseController {
           buttons: [
             {
               text: window.AlpineI18n.t('position.clipboard.cancel'),
-              role: 'cancel', 
+              role: 'cancel',
               cssClass: 'overlay-button'
             },
             {
@@ -448,9 +463,11 @@ class PositionController extends BaseController {
                     color: 'success'
                   });
                   toast1.present();
-                  domtoimage.toPng(document.getElementById('__chessboard__')).then((dataUrl: string) => {
+                  const chessboard = document.getElementById('__chessboard__') as HTMLDivElement;
+                  domtoimage.toPng(chessboard).then((dataUrl: string) => {
                     toast1.dismiss();
-                    self.saveBase64AsFile(dataUrl, 'chessboard.png');
+                    self.cropImage(dataUrl, chessboard.clientWidth, chessboard.clientHeight)
+                      .then(croppedDataUrl => self.saveBase64AsFile(croppedDataUrl, 'chessboard.png'));
                   });
                 }
               }
@@ -707,27 +724,44 @@ class PositionController extends BaseController {
         header = 'position.game-over';
 
       let message;
+      let inviteNextPuzzle = false;
+      const categoryCount = endgameDatabaseService.endgameDatabase.count;
       if (!goalAchieved)
         message = 'position.keep-practicing';
       else if (this.assistanceUsed)
         message = 'position.used-assistance';
       else if (record) {
         this.mustShowExitDialog = false;
+        inviteNextPuzzle = !(this.idxCategory.value === categoryCount - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
         message = 'position.new-record';
       } else {
         this.mustShowExitDialog = false;
+        inviteNextPuzzle = !(this.idxCategory.value === categoryCount - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
         message = 'position.goal-achieved';
       }
 
       alertController.create({
         header: window.AlpineI18n.t(header),
         message: window.AlpineI18n.t(`${message}`),
-        buttons: [
-          {
-            text: window.AlpineI18n.t('position.ok'),
-            cssClass: 'overlay-button'
-          }
-        ]
+        buttons: inviteNextPuzzle ?
+          [
+            {
+              text: window.AlpineI18n.t('position.review'),
+              cssClass: 'overlay-button'
+            },
+            {
+              text: window.AlpineI18n.t('position.next-puzzle'),
+              cssClass: 'overlay-button',
+              handler: () => { this.showNextPosition(); }
+            }
+          ]
+          :
+          [
+            {
+              text: window.AlpineI18n.t('position.ok'),
+              cssClass: 'overlay-button'
+            }
+          ]
       }).then(alert => alert.present());
     }
     return result;
@@ -937,6 +971,23 @@ class PositionController extends BaseController {
       document.body.removeChild(el);
     }
     this.showToastClipboard(what);
+  }
+
+  private cropImage(base64: string, width: number, height: number): Promise<string> {
+    return new Promise<string>(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height, 0, 0, width, height);
+        const result = canvas.toDataURL('image/png');
+        canvas.remove();
+        resolve(result);
+      };
+      img.src = base64;
+    });
   }
 
   private saveBase64AsFile(base64: string, fileName: string) {

@@ -11,23 +11,27 @@
             </template>
             <template x-if="!customFen">
                 <ion-buttons slot="start">
-                    <ion-button aria-label="Previous position" x-show="showNavPrev" x-on:click="showPreviousPosition()">
+                    <ion-button aria-label="Previous position" x-bind:disabled="!showNavPrev.value"
+                        x-on:click="showPreviousPosition()">
                         <ion-icon slot="icon-only" class="aura" data-name="arrow-back"></ion-icon>
                     </ion-button>
                 </ion-buttons>
             </template>
             <template x-if="!customFen">
                 <ion-buttons slot="end">
-                    <ion-button aria-label="Next position" x-show="showNavNext" x-on:click="showNextPosition()">
+                    <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value" x-on:click="showNextPosition()">
                         <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
                     </ion-button>
                 </ion-buttons>
             </template>
             <template x-if="!customFen">
-                <ion-title class="ion-text-center" x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" data-navigo>
+                <ion-buttons style="display: flex; justify-content: center; align-items: center">
+                    <ion-button expand="block" x-bind:href="'list/' + idxCategory.value + '/' + idxSubcategory.value"
+                        data-navigo>
                         <ion-label class="responsive-text"
-                            x-text="' [ ' + (idxGame + 1) + ' / ' + (idxLastGame + 1) + ' ]'"></ion-label>
-                </ion-title>
+                            x-text="' [ ' + (idxGame.value + 1) + ' / ' + (idxLastGame.value + 1) + ' ]'"></ion-label>
+                    </ion-button>
+                </ion-buttons>
             </template>
         </ion-toolbar>
     </ion-header>
@@ -46,7 +50,8 @@
                         x-on:click="gotoMove(-1)">
                         <ion-label x-text="position.fen"></ion-label>
                     </ion-item>
-                    <template x-for="(move, idx) in moveList" :key="move.order + '.' + move.prevFen + '.' + move.move1 + '.' + move.move2">
+                    <template x-for="(move, idx) in moveList"
+                        :key="move.order + '.' + move.prevFen + '.' + move.move1 + '.' + move.move2">
                         <ion-item x-bind:id="'item-' + movePointer.value" button="true" lines="none"
                             x-bind:color="idx == movePointer.value ? 'medium' : ''" x-on:click="gotoMove(idx)">
                             <ion-label x-text="(move.order) + '. '"></ion-label>
@@ -66,15 +71,13 @@
                     </template>
                     <template x-if="position.askingForHint.value || position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
-                            x-bind:disabled="position.stopping.value"
-                            x-on:click="stop()">
+                            x-bind:disabled="position.stopping.value" x-on:click="stop()">
                             <ion-icon class="aura" data-name="stop"></ion-icon>
                         </ion-button>
                     </template>
                     <template x-if="!position.waitingForOpponent.value && !position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
-                            x-bind:disabled="moveList.length == 0"
-                            x-on:click="showRestartDialog()">
+                            x-bind:disabled="moveList.length == 0" x-on:click="showRestartDialog()">
                             <ion-icon class="aura" data-name="power"></ion-icon>
                         </ion-button>
                     </template>
@@ -97,7 +100,8 @@
                             x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
                             x-on:click="toggleManualMode()">
                             <ion-icon class="aura" data-name="person"></ion-icon>
-                            <ion-icon class="aura" x-bind:data-name="manualMode.value ? 'person': 'desktop-outline'"></ion-icon>
+                            <ion-icon class="aura"
+                                x-bind:data-name="manualMode.value ? 'person': 'desktop-outline'"></ion-icon>
                         </ion-button>
                     </template>
                 </ion-buttons>
