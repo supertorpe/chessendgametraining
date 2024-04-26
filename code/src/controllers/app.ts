@@ -4,6 +4,7 @@ import { endgameDatabaseService, redrawIconImages, routeService } from '../servi
 import { EndgameDatabase } from '../model';
 import { ariaDescriptionFromIcon, clone } from '../commons';
 import { settingsController } from './settings';
+import { aboutController } from './about';
 
 class AppController extends BaseController {
     onEnter(_$routeParams?: any): void {
@@ -21,6 +22,9 @@ class AppController extends BaseController {
             ariaDescriptionFromIcon: ariaDescriptionFromIcon,
             showSettings() {
                 routeService.openModal('settings', 'page-settings.html', settingsController, true, false);
+            },
+            showAbout() {
+                routeService.openModal('about', 'page-about.html', aboutController, true, false);
             },
             init() {
                 endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {
