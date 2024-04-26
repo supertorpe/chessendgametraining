@@ -7,7 +7,7 @@
 <meta name="description" content="Practice thousands of chess endgame positions with different combinations of pieces: pawns, bishops, knights, rooks and queen">
 <title>Chess Endgame Training</title>
 <script src="https://accounts.google.com/gsi/client"></script>
-<style>@font-face{font-family:russo-one;font-style:normal;font-weight:400;src:url('/assets/fonts/RussoOne-Regular.woff2')}*{--ion-font-family:'russo-one'!important;font-family:russo-one!important}.center{margin:0;position:absolute;top:40%;left:50%;-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items: center}.button{appearance:button;backface-visibility:hidden;border-radius:6px;border-width:0;box-shadow:rgba(50,50,93,.1) 0 0 0 1px inset,rgba(50,50,93,.1) 0 2px 5px 0,rgba(0,0,0,.07) 0 1px 1px 0;box-sizing:border-box;color:#fff;cursor:pointer;font-family:-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;font-size:100%;line-height:1.15;margin:12px 0 0;outline:0;overflow:hidden;padding:0 25px;position:relative;text-align:center;text-transform:none;transform:translateZ(0);transition:.2s,box-shadow .08s ease-in;user-select:none;-webkit-user-select:none;touch-action:manipulation;width:300px;height:80px}.button:disabled{cursor:default}.button:focus{box-shadow:rgba(50,50,93,.1) 0 0 0 1px inset,rgba(50,50,93,.2) 0 6px 15px 0,rgba(0,0,0,.1) 0 2px 2px 0,rgba(50,151,211,.3) 0 0 0 4px}.button-ok{background-color:#0054e9}.button-ko{background-color:#c5000f}</style>
+<style>@font-face{font-family:russo-one;font-style:normal;font-weight:400;src:url('/assets/fonts/RussoOne-Regular.woff2')}*{--ion-font-family:'russo-one'!important;font-family:russo-one!important}.center{margin:0;position:absolute;top:40%;left:50%;-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items: center}.button{appearance:button;backface-visibility:hidden;border-radius:6px;border-width:0;box-shadow:rgba(50,50,93,.1) 0 0 0 1px inset,rgba(50,50,93,.1) 0 2px 5px 0,rgba(0,0,0,.07) 0 1px 1px 0;box-sizing:border-box;color:#fff;cursor:pointer;font-family:-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;font-size:100%;line-height:1.15;margin:12px 0 0;outline:0;overflow:hidden;padding:0 25px;position:relative;text-align:center;text-transform:none;transform:translateZ(0);transition:.2s,box-shadow .08s ease-in;user-select:none;-webkit-user-select:none;touch-action:manipulation;width:300px;height:80px}.button:disabled{cursor:default}.button:focus{box-shadow:rgba(50,50,93,.1) 0 0 0 1px inset,rgba(50,50,93,.2) 0 6px 15px 0,rgba(0,0,0,.1) 0 2px 2px 0,rgba(50,151,211,.3) 0 0 0 4px}.button-ok{background-color:#4d8dff}.button-ko{background-color:#f24c58}</style>
 </head>
 <body>
 <div class="center"><img width="192" height="192" src="/assets/icons/favicon-192.png"/><button id="btnLogin" class="button button-ok" role="button"></button><button id="btnCancel" class="button button-ko" role="button"></button></div>
@@ -37,7 +37,8 @@ const deactivateGoogleSync = () => {
             r.onerror = (event) => { window.history.back() }
         };
         t.onerror = (event) => { window.history.back() }
-    },
+    };
+    try {
     client = google.accounts.oauth2.initTokenClient({
         client_id: function() {
             var t = Array.prototype.slice.call(arguments),
@@ -109,6 +110,10 @@ const deactivateGoogleSync = () => {
             localStorage.setItem("GOOGLE_ACCESS_TOKEN_ERROR", `ts=${Date.now()}, error=${JSON.stringify(t)}`), deactivateGoogleSync()
         }
     });
+} catch(error) {
+    console.log(error);
+    localStorage.setItem("GOOGLE_ACCESS_TOKEN_ERROR", `ts=${Date.now()}, error=${JSON.stringify(error)}`), deactivateGoogleSync();
+}
 buttonOk.addEventListener("click", () => {
     client.requestAccessToken()
 }), buttonKo.addEventListener("click", () => {
