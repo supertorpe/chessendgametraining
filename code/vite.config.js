@@ -67,7 +67,8 @@ export default ({ mode }) => {
           name: 'Chess Endgame Trainer',
           short_name: 'Chess Endgame Trainer',
           description: 'Chess Endgame Trainer',
-          display: 'standalone',
+          display: 'fullscreen',
+          start_url: '/?fullscreen=true',
           background_color: '#000000',
           theme_color: '#000000',
           icons: [
