@@ -17,7 +17,7 @@ class EndgameDatabaseService {
         return new Promise(async resolve => {
             const localDatabase: EndgameDatabase = await this.getLocalDatabase();
             let remoteDatabase: EndgameDatabase | undefined;
-            
+
             if (configurationService.configuration.syncGoogleDrive) {
                 let loadRemoteDatabase = true;
                 try {
@@ -26,14 +26,14 @@ class EndgameDatabaseService {
                         remoteDatabase = localDatabase;
                         loadRemoteDatabase = false;
                     }
-                } catch(error) {
+                } catch (error) {
                     console.log(error);
                 }
                 if (loadRemoteDatabase) {
                     try {
                         remoteDatabase = await googleDriveService.getFile<EndgameDatabase>(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE);
                         showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-                    } catch(error) {
+                    } catch (error) {
                         console.log(error);
                         remoteDatabase = undefined;
                     }
@@ -58,7 +58,7 @@ class EndgameDatabaseService {
                                     remoteDatabase = localDatabase;
                                     loadRemoteDatabase = false;
                                 }
-                            } catch(error) {
+                            } catch (error) {
                                 console.log(error);
                             }
                             if (loadRemoteDatabase) {
@@ -66,7 +66,7 @@ class EndgameDatabaseService {
                                     showToast('app.database-loading-google-drive', 'top', 'success', 2000);
                                     remoteDatabase = await googleDriveService.getFile<EndgameDatabase>(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE);
                                     showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-                                } catch(error) {
+                                } catch (error) {
                                     console.log(error);
                                     remoteDatabase = undefined;
                                 }
@@ -74,10 +74,15 @@ class EndgameDatabaseService {
                                     this.reconcileDatabases(localDatabase, remoteDatabase, endgameDatabase);
                                     this._endgameDatabaseChangedEmitter.notify(this._endgameDatabase);
                                 } else {
-                                    googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, {timestamp: localDatabase.timestamp})
-                                    googleDriveService.putFile<EndgameDatabase>(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, localDatabase).then(() => {
+                                    googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, { timestamp: localDatabase.timestamp })
+                                    googleDriveService.putFile<EndgameDatabase>(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, localDatabase)
+                                    .then(() => {
                                         showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-                                    });
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
+                                    })
                                 }
                             }
                         }
@@ -109,17 +114,27 @@ class EndgameDatabaseService {
 
     public save(): Promise<EndgameDatabase> {
         return new Promise<EndgameDatabase>((resolve) => {
-            this._endgameDatabase.timestamp = Date.now();
             const promises: Promise<any>[] = [];
+            this._endgameDatabase.timestamp = Date.now();
+            promises.push(storageService.set('ENDGAME_DATABASE', this._endgameDatabase));
             if (configurationService.configuration.syncGoogleDrive) {
-                promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, {timestamp: this._endgameDatabase.timestamp}));
+                promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, { timestamp: this._endgameDatabase.timestamp }));
                 promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, this._endgameDatabase));
             }
-            promises.push(storageService.set('ENDGAME_DATABASE', this._endgameDatabase));
-            Promise.all(promises).then(() => resolve(this._endgameDatabase));
-            if (configurationService.configuration.syncGoogleDrive) {
-                showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-            }
+            Promise.all(promises)
+            .then(() => {
+                resolve(this._endgameDatabase);
+                if (configurationService.configuration.syncGoogleDrive) {
+                    showToast('app.database-sync-google-drive', 'top', 'success', 2000);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                resolve(this._endgameDatabase);
+                if (configurationService.configuration.syncGoogleDrive) {
+                    //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
+                }
+            });
         });
     }
 
@@ -148,8 +163,7 @@ class EndgameDatabaseService {
         }
         if (localDatabase && localDatabase.version && localDatabase.version === defaultDatabase.version &&
             remoteDatabase && remoteDatabase.version && remoteDatabase.version === defaultDatabase.version &&
-            localDatabase.timestamp == remoteDatabase.timestamp)
-        {
+            localDatabase.timestamp == remoteDatabase.timestamp) {
             this._endgameDatabase = localDatabase;
             return;
         }

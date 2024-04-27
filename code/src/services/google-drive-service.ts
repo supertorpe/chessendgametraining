@@ -54,7 +54,7 @@ class GoogleDriveService {
                     messageOk = window.AlpineI18n.t('app.button-google-login');
                     messageKo = window.AlpineI18n.t('app.button-google-cancel');
                 } catch {
-    
+
                 }
                 localStorage.setItem('button-ok-message', messageOk);
                 localStorage.setItem('button-ko-message', messageKo);
@@ -228,17 +228,23 @@ class GoogleDriveService {
             const MSG_ERROR = `Error loading file ${foldername}/${filename}`;
             this.init().then((token) => {
                 if (!token) { reject(MSG_ERROR); return; }
-                this.findFolder(foldername).then((folderId) => {
-                    if (!folderId) { reject(MSG_ERROR); return; }
-                    this.findFile(filename, folderId).then((fileId) => {
-                        if (!fileId) { reject(MSG_ERROR); return; }
-                        this.getFileContent(fileId).then((fileContent) => {
-                            if (!fileContent) { reject(MSG_ERROR); return; }
-                            const result: T = JSON.parse(fileContent);
-                            resolve(result);
-                        });
-                    });
-                });
+                this.findFolder(foldername)
+                    .then((folderId) => {
+                        if (!folderId) { reject(MSG_ERROR); return; }
+                        this.findFile(filename, folderId)
+                            .then((fileId) => {
+                                if (!fileId) { reject(MSG_ERROR); return; }
+                                this.getFileContent(fileId)
+                                    .then((fileContent) => {
+                                        if (!fileContent) { reject(MSG_ERROR); return; }
+                                        const result: T = JSON.parse(fileContent);
+                                        resolve(result);
+                                    })
+                                    .catch(error => { reject(error); return; });
+                            })
+                            .catch(error => { reject(error); return; });
+                    })
+                    .catch(error => { reject(error); return; });
             });
         });
     }
@@ -248,11 +254,15 @@ class GoogleDriveService {
             const MSG_ERROR = `Error loading file ${foldername}/${filename}`;
             this.init().then((token) => {
                 if (!token) { reject(MSG_ERROR); return; }
-                this.createFolderIfNotExists(foldername).then((folderId) => {
-                    this.uploadJsonToFolder(fileContent, filename, folderId).then(() => {
-                        resolve(fileContent);
-                    });
-                });
+                this.createFolderIfNotExists(foldername)
+                    .then((folderId) => {
+                        this.uploadJsonToFolder(fileContent, filename, folderId)
+                            .then(() => {
+                                resolve(fileContent);
+                            })
+                            .catch(error => { reject(error); return; });
+                    })
+                    .catch(error => { reject(error); return; });
             });
         });
     }

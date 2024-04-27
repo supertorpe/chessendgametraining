@@ -14,7 +14,8 @@
             "button-google-login": "Click here to login on Google",
             "button-google-cancel": "Cancel",
             "database-loading-google-drive": "Synchronizing database with Google Drive",
-            "database-sync-google-drive": "Database synchronized with Google Drive"
+            "database-sync-google-drive": "Database synchronized with Google Drive",
+            "database-sync-google-drive-ko": "Error synchronizing with Google Drive"
         },
         "home": {
             "seo": {
@@ -201,7 +202,8 @@
             "button-google-login": "Pulsa aquí para identificarte en Google",
             "button-google-cancel": "Cancelar",
             "database-loading-google-drive": "Sincronizando base de datos en Google Drive",
-            "database-sync-google-drive": "Base de datos sincronizada en Google Drive"
+            "database-sync-google-drive": "Base de datos sincronizada en Google Drive",
+            "database-sync-google-drive-ko": "Error sincronizando en Google Drive"
         },
         "home": {
             "seo": {
