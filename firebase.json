@@ -48,6 +48,15 @@
         ]
       },
       {
+        "source": "**/assets/@(audio|board|fonts|icons|pieces|stockfish)/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000,immutable"
+          }
+        ]
+      },
+      {
         "source": "404.html",
         "headers": [
           {
