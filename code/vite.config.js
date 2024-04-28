@@ -3,7 +3,7 @@ import { splitVendorChunkPlugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
-const DEV = true;
+const DEV = false;
 
 const setHeaders = (req, res) => {
   res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
@@ -22,6 +22,9 @@ export default ({ mode }) => {
       outDir: '../docs',
       rollupOptions: {
         external: ['lila-stockfish-web/linrock-nnue-7.js'],
+      },
+      modulePreload: {
+        polyfill: false
       }
     },
     plugins: [
