@@ -198,8 +198,6 @@ export default ({ mode }) => {
           ]
         }
       })
-
-
     ]
   })
 }

@@ -128,6 +128,7 @@ class PositionController extends BaseController {
     this.assistanceUsed = false;
     this.solvingTrivial = false;
     this.solving.value = false;
+    this.stopping.value = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
     this.mustShowExitDialog = true;
@@ -251,8 +252,8 @@ class PositionController extends BaseController {
           this.chess.move(move.trim());
         }
       });
-      const history = this.chess.history({verbose:true});
-      const lastMove = history[history.length-1];
+      const history = this.chess.history({ verbose: true });
+      const lastMove = history[history.length - 1];
 
       this.gameOver.value = this.chess.game_over();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
@@ -806,7 +807,10 @@ class PositionController extends BaseController {
     else moveFunk.call(this);
   }
 
-  private processOpponentMove(from: string, to: string, promotion: string | undefined) {
+  private async processOpponentMove(from: string, to: string, promotion: string | undefined) {
+    if (this.stockfishWarmup) {
+      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    }
     this.waitingForOpponent.value = false;
     if (!this.solvingTrivial && (this.askingForHint.value || this.solving.value)) this.assistanceUsed = true;
     redrawIconImages();
@@ -887,7 +891,7 @@ class PositionController extends BaseController {
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
         // stockfish search more interesting lines when there aren't any winning line
-        if (/*data.category == 'loss' || */(data.category == 'draw' && data.moves.every((move: { category: string }) => move.category === "draw"))) {
+        if (/*data.category == 'loss' || */(data.category == 'draw' /*&& data.moves.every((move: { category: string }) => move.category === "draw")*/)) {
           this.getStockfishMove();
         } else {
           const bestmove = data.moves[0].uci;
@@ -1020,6 +1024,8 @@ class PositionController extends BaseController {
   private showExitDialog(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
       if (this.moveList.length == 0 || !this.mustShowExitDialog) {
+        this.waitingForOpponent.value = false;
+        this.solving.value = false;
         if (this.stockfishWarmup) {
           stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
         } else {
@@ -1044,10 +1050,12 @@ class PositionController extends BaseController {
             text: window.AlpineI18n.t('position.confirm-exit.yes'),
             cssClass: 'overlay-button',
             handler: () => {
+              this.waitingForOpponent.value = false;
+              this.solving.value = false;
               if (this.stockfishWarmup) {
                 stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
               } else {
-                this.waitingForOpponent.value = false;
+                this.stopping.value = true;
                 redrawIconImages();
                 this.stopStockfish();
                 resolve(true);
