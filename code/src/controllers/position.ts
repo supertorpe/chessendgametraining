@@ -129,6 +129,7 @@ class PositionController extends BaseController {
     this.movePointer.value = -1;
     this.assistanceUsed = false;
     this.solvingTrivial = false;
+    this.solving.value = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
     this.mustShowExitDialog = true;
@@ -330,6 +331,7 @@ class PositionController extends BaseController {
     this.gameOver.value = false;
     this.player = this.chess.turn();
     this.trivialPositionInvitationShown = this.isTrivialPosition();
+    this.solving.value = false;
 
     const turnWhite = this.chess.turn() == 'w';
     const turnColor: Color = (turnWhite ? 'white' : 'black');
@@ -1020,6 +1022,8 @@ class PositionController extends BaseController {
         if (this.stockfishWarmup) {
           stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
         } else {
+          this.stopping.value = true;
+          this.stopStockfish();
           resolve(true);
         }
         return;
@@ -1058,6 +1062,7 @@ class PositionController extends BaseController {
   onExit(): Promise<boolean> {
     return this.showExitDialog().then((result) => {
       if (result) {
+        this.stopStockfish();
         menuController.get(MAIN_MENU_ID).then(function (menu) {
           if (menu) menu.swipeGesture = true;
         });
