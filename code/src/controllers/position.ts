@@ -19,8 +19,6 @@ class PositionController extends BaseController {
   private chess: ChessInstance = Chess();
   private board!: Api;
   private boardConfig!: Config;
-  //private endgameDatabase!: EndgameDatabase;
-  //private categories!: Category[];
   private position!: Position;
   private fen!: string;
   private idxCategory: { value: number } = Alpine.reactive({ value: -1 });
@@ -889,7 +887,7 @@ class PositionController extends BaseController {
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
         // stockfish search more interesting lines when there aren't any winning line
-        if (data.category == 'loss' || (data.category == 'draw' && data.moves.every((move: { category: string }) => move.category === "draw"))) {
+        if (/*data.category == 'loss' || */(data.category == 'draw' && data.moves.every((move: { category: string }) => move.category === "draw"))) {
           this.getStockfishMove();
         } else {
           const bestmove = data.moves[0].uci;
