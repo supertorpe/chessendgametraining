@@ -478,7 +478,7 @@ class PositionController extends BaseController {
         }).then(alert => alert.present());
       },
       lichessAnalysis() {
-        window.open(`https://lichess.org/analysis/standard/${this.chess.fen()}`, 'lichess');
+        window.open(`https://lichess.org/analysis/${this.chess.fen()}`, '_blank');
       },
       init() {
         self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
