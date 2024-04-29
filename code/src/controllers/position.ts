@@ -479,6 +479,9 @@ class PositionController extends BaseController {
           ]
         }).then(alert => alert.present());
       },
+      lichessAnalysis() {
+        window.open(`https://lichess.org/analysis/standard/${this.chess.fen()}`, 'lichess');
+      },
       init() {
         self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
