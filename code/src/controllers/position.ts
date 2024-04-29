@@ -252,13 +252,15 @@ class PositionController extends BaseController {
           this.chess.move(move.trim());
         }
       });
+      const history = this.chess.history({verbose:true});
+      const lastMove = history[history.length-1];
 
       this.gameOver.value = this.chess.game_over();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       this.board.set({
         fen: this.chess.fen(),
         turnColor: turn,
-        lastMove: [],
+        lastMove: [lastMove.from, lastMove.to],
         viewOnly: this.gameOver.value,
         movable: {
           color: turn,
