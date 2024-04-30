@@ -253,29 +253,57 @@ class PositionController extends BaseController {
     this.movePointer.value = idx;
     redrawIconImages();
     this.stopStockfish();
+    let prevFen;
     if (idx > -1) {
       this.chess.load(this.fen);
       const moves = this.getMoves()?.split(' ');
       moves?.forEach((move) => {
         if (move.trim()) {
+          prevFen = this.chess.fen();
           this.chess.move(move.trim());
         }
       });
       const history = this.chess.history({ verbose: true });
       const lastMove = history[history.length - 1];
+      const prevLastMove = history.length > 1 ? history[history.length - 2] : undefined;
 
       this.gameOver.value = this.chess.game_over();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: turn,
-        lastMove: lastMove ? [lastMove.from, lastMove.to] : [],
-        viewOnly: this.gameOver.value,
-        movable: {
-          color: turn,
-          dests: this.toDests()
-        }
-      });
+      if (prevFen) {
+        this.board.set({
+          fen: prevFen,
+          turnColor: turn,
+          lastMove: prevLastMove ? [prevLastMove.from, prevLastMove.to] : [],
+          viewOnly: this.gameOver.value,
+          movable: {
+            color: turn,
+            dests: this.toDests()
+          }
+        });
+        setTimeout(() => {
+          this.board.set({
+            fen: this.chess.fen(),
+            turnColor: turn,
+            lastMove: lastMove ? [lastMove.from, lastMove.to] : [],
+            viewOnly: this.gameOver.value,
+            movable: {
+              color: turn,
+              dests: this.toDests()
+            }
+          });
+        }, 500);
+      } else {
+        this.board.set({
+          fen: this.chess.fen(),
+          turnColor: turn,
+          lastMove: lastMove ? [lastMove.from, lastMove.to] : [],
+          viewOnly: this.gameOver.value,
+          movable: {
+            color: turn,
+            dests: this.toDests()
+          }
+        });
+      }
     } else {
       this.chess.load(this.fen);
       this.gameOver.value = this.chess.game_over();
@@ -574,7 +602,6 @@ class PositionController extends BaseController {
     } else {
       order = this.moveList[this.variantPointer.value][this.movePointer.value].order + (isMove2 ? 0 : 1);
     }
-    console.log(`order=${order}`);
     const moveString = `${historyItem.from}${historyItem.to}${historyItem.promotion || ''}`;
     const prevMoveString = (historyPrevItem != undefined ? `${historyPrevItem.from}${historyPrevItem.to}${historyPrevItem.promotion || ''}` : '...');
     // check if the move already exists in some variant
