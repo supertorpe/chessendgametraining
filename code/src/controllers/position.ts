@@ -26,7 +26,8 @@ class PositionController extends BaseController {
   private idxGame: { value: number } = Alpine.reactive({ value: -1 });
   private idxLastSubcategory: { value: number } = Alpine.reactive({ value: -1 });
   private idxLastGame: { value: number } = Alpine.reactive({ value: -1 });
-  private moveList: MoveItem[] = Alpine.reactive([]);
+  private moveList: MoveItem[][] = Alpine.reactive([[]]);
+  private variantPointer: { value: number } = Alpine.reactive({ value: 0 });
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
   private player!: "w" | "b";
   private target = Alpine.reactive({ value: '' });
@@ -60,7 +61,6 @@ class PositionController extends BaseController {
     if (!header) return;
     const container = document.querySelector('.container') as HTMLElement;
     const infoWrapper = document.querySelector('.info_wrapper') as HTMLElement;
-    const infoTarget = document.getElementById('info_target') as HTMLElement;
     const infoMoves = document.querySelector('.info_moves') as HTMLElement;
     const actionButtons = document.querySelector('.action_buttons') as HTMLElement;
     const containerWidth = container.clientWidth;
@@ -79,7 +79,7 @@ class PositionController extends BaseController {
       infoWrapper.style.width = '100%';
       infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
-    infoMoves.style.height = `${infoWrapper.clientHeight - (infoTarget.clientHeight)}px`;
+    infoMoves.style.height = `${infoWrapper.clientHeight}px`;
     actionButtons.style.width = `${infoWrapper.clientWidth}px`;
   }
 
@@ -124,6 +124,8 @@ class PositionController extends BaseController {
     if (this.board.state.orientation != turn)
       this.board.toggleOrientation();
     this.moveList.splice(0, this.moveList.length);
+    this.moveList.push([]);
+    this.variantPointer.value = 0;
     this.movePointer.value = -1;
     this.assistanceUsed = false;
     this.solvingTrivial = false;
@@ -209,7 +211,7 @@ class PositionController extends BaseController {
 
   private showPruneDialog(idx: number) {
     if (this.solving.value || this.waitingForOpponent.value) return;
-    const prefix = (idx == this.moveList.length - 1 ? 'position.confirm-prune-one' : 'position.confirm-prune');
+    const prefix = (idx == this.moveList[this.variantPointer.value].length - 1 ? 'position.confirm-prune-one' : 'position.confirm-prune');
     alertController.create({
       header: window.AlpineI18n.t(`${prefix}.header`),
       message: window.AlpineI18n.t(`${prefix}.message`),
@@ -232,11 +234,18 @@ class PositionController extends BaseController {
   }
 
   private pruneMove(idx: number) {
-    const order = this.moveList[idx].order;
     do {
-      this.moveList.splice(idx, 1);
-    } while (this.moveList.length > idx && this.moveList[idx].order > order);
-    this.gotoMove(idx - 1);
+      this.moveList[this.variantPointer.value].splice(idx, 1);
+    } while (this.moveList[this.variantPointer.value].length > idx);
+    if (idx == 0) {
+      if (this.moveList.length > 1) {
+        this.moveList.splice(this.variantPointer.value, 1);
+        this.variantPointer.value -= (this.variantPointer.value == 0 ? 0 : 1);
+      }
+      this.gotoMove(-1);
+    } else {
+      this.gotoMove(idx - 1);
+    }
   }
 
   private gotoMove(idx: number) {
@@ -260,7 +269,7 @@ class PositionController extends BaseController {
       this.board.set({
         fen: this.chess.fen(),
         turnColor: turn,
-        lastMove: [lastMove.from, lastMove.to],
+        lastMove: lastMove ? [lastMove.from, lastMove.to] : [],
         viewOnly: this.gameOver.value,
         movable: {
           color: turn,
@@ -283,6 +292,13 @@ class PositionController extends BaseController {
       });
     }
     this.trivialPositionInvitationShown = this.isTrivialPosition();
+  }
+
+  private gotoVariant(idx: number) {
+    if (this.variantPointer.value == idx || this.solving.value || this.waitingForOpponent.value) return;
+    this.variantPointer.value = idx;
+    this.movePointer.value = -2;
+    this.gotoMove(this.moveList[idx].length - 1);
   }
 
   private stop() {
@@ -326,6 +342,7 @@ class PositionController extends BaseController {
     this.initStockfishGame();
     this.chess.load(this.fen);
     this.moveList.splice(0, this.moveList.length);
+    this.moveList.push([]);
     this.movePointer.value = -1;
     this.gameOver.value = false;
     this.player = this.chess.turn();
@@ -384,6 +401,7 @@ class PositionController extends BaseController {
       subcategory: subcategory,
       game: this.position,
       moveList: self.moveList,
+      variantPointer: self.variantPointer,
       movePointer: self.movePointer,
       manualMode: self.manualMode,
       idxLastSubcategory: self.idxLastSubcategory,
@@ -414,6 +432,9 @@ class PositionController extends BaseController {
       gotoMove(idx: number) {
         self.gotoMove.call(self, idx);
       },
+      gotoVariant(idx: number) {
+        self.gotoVariant.call(self, idx);
+      },
       showPruneDialog(idx: number) {
         self.showPruneDialog.call(self, idx);
       },
@@ -442,6 +463,12 @@ class PositionController extends BaseController {
             },
             {
               type: 'radio',
+              label: 'PGN',
+              value: 'PGN',
+              checked: false
+            },
+            {
+              type: 'radio',
               label: 'IMG',
               value: 'IMG',
               checked: false
@@ -459,6 +486,8 @@ class PositionController extends BaseController {
               handler: async (data: string) => {
                 if (data == 'FEN') {
                   self.copyToClipboard('fen', self.chess.fen());
+                } else if (data == 'PGN') {
+                  self.copyToClipboard('pgn', self.chess.pgn());
                 } else if (data == 'IMG') {
                   const toast1 = await toastController.create({
                     message: window.AlpineI18n.t('position.clipboard.img-capture'),
@@ -494,12 +523,14 @@ class PositionController extends BaseController {
           });
         });
         this.$watch('movePointer', (_value) => {
-          const movelist = document.querySelector('.info_moves') as HTMLIonListElement;
-          const item = document.getElementById(`item-${this.movePointer.value}`) as HTMLElement;
-          if (item) {
-            const y = item.offsetHeight * (this.movePointer.value);
-            movelist.scrollTo({ top: y, behavior: 'smooth' });
-          }
+          requestAnimationFrame(() => {
+            const movelist = document.querySelector('.info_moves') as HTMLIonListElement;
+            const item = document.getElementById(`item-${this.movePointer.value}`) as HTMLElement;
+            if (item) {
+              const y = item.offsetHeight * (this.movePointer.value);
+              movelist.scrollTo({ top: y, behavior: 'smooth' });
+            }
+          });
         });
         configurationService.configuration.configurationChangedEmitter.addEventListener((event) => {
           switch (event.field) {
@@ -532,50 +563,70 @@ class PositionController extends BaseController {
     }
   }
 
-  private updateMoveList(prevFen: string, from: string, to: string, promotion: string) {
+  private updateMoveList(prevFen: string) {
     const history = this.chess.history({ verbose: true });
-    if (this.chess.turn() == 'w') {
-      let move: MoveItem;
-      if (this.movePointer.value < 0) {
-        move = {
-          order: 1,
+    const historyItem = history[history.length - 1];
+    const historyPrevItem = (history.length > 1 ? history[history.length - 2] : undefined);
+    const isMove2 = (this.chess.turn() == 'w');
+    let order;
+    if (this.movePointer.value < 0) {
+      order = 1;
+    } else {
+      order = this.moveList[this.variantPointer.value][this.movePointer.value].order + (isMove2 ? 0 : 1);
+    }
+    console.log(`order=${order}`);
+    const moveString = `${historyItem.from}${historyItem.to}${historyItem.promotion || ''}`;
+    const prevMoveString = (historyPrevItem != undefined ? `${historyPrevItem.from}${historyPrevItem.to}${historyPrevItem.promotion || ''}` : '...');
+    // check if the move already exists in some variant
+    let i = 0;
+    let idx = -1;
+    for (i = 0; i < this.moveList.length; i++) {
+      idx = this.moveList[i].findIndex(move => move.prevFen == prevFen && move.order == order && (isMove2 ? move.move1 == prevMoveString && move.move2 == moveString : move.move1 == moveString));
+      if (idx > -1) break;
+    }
+    if (idx > -1) {
+      this.variantPointer.value = i;
+      this.movePointer.value = idx;
+    } else if (isMove2) {
+      if (this.movePointer.value == -1) {
+        const move: MoveItem = {
+          order: order,
           prevFen: prevFen,
           move1: '...', san1: '...',
-          move2: '', san2: ''
+          move2: moveString, san2: history[history.length - 1].san
         };
-        this.moveList.push(move)
+        // create a new variant
+        if (this.moveList[this.variantPointer.value].length > 0) {
+          this.moveList.push([]);
+          this.variantPointer.value = this.moveList.length - 1;
+        }
+        this.moveList[this.variantPointer.value].push(move);
         this.movePointer.value = 0;
       } else {
-        move = this.moveList[this.movePointer.value];
+        const move = this.moveList[this.variantPointer.value][this.movePointer.value];
+        move.move2 = moveString;
+        move.san2 = historyItem.san;
       }
-      move.move2 = `${from}${to}${promotion || ''}`;
-      move.san2 = history[history.length - 1].san;
     } else {
-      // look for moveItem
-      const historyItem = history[history.length - 1];
-      const itemOrder = this.movePointer.value >= 0 ? this.moveList[this.movePointer.value].order + 1 : 1;
-      const move1 = `${historyItem.from}${historyItem.to}${historyItem.promotion || ''}`;
-      const itemIndex = this.moveList.findIndex(item => item.order == itemOrder && item.move1 == move1 && item.prevFen == prevFen);
-      if (itemIndex > -1) {
-        this.movePointer.value = itemIndex;
-      } else {
-        const moveItem: MoveItem = {
-          order: itemOrder,
-          prevFen: prevFen,
-          move1: move1, san1: historyItem.san,
-          move2: '', san2: ''
-        };
-        if (this.movePointer.value === this.moveList.length - 1) {
-          // If movePointer is pointing to the last item, simply push the new item to the end of the array
-          this.moveList.push(moveItem);
-          // Update movePointer to point to the newly added item
-          this.movePointer.value = this.moveList.length - 1;
-        } else {
-          // If movePointer is pointing to any other item, insert the new item after the current one
-          this.moveList.splice(this.movePointer.value + 1, 0, moveItem);
-          // Update movePointer to point to the newly added item
-          this.movePointer.value++;
+      const move: MoveItem = {
+        order: order,
+        prevFen: prevFen,
+        move1: moveString, san1: history[history.length - 1].san,
+        move2: '', san2: ''
+      };
+      // latest move => create a new one
+      if (this.moveList[this.variantPointer.value].length == 0 || (!isMove2 && this.movePointer.value == this.moveList[this.variantPointer.value].length - 1)) {
+        this.moveList[this.variantPointer.value].push(move);
+        this.movePointer.value = this.moveList[this.variantPointer.value].length - 1;
+      } else { // create a new variant
+        const moves: MoveItem[] = [];
+        for (let i = 0; i <= this.movePointer.value; i++) {
+          moves.push(this.moveList[this.variantPointer.value][i]);
         }
+        moves.push(move);
+        this.moveList.push(moves);
+        this.variantPointer.value = this.moveList.length - 1;
+        this.movePointer.value = moves.length - 1;
       }
     }
   }
@@ -584,18 +635,11 @@ class PositionController extends BaseController {
     let pointer = this.movePointer.value;
     if (pointer == -1) return null;
     let result = '';
-    let previousOrder = 0;
-    do {
-      let move = this.moveList[pointer];
-      if (previousOrder > 0 && move.order != previousOrder - 1) {
-        pointer--;
-        continue;
-      }
-      if (move.san2 != '' && (pointer != this.movePointer.value || this.chess.turn() != 'b')) result = `${move.san2} ${result}`;
-      if (move.san1 != '...' && move.san1 != '') result = `${move.san1} ${result}`;
-      previousOrder = move.order;
-      pointer--;
-    } while (previousOrder != 1)
+    for (let i = 0; i <= pointer; i++) {
+      let move = this.moveList[this.variantPointer.value][i];
+      if (move.san1 != '...' && move.san1 != '') result = `${result} ${move.san1}`;
+      if (move.san2 != '' && (i != pointer || this.chess.turn() != 'b')) result = `${result} ${move.san2}`;
+    }
     return result;
   }
 
@@ -653,7 +697,7 @@ class PositionController extends BaseController {
     if (promotion)
       this.board.set({ fen: this.chess.fen() });
 
-    this.updateMoveList(prevFen, source, target, promotion || '');
+    this.updateMoveList(prevFen);
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
@@ -824,7 +868,7 @@ class PositionController extends BaseController {
     const prevFen = this.chess.fen();
     this.chess.move({ from: from as Square, to: to as Square, promotion: promo });
 
-    this.updateMoveList(prevFen, from, to, promotion || '');
+    this.updateMoveList(prevFen);
 
     const ended = this.checkEnding();
     const turn = this.chess.turn() == 'w' ? 'white' : 'black';
@@ -1023,7 +1067,7 @@ class PositionController extends BaseController {
 
   private showExitDialog(): Promise<boolean> {
     return new Promise<boolean>(async resolve => {
-      if (this.moveList.length == 0 || !this.mustShowExitDialog) {
+      if ((this.moveList.length == 1 && this.moveList[0].length == 0) || !this.mustShowExitDialog) {
         this.waitingForOpponent.value = false;
         this.solving.value = false;
         if (this.stockfishWarmup) {

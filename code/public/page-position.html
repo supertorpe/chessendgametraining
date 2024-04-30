@@ -19,7 +19,8 @@
             </template>
             <template x-if="!customFen">
                 <ion-buttons slot="end">
-                    <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value" x-on:click="showNextPosition()">
+                    <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value"
+                        x-on:click="showNextPosition()">
                         <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
                     </ion-button>
                 </ion-buttons>
@@ -41,28 +42,46 @@
                 <div id="__chessboard__"></div>
             </div>
             <div class="info_wrapper">
-                <ion-item id="info_target" class="ion-text-center">
-                    <ion-label
-                        x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
-                </ion-item>
-                <ion-list class="info_moves">
-                    <ion-item button="true" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
-                        x-on:click="gotoMove(-1)">
-                        <ion-label x-text="position.fen"></ion-label>
-                    </ion-item>
-                    <template x-for="(move, idx) in moveList"
-                        :key="move.order + '.' + move.prevFen + '.' + move.move1 + '.' + move.move2">
-                        <ion-item x-bind:id="'item-' + movePointer.value" button="true" lines="none"
-                            x-bind:color="idx == movePointer.value ? 'medium' : ''" x-on:click="gotoMove(idx)">
-                            <ion-label x-text="(move.order) + '. '"></ion-label>
-                            <ion-label class="text-figurine" x-text="move.san1"></ion-label>
-                            <ion-label class="text-figurine" x-text="move.san2"></ion-label>
-                            <ion-button fill="clear" x-on:click="showPruneDialog(idx)"><ion-icon class="aura"
-                                    data-name="trash"></ion-icon></ion-button>
-                        </ion-item>
-                    </template>
-                    <ion-item lines="none"></ion-item>
-                </ion-list>
+                <ion-grid class="info_moves">
+                    <ion-row>
+                        <ion-col>
+                            <ion-item class="ion-text-center">
+                                <ion-label
+                                    x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
+                            </ion-item>
+                            <ion-item button="true" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
+                                x-on:click="gotoMove(-1)">
+                                <ion-label x-text="position.fen"></ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col x-show="moveList.length > 1" x-bind:size="2">
+                            <ion-list>
+                                <template x-for="(item, idx) in moveList" :key="idx">
+                                    <ion-item button="true" x-bind:color="idx == variantPointer.value ? 'medium' : ''"
+                                        x-on:click="gotoVariant(idx)"><ion-label x-text="idx+1"></ion-label></ion-item>
+                                </template>
+                            </ion-list>
+                        </ion-col>
+                        <ion-col x-bind:size="moveList.length > 1 ? 10 : 12">
+                            <ion-list>
+                                <template x-for="(move, idx) in moveList[variantPointer.value]"
+                                    :key="move.order + '.' + move.prevFen + '.' + move.move1 + '.' + move.move2">
+                                    <ion-item x-bind:id="'item-' + movePointer.value" button="true" lines="none"
+                                        x-bind:color="idx == movePointer.value ? 'medium' : ''"
+                                        x-on:click="gotoMove(idx)">
+                                        <ion-label x-text="(move.order) + '. '"></ion-label>
+                                        <ion-label class="text-figurine" x-text="move.san1"></ion-label>
+                                        <ion-label class="text-figurine" x-text="move.san2"></ion-label>
+                                        <ion-button fill="clear" x-on:click="showPruneDialog(idx)"><ion-icon
+                                                class="aura" data-name="trash"></ion-icon></ion-button>
+                                    </ion-item>
+                                </template>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
                 <ion-buttons class="action_buttons">
                     <template x-if="position.waitingForOpponent.value || position.solving.value">
                         <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="thinking">
