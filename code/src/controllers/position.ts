@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, pieceCount, pieceTotalCount, setupSEO } from '../commons';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, setupSEO } from '../commons';
 import { Category, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -367,7 +367,7 @@ class PositionController extends BaseController {
       this.showNavPrev.value = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
       this.showNavNext.value = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
     }
-    this.initStockfishGame();
+    if (!isBot()) this.initStockfishGame();
     this.chess.load(this.fen);
     this.moveList.splice(0, this.moveList.length);
     this.moveList.push([]);

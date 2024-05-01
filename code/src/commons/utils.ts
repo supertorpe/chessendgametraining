@@ -147,3 +147,6 @@ export const pieceCount = (fen: string): { [key: string]: number } => {
     return pieceCount;
 }
 
+export const isBot = (): boolean => {
+    return navigator.userAgent.toLowerCase().includes('bot');
+};

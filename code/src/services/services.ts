@@ -8,13 +8,14 @@ import { boardThemeSwitcherService } from './board-theme-switcher-service';
 import { syzygyService } from './syzygy-service';
 import { stockfishService } from './stockfish-service';
 import { soundService } from './sound-service';
+import { isBot } from '../commons';
 
 export function services_initialize() {
     return storageService.init()
         .then(() => configurationService.init())
-        .then(() => stockfishService.init())
-        .then(() => syzygyService.init())
-        .then(() => soundService.init())
+        .then(() => isBot() ? true : stockfishService.init())
+        .then(() => isBot() ? true : syzygyService.init())
+        .then(() => isBot() ? true : soundService.init())
         .then(() => themeSwitcherService.init())
         .then(() => boardThemeSwitcherService.init())
         .then(() => endgameDatabaseService.init())

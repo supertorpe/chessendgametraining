@@ -74,11 +74,11 @@
           },
           {
             "key": "Cross-Origin-Embedder-Policy",
-            "value": null
+            "value": "unsafe-none"
           },
           {
             "key": "Cross-Origin-Opener-Policy",
-            "value": null
+            "value": "unsafe-none"
           }
         ]
       },
@@ -91,11 +91,11 @@
           },
           {
             "key": "Cross-Origin-Embedder-Policy",
-            "value": null
+            "value": "unsafe-none"
           },
           {
             "key": "Cross-Origin-Opener-Policy",
-            "value": null
+            "value": "unsafe-none"
           }
         ]
       }
