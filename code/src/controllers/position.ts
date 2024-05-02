@@ -43,6 +43,7 @@ class PositionController extends BaseController {
   private assistanceUsed = false;
   private trivialPositionInvitationShown = false;
   private mateDistance = 0;
+  private unfeasibleMate = false;
   private manualMode = Alpine.reactive({ value: false });
   private mustShowExitDialog = true;
   private stopping = Alpine.reactive({ value: false });
@@ -108,6 +109,7 @@ class PositionController extends BaseController {
     }
     this.chess.load(this.fen);
     this.gameOver.value = false;
+    this.unfeasibleMate = false;
     this.player = this.chess.turn();
     const turn = this.player == 'w' ? 'white' : 'black';
     this.move.value = turn;
@@ -951,6 +953,13 @@ class PositionController extends BaseController {
             duration: 1000
           }).then(toast => toast.present());
         }
+      } else if (this.unfeasibleMate && this.target.value == 'checkmate') {
+        toastController.create({
+          message: window.AlpineI18n.t('position.unfeasible-mate'),
+          position: 'top',
+          color: 'warning',
+          duration: 1000
+        }).then(toast => toast.present());
       }
     }
   }
@@ -961,6 +970,7 @@ class PositionController extends BaseController {
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
+        if (this.target.value == 'checkmate' && data.category != 'loss') this.unfeasibleMate = true;
         // stockfish search more interesting lines when there aren't any winning line
         if (/*data.category == 'loss' || */(data.category == 'draw' /*&& data.moves.every((move: { category: string }) => move.category === "draw")*/)) {
           this.getStockfishMove();
@@ -1029,9 +1039,11 @@ class PositionController extends BaseController {
       const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
       this.processOpponentMove(from, to, promotion);
     } else if (match = message.match(/^info .*\bscore (\w+) (-?\d+)/)) {
+      const score = parseInt(match[2]) * (this.chess.turn() == 'w' ? 1 : -1);
       if (match[1] == 'mate') {
-        const score = parseInt(match[2]) * (this.chess.turn() == 'w' ? 1 : -1);
         if (this.mateDistance == 0 || Math.abs(score) < this.mateDistance) this.mateDistance = score;
+      } else if (this.target.value == 'checkmate') {
+        this.unfeasibleMate = (score < 15);
       }
     }
   }
