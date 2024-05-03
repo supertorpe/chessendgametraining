@@ -418,6 +418,7 @@ class PositionController extends BaseController {
 
     Alpine.data('info', () => ({
       position: self,
+      colorTheme: configurationService.configuration.colorTheme,
       boardTheme: configurationService.configuration.boardTheme,
       pieceTheme: configurationService.configuration.pieceTheme,
       customFen: customFen,
@@ -564,6 +565,7 @@ class PositionController extends BaseController {
         });
         configurationService.configuration.configurationChangedEmitter.addEventListener((event) => {
           switch (event.field) {
+            case 'colorTheme': this.colorTheme = event.config.colorTheme; break;
             case 'boardTheme': this.boardTheme = event.config.boardTheme; break;
             case 'pieceTheme': this.pieceTheme = event.config.pieceTheme; break;
             case 'highlightSquares': {

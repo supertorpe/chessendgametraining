@@ -80,7 +80,7 @@ export default ({ mode }) => {
           display: 'fullscreen',
           start_url: '/?fullscreen=true',
           scope: 'https://chess-endgame-trainer.web.app',
-          scope_extensions: [ { origin: 'https://chess-endgame-trainer.firebaseapp.com' } ],
+          scope_extensions: [{ origin: 'https://chess-endgame-trainer.firebaseapp.com' }],
           background_color: '#000000',
           theme_color: '#000000',
           orientation: 'any',
@@ -158,6 +158,13 @@ export default ({ mode }) => {
               label: "Settings"
             },
             {
+              src: "assets/screenshots/screenshot_7.png",
+              sizes: "360x740",
+              type: "image/png",
+              form_factor: "narrow",
+              label: "Settings"
+            },
+            {
               src: "assets/screenshots/screenshot_1.png",
               sizes: "360x740",
               type: "image/png",
@@ -194,6 +201,13 @@ export default ({ mode }) => {
             },
             {
               src: "assets/screenshots/screenshot_6.png",
+              sizes: "360x740",
+              type: "image/png",
+              form_factor: "wide",
+              label: "Settings"
+            },
+            {
+              src: "assets/screenshots/screenshot_7.png",
               sizes: "360x740",
               type: "image/png",
               form_factor: "wide",

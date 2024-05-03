@@ -8,13 +8,13 @@
         <ion-content>
             <ion-menu-toggle auto-hide="false">
                 <ion-list role="list">
-                    <ion-item lines="full" href="home" data-navigo  detail="false">
+                    <ion-item lines="none" href="home" data-navigo  detail="false">
                         <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="home-sharp"></ion-icon>
                         <ion-label x-text="$t('app.home')"></ion-label>
                     </ion-item>
                     <template x-for="(category, idxCategory) in categories" :key="category.name">
                         <span>
-                            <ion-item lines="full" button="true" detail="false"
+                            <ion-item lines="none" button="true" detail="false"
                                 x-on:click="$event.stopPropagation(); selectCategory(category.name)">
                                 <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
                                     <template x-for="iconUrl in category.iconUrls">
@@ -40,15 +40,15 @@
                             </template>
                         </span>
                     </template>
-                    <ion-item lines="full" button="true" detail="false" x-on:click="showSettings()"> 
+                    <ion-item lines="none" button="true" detail="false" x-on:click="showSettings()"> 
                         <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="settings-sharp"></ion-icon>
                         <ion-label x-text="$t('app.settings')"></ion-label>
                     </ion-item>
-                    <ion-item lines="full" button="true" detail="false" x-on:click="showAbout()"> 
+                    <ion-item lines="none" button="true" detail="false" x-on:click="showAbout()"> 
                         <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="information-circle"></ion-icon>
                         <ion-label x-text="$t('app.about')"></ion-label>
                     </ion-item>
-                    <ion-item>
+                    <ion-item lines="none">
                         <ion-grid>
                             <ion-row>
                               <ion-col size="6">

@@ -13,7 +13,7 @@
     <ion-item lines="none">
       <ion-label x-text="$t('about.description', {version: version})" class="ion-text-wrap"></ion-label>
     </ion-item>
-    <ion-item lines="none">
+    <ion-item lines="full">
       <ion-router-link target="_blank" href="https://github.com/supertorpe/chessendgametraining"
         x-text="$t('about.source-code')"></ion-router-link>
     </ion-item>
@@ -21,10 +21,9 @@
       <ion-label x-text="$t('about.third-party')" class="ion-text-wrap"></ion-label>
     </ion-item>
     <template x-for="item in items" :key="item.url">
-      <ion-item lines="none">
+      <ion-item lines="full">
         <ion-router-link target="_blank" x-bind:href="item.url" x-html="item.text"></ion-router-link>
       </ion-item>
     </template>
-    <ion-item></ion-item>
   </ion-list>
 </ion-content>
