@@ -98,6 +98,23 @@
             "value": "unsafe-none"
           }
         ]
+      },
+      {
+        "source": "/.well-known/assetlinks.json",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Cross-Origin-Embedder-Policy",
+            "value": "unsafe-none"
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "unsafe-none"
+          }
+        ]
       }
     ],
     "rewrites": [
@@ -108,6 +125,14 @@
       {
         "source": "/robots.txt",
         "destination": "/robots.txt"
+      },
+      {
+        "source": "/.well-known/assetlinks.json",
+        "destination": "/.well-known/assetlinks.json"
+      },
+      {
+        "source": "/.well-known/web-app-origin-association",
+        "destination": "/.well-known/web-app-origin-association"
       },
       {
         "source": "/",

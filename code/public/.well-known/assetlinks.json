@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.supertorpe.chessendgametraining",
+      "sha256_cert_fingerprints":
+        ["DE:3A:00:69:52:F3:CA:93:10:B8:1B:61:7E:75:70:82:08:4E:BF:67:AF:75:B3:86:C7:E5:F2:68:5B:64:73:FE"]
+    }
+  }
+]
