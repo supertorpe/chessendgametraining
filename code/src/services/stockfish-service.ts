@@ -7,6 +7,7 @@ class StockfishService {
 
     private stockfish: any;
     private _version!: string;
+    private _usingLilaStockfish!: boolean;
     private _messageEmitter: EventEmitter<string> = new EventEmitter<string>();
     private avoidNotifications = false;
 
@@ -31,14 +32,25 @@ class StockfishService {
 
     public stopWarmup(): Promise<void> {
         return new Promise(resolve => {
-            const stockfishListener = (msg: string) => {
-                if (msg.startsWith('bestmove')) {
-                    this.avoidNotifications = false;
-                    this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
-                    resolve();
+            if (this._usingLilaStockfish) {
+                const stockfishListener = (msg: string) => {
+                    if (msg.startsWith('bestmove')) {
+                        this.avoidNotifications = false;
+                        this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
+                        resolve();
+                    }
                 }
+                this.stockfish.listen =  (msg: string) => { stockfishListener(msg); }
+            } else {
+                const stockfishListener = (event: MessageEvent<string>) => {
+                    if (event.data.startsWith('bestmove')) {
+                        this.avoidNotifications = false;
+                        this.stockfish.removeEventListener('message', stockfishListener);
+                        resolve();
+                    }
+                }
+                this.stockfish.addEventListener('message', stockfishListener);
             }
-            this.stockfish.listen =  (msg: string) => { stockfishListener(msg); }
             this.postMessage('stop');
         });
     }
@@ -56,7 +68,38 @@ class StockfishService {
         }
     };
 
-    private initStockfish() {
+    private sharedMemoryTest(): boolean {
+        if (typeof Atomics !== 'object') return false;
+        if (typeof SharedArrayBuffer !== 'function') return false;
+        let mem;
+        try {
+            mem = new WebAssembly.Memory({ shared: true, initial: 1, maximum: 2 });
+            if (!(mem.buffer instanceof SharedArrayBuffer)) return false;
+
+            window.postMessage(mem.buffer, '*');
+        } catch (_) {
+            return false;
+        }
+        return mem.buffer instanceof SharedArrayBuffer;
+    }
+
+    private detectFeatures(): string[] {
+        const result: string[] = [];
+        if (typeof WebAssembly === 'object' &&
+            typeof WebAssembly.validate === 'function' &&
+            WebAssembly.validate(Uint8Array.from([0, 97, 115, 109, 1, 0, 0, 0]))) {
+            result.push('wasm');
+            if (this.sharedMemoryTest()) {
+                result.push('sharedMem');
+                // i32x4.dot_i16x8_s, i32x4.trunc_sat_f64x2_u_zero
+                const sourceWithSimd = Uint8Array.from([0, 97, 115, 109, 1, 0, 0, 0, 1, 12, 2, 96, 2, 123, 123, 1, 123, 96, 1, 123, 1, 123, 3, 3, 2, 0, 1, 7, 9, 2, 1, 97, 0, 0, 1, 98, 0, 1, 10, 19, 2, 9, 0, 32, 0, 32, 1, 253, 186, 1, 11, 7, 0, 32, 0, 253, 253, 1, 11]); // prettier-ignore
+                if (WebAssembly.validate(sourceWithSimd)) result.push('simd');
+            }
+        }
+        return result;
+    }
+
+    private initLilaStockfish() {
         import('lila-stockfish-web/linrock-nnue-7.js').then((makeModule: any) => {
             makeModule
                 .default({
@@ -65,6 +108,7 @@ class StockfishService {
                     locateFile: (name: string) => `assets/stockfish/${name}`,
                 })
                 .then(async (stockfish: StockfishWeb) => {
+                    this._usingLilaStockfish = true;
                     this.stockfish = stockfish;
                     const response = await fetch(`assets/stockfish/${stockfish.getRecommendedNnue()}`);
                     const buffer = await response.arrayBuffer();
@@ -75,6 +119,26 @@ class StockfishService {
                     stockfish.postMessage('uci');
                 });
         });
+    }
+
+    private initStockfishNnue16NoSimd() {
+        this._usingLilaStockfish = false;
+        const self = this;
+        this.stockfish = new Worker('assets/stockfish/stockfish-nnue-16-no-simd.js#stockfish-nnue-16-no-simd.wasm');
+        this.stockfish.addEventListener('message', (event: MessageEvent<string>) => {
+            console.log(event.data);
+            self.onMessage.call(self, event.data);
+        });
+        this.stockfish.postMessage('uci');
+    }
+
+    private initStockfish() {
+        const features = this.detectFeatures();
+        if (features.includes("simd")) {
+            this.initLilaStockfish();
+        } else {
+            this.initStockfishNnue16NoSimd();
+        }
     }
 
     public init(): Promise<boolean> {

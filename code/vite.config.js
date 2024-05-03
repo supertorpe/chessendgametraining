@@ -52,7 +52,11 @@ export default ({ mode }) => {
           {
             src: 'node_modules/lila-stockfish-web/linrock-nnue-7*',
             dest: 'assets/stockfish/'
-          }
+          },
+          {
+            src: 'node_modules/stockfish/src/stockfish-nnue-16-no-simd.*',
+            dest: 'assets/stockfish/'
+          },
         ]
       }),
 

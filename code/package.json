@@ -16,7 +16,8 @@
     "dom-to-image-hm": "github:InYourHead/dom-to-image",
     "howler": "^2.2.4",
     "lila-stockfish-web": "^0.0.3",
-    "navigo": "^8.11.1"
+    "navigo": "^8.11.1",
+    "stockfish": "^16.0.0"
   },
   "devDependencies": {
     "@types/alpinejs": "^3.13.10",
