@@ -945,7 +945,8 @@ class PositionController extends BaseController {
             message: window.AlpineI18n.t('position.mate-in', { moves: Math.abs(this.mateDistance) }),
             position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
             positionAnchor: '__chessboard__',
-            color: 'success',
+            animated: false,
+            color: 'medium',
             duration: 1000
           }).then(toast => toast.present());
         } else {
@@ -953,6 +954,7 @@ class PositionController extends BaseController {
             message: window.AlpineI18n.t('position.receive-mate-in', { moves: Math.abs(this.mateDistance) }),
             position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
             positionAnchor: '__chessboard__',
+            animated: false,
             color: 'warning',
             duration: 1000
           }).then(toast => toast.present());
@@ -960,8 +962,9 @@ class PositionController extends BaseController {
       } else if (this.unfeasibleMate && this.target.value == 'checkmate') {
         toastController.create({
           message: window.AlpineI18n.t('position.unfeasible-mate'),
-            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-            positionAnchor: '__chessboard__',
+          position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+          positionAnchor: '__chessboard__',
+          animated: false,
           color: 'warning',
           duration: 1000
         }).then(toast => toast.present());
@@ -993,7 +996,9 @@ class PositionController extends BaseController {
         this.useSyzygy = false;
         toastController.create({
           message: window.AlpineI18n.t('position.syzygy-error'),
-          position: 'middle',
+          position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+          positionAnchor: '__chessboard__',
+          animated: false,
           color: 'warning',
           duration: 2000
         }).then(toast => toast.present());
@@ -1020,6 +1025,7 @@ class PositionController extends BaseController {
           message: window.AlpineI18n.t('position.stockfish-slow'),
           position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
           positionAnchor: '__chessboard__',
+          animated: false,
           color: 'warning',
           duration: 3000
         }).then(toast => toast.present());
