@@ -943,14 +943,16 @@ class PositionController extends BaseController {
         if (this.player == 'w' && this.mateDistance > 0 || this.player == 'b' && this.mateDistance < 0) {
           toastController.create({
             message: window.AlpineI18n.t('position.mate-in', { moves: Math.abs(this.mateDistance) }),
-            position: 'top',
+            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+            positionAnchor: '__chessboard__',
             color: 'success',
             duration: 1000
           }).then(toast => toast.present());
         } else {
           toastController.create({
             message: window.AlpineI18n.t('position.receive-mate-in', { moves: Math.abs(this.mateDistance) }),
-            position: 'top',
+            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+            positionAnchor: '__chessboard__',
             color: 'warning',
             duration: 1000
           }).then(toast => toast.present());
@@ -958,7 +960,8 @@ class PositionController extends BaseController {
       } else if (this.unfeasibleMate && this.target.value == 'checkmate') {
         toastController.create({
           message: window.AlpineI18n.t('position.unfeasible-mate'),
-          position: 'top',
+            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+            positionAnchor: '__chessboard__',
           color: 'warning',
           duration: 1000
         }).then(toast => toast.present());
@@ -1015,7 +1018,8 @@ class PositionController extends BaseController {
         this.stockfishWarnTimeout = null;
         toastController.create({
           message: window.AlpineI18n.t('position.stockfish-slow'),
-          position: 'middle',
+          position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+          positionAnchor: '__chessboard__',
           color: 'warning',
           duration: 3000
         }).then(toast => toast.present());
