@@ -4,3 +4,6 @@ dist/
 dev-dist/
 *lock.yaml
 .env
+docs/
+twa/app/build/
+twa/*.apk
