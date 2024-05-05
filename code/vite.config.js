@@ -79,7 +79,7 @@ export default ({ mode }) => {
           description: 'Chess Endgame Trainer',
           display: 'fullscreen',
           start_url: '/?fullscreen=true',
-          scope: 'https://chess-endgame-trainer.web.app',
+          scope: 'https://chess-endgame-trainer.mooo.com',
           scope_extensions: [{ origin: 'https://chess-endgame-trainer.firebaseapp.com' }],
           background_color: '#000000',
           theme_color: '#000000',
