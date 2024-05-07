@@ -36,6 +36,8 @@ ABS_DIRECTORY="$(dirname "${ABS_SCRIPT_PATH}")"
 
 cd ${ABS_DIRECTORY}
 
+mkdir ./docs
+
 # run command
 
 docker compose -f ./docker/docker-compose.yml ${COMMAND}
