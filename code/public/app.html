@@ -18,7 +18,7 @@
                                 x-on:click="$event.stopPropagation(); selectCategory(category.name)">
                                 <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
                                     <template x-for="iconUrl in category.iconUrls">
-                                        <div class="thumbnail"><img width="100%" class="aura" x-bind:src="iconUrl" alt="ariaDescriptionFromIcon(imageUrl)" /></div>
+                                        <div class="thumbnail"><img width="32" height="32" class="aura" x-bind:src="iconUrl" alt="ariaDescriptionFromIcon(imageUrl)" /></div>
                                     </template>
                                 </div>
                                 <ion-label x-text="$t('category.' + category.name)"></ion-label>
@@ -32,7 +32,7 @@
                                     <ion-item color="light" button="true" detail="false"
                                         x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" data-navigo>
                                         <template x-for="imageUrl in subcategory.imageUrls">
-                                            <img class="medium-thumbnail aura" x-bind:src="imageUrl"
+                                            <img width="32" height="32" class="medium-thumbnail aura" x-bind:src="imageUrl"
                                                 alt="ariaDescriptionFromIcon(imageUrl)" />
                                         </template>
                                     </ion-item>
