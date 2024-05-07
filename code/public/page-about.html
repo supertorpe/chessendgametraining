@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title x-text="$t('about.title')"></ion-title>
+    <ion-buttons slot="primary">
+      <ion-button x-on:click="close()">
+        <ion-icon slot="icon-only" data-name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-list role="list">
+    <ion-item lines="none">
+      <ion-label x-text="$t('about.description', {version: version})" class="ion-text-wrap"></ion-label>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-router-link target="_blank" href="https://github.com/supertorpe/chessendgametraining"
+        x-text="$t('about.source-code')"></ion-router-link>
+    </ion-item>
+    <ion-item>
+      <ion-label x-text="$t('about.third-party')" class="ion-text-wrap"></ion-label>
+    </ion-item>
+    <template x-for="item in items" :key="item.url">
+      <ion-item lines="full">
+        <ion-router-link target="_blank" x-bind:href="item.url" x-html="item.text"></ion-router-link>
+      </ion-item>
+    </template>
+  </ion-list>
+</ion-content>

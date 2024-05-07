@@ -1,0 +1,20 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.supertorpe.chessendgametraining",
+      "sha256_cert_fingerprints":
+        ["DE:3A:00:69:52:F3:CA:93:10:B8:1B:61:7E:75:70:82:08:4E:BF:67:AF:75:B3:86:C7:E5:F2:68:5B:64:73:FE","04:00:E0:DA:0D:26:72:DA:77:87:06:4B:81:9C:BB:B5:95:D8:08:10:34:F0:24:C0:33:96:8F:F0:80:F2:FD:9C","C3:50:39:94:AB:3C:DE:88:F1:86:DF:55:B0:9F:24:D4:BD:C5:7E:9D:F3:6B:48:D4:6E:48:F2:64:3A:86:0E:C0"]
+    }
+  },
+  {
+    "relation": [
+      "check_validation"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.supertorpe.chessendgametraining"
+    }
+  }
+]

@@ -1,0 +1,45 @@
+<ion-grid>
+    <ion-row>
+        <ion-col>
+            <ion-card>
+                <ion-card-content>
+                    <ion-button x-on:click="select('q')" color="light" size="large" expand="full">
+                        <img slot="start" x-bind:src="'assets/pieces/' + currentPieceTheme + '/' + player + 'Q.svg'"
+                            class="big-thumbnail" />
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+        <ion-col>
+            <ion-card>
+                <ion-card-content>
+                    <ion-button x-on:click="select('n')" color="light" size="large" expand="full">
+                        <img slot="start" x-bind:src="'assets/pieces/' + currentPieceTheme + '/' + player + 'N.svg'"
+                            class="big-thumbnail" />
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col>
+            <ion-card>
+                <ion-card-content>
+                    <ion-button x-on:click="select('r')" color="light" size="large" expand="full">
+                        <img slot="start" x-bind:src="'assets/pieces/' + currentPieceTheme + '/' + player + 'R.svg'"
+                            class="big-thumbnail" />
+                    </ion-button>
+                </ion-card-content>
+            </ion-card></ion-col>
+        <ion-col>
+            <ion-card>
+                <ion-card-content>
+                    <ion-button x-on:click="select('b')" color="light" size="large" expand="full">
+                        <img slot="start" x-bind:src="'assets/pieces/' + currentPieceTheme + '/' + player + 'B.svg'"
+                            class="big-thumbnail" />
+                    </ion-button>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+</ion-grid>

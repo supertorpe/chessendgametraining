@@ -1,0 +1,146 @@
+<ion-page class="ion-page" x-data="info">
+    <ion-header>
+        <ion-toolbar>
+            <ion-buttons slot="start">
+                <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <template x-if="customFen">
+                <ion-title class="ion-text-center">
+                    <ion-label class="responsive-text" x-text="$t('position.custom-position')"></ion-label>
+                </ion-title>
+            </template>
+            <template x-if="!customFen">
+                <ion-buttons slot="start">
+                    <ion-button aria-label="Previous position" x-bind:disabled="!showNavPrev.value"
+                        x-on:click="showPreviousPosition()">
+                        <ion-icon slot="icon-only" class="aura" data-name="arrow-back"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </template>
+            <template x-if="!customFen">
+                <ion-buttons slot="end">
+                    <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value"
+                        x-on:click="showNextPosition()">
+                        <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </template>
+            <template x-if="!customFen">
+                <ion-buttons style="display: flex; justify-content: center; align-items: center">
+                    <ion-button expand="block" x-bind:href="'list/' + idxCategory.value + '/' + idxSubcategory.value"
+                        data-navigo>
+                        <ion-label class="responsive-text"
+                            x-text="' [ ' + (idxGame.value + 1) + ' / ' + (idxLastGame.value + 1) + ' ]'"></ion-label>
+                    </ion-button>
+                </ion-buttons>
+            </template>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <div class="container">
+            <div x-bind:class="[boardTheme, pieceTheme]">
+                <div id="__chessboard__"></div>
+            </div>
+            <div class="info_wrapper">
+                <ion-grid class="info_moves">
+                    <ion-row>
+                        <ion-col>
+                            <ion-item class="ion-text-center">
+                                <ion-label
+                                    x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
+                            </ion-item>
+                            <ion-item button="true" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
+                                x-on:click="gotoMove(-1)">
+                                <ion-label x-text="position.fen"></ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col x-show="moveList.length > 1" x-bind:size="2">
+                            <ion-list>
+                                <template x-for="(item, idx) in moveList" :key="idx">
+                                    <ion-item button="true" x-bind:color="idx == variantPointer.value ? 'medium' : ''"
+                                        x-on:click="gotoVariant(idx)"><ion-label x-text="idx+1"></ion-label></ion-item>
+                                </template>
+                            </ion-list>
+                        </ion-col>
+                        <ion-col x-bind:size="moveList.length > 1 ? 10 : 12">
+                            <ion-list>
+                                <template x-for="(move, idx) in moveList[variantPointer.value]"
+                                    :key="move.order + '.' + move.prevFen + '.' + move.move1 + '.' + move.move2">
+                                    <ion-item x-bind:id="'item-' + movePointer.value" button="true" lines="none"
+                                        x-bind:color="idx == movePointer.value ? 'medium' : ''"
+                                        x-on:click="gotoMove(idx)">
+                                        <ion-label x-text="(move.order) + '. '"></ion-label>
+                                        <ion-label class="text-figurine" x-text="move.san1"></ion-label>
+                                        <ion-label class="text-figurine" x-text="move.san2"></ion-label>
+                                        <ion-button fill="clear" x-on:click="showPruneDialog(idx)"><ion-icon
+                                                class="aura" data-name="trash"></ion-icon></ion-button>
+                                    </ion-item>
+                                </template>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+                <ion-buttons class="action_buttons">
+                    <template x-if="position.waitingForOpponent.value || position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="thinking">
+                            <ion-spinner name="circular"></ion-spinner>
+                        </ion-button>
+                    </template>
+                    <template x-if="position.askingForHint.value || position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="stop"
+                            x-bind:disabled="position.stopping.value" x-on:click="stop()">
+                            <ion-icon class="aura" data-name="stop"></ion-icon>
+                        </ion-button>
+                    </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="restart"
+                            x-bind:disabled="moveList.length == 0" x-on:click="showRestartDialog()">
+                            <ion-icon class="aura" data-name="power"></ion-icon>
+                        </ion-button>
+                    </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="show hint"
+                            x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
+                            x-on:click="hint()">
+                            <ion-icon class="aura" data-name="bulb"></ion-icon>
+                        </ion-button>
+                    </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="autosolve"
+                            x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
+                            x-on:click="solve()">
+                            <ion-icon class="aura" data-name="color-wand"></ion-icon>
+                        </ion-button>
+                    </template>
+                    <template x-if="!position.waitingForOpponent.value && !position.solving.value">
+                        <ion-button size="small" fill="clear" expand="full" color="dark" aria-label="manual mode"
+                            x-bind:disabled="position.waitingForOpponent.value || position.askingForHint.value || position.gameOver.value"
+                            x-on:click="toggleManualMode()">
+                            <ion-icon class="aura" data-name="person"></ion-icon>
+                            <ion-icon class="aura"
+                                x-bind:data-name="manualMode.value ? 'person': 'desktop-outline'"></ion-icon>
+                        </ion-button>
+                    </template>
+                </ion-buttons>
+            </div>
+            <ion-fab #fab vertical="bottom" horizontal="end" slot="fixed" style="bottom: 25px;">
+                <ion-fab-button color="light" size="small" aria-label="more options">
+                    <ion-icon data-name="caret-up" class="aura"></ion-icon>
+                </ion-fab-button>
+                <ion-fab-list side="top">
+                    <ion-fab-button color="dark" x-on:click="showSettings()">
+                        <ion-icon data-name="settings-sharp" class="aura"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button color="dark" x-on:click="showClipboardDialog()">
+                        <ion-icon data-name="clipboard-outline" class="aura"></ion-icon>
+                    </ion-fab-button>
+                    <ion-fab-button color="dark" x-on:click="lichessAnalysis()">
+                        <img x-bind:src="'/assets/icons/lichess-' + colorTheme + '.png'" class="aura"></ion-icon>
+                    </ion-fab-button>
+                </ion-fab-list>
+            </ion-fab>
+        </div>
+    </ion-content>
+</ion-page>

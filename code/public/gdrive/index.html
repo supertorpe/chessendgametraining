@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Practice thousands of chess endgame positions with different combinations of pieces: pawns, bishops, knights, rooks and queen">
+<title>Chess Endgame Training</title>
+<script src="https://accounts.google.com/gsi/client"></script>
+<style>@font-face{font-family:russo-one;font-style:normal;font-weight:400;src:url('/assets/fonts/RussoOne-Regular.woff2')}*{--ion-font-family:'russo-one'!important;font-family:russo-one!important}.center{margin:0;position:absolute;top:40%;left:50%;-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items: center}.button{appearance:button;backface-visibility:hidden;border-radius:6px;border-width:0;box-shadow:rgba(50,50,93,.1) 0 0 0 1px inset,rgba(50,50,93,.1) 0 2px 5px 0,rgba(0,0,0,.07) 0 1px 1px 0;box-sizing:border-box;color:#fff;cursor:pointer;font-family:-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;font-size:100%;line-height:1.15;margin:12px 0 0;outline:0;overflow:hidden;padding:0 25px;position:relative;text-align:center;text-transform:none;transform:translateZ(0);transition:.2s,box-shadow .08s ease-in;user-select:none;-webkit-user-select:none;touch-action:manipulation;width:300px;height:80px}.button:disabled{cursor:default}.button:focus{box-shadow:rgba(50,50,93,.1) 0 0 0 1px inset,rgba(50,50,93,.2) 0 6px 15px 0,rgba(0,0,0,.1) 0 2px 2px 0,rgba(50,151,211,.3) 0 0 0 4px}.button-ok{background-color:#4d8dff}.button-ko{background-color:#f24c58}</style>
+</head>
+<body>
+<div class="center"><img width="192" height="192" src="/assets/icons/favicon-192.png"/><button id="btnLogin" class="button button-ok" role="button"></button><button id="btnCancel" class="button button-ko" role="button"></button></div>
+</body>
+<script>
+const theme = localStorage.getItem("theme") || "dark";
+renewAccessToken = "true" == localStorage.getItem("renew"), localStorage.removeItem("renew"), buttonOkMsg = localStorage.getItem("button-ok-message"), buttonKoMsg = localStorage.getItem("button-ko-message"), (buttonOk = document.getElementById("btnLogin")).textContent = buttonOkMsg, (buttonKo = document.getElementById("btnCancel")).textContent = buttonKoMsg, "dark" == theme && (document.body.style.backgroundColor = "black");
+const deactivateGoogleSync = () => {
+    localStorage.setItem("GOOGLE_ACCESS_TOKEN_LOADED", "TRUE")
+        let t = indexedDB.open("CET_STORAGE", 2);
+        t.onsuccess = t => {
+            db = t.target.result;
+            let e = db.transaction(["_ionickv"], "readwrite"),
+                o = e.objectStore("_ionickv"),
+                r = o.get("CONFIGURATION");
+            r.onsuccess = t => {
+                let e = r.result;
+                e.syncGoogleDrive = !1;
+                let n = o.put(e, "CONFIGURATION");
+                n.onsuccess = t => {
+                    window.history.back()
+                }
+                n.onerror = t => {
+                    window.history.back()
+                }
+            }
+            r.onerror = (event) => { window.history.back() }
+        };
+        t.onerror = (event) => { window.history.back() }
+    };
+    try {
+    client = google.accounts.oauth2.initTokenClient({
+        client_id: function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 33 - o)
+            }).join("")
+        }(53, 144, 141, 139, 137, 143, 135, 135) + 70965288..toString(36).toLowerCase() + 29..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 1105448540377..toString(36).toLowerCase() + function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 44 - o)
+            }).join("")
+        }(17, 134, 127, 186, 173, 130, 175, 186, 168, 186, 177, 123, 183, 175, 166, 164, 159, 179) + 30072901285..toString(36).toLowerCase() + 30..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 499888..toString(36).toLowerCase() + 30..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 47071744657502..toString(36).toLowerCase() + function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 43 - o)
+            }).join("")
+        }(28, 187, 177, 191, 184, 184, 171, 185) + 29..toString(36).toLowerCase() + 30..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 16438..toString(36).toLowerCase(),
+        scope: function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 30 - o)
+            }).join("")
+        }(10, 159, 155, 158, 157, 144) + 10..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -39)
+        }).join("") + 1147..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 42656..toString(36).toLowerCase() + 30..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 47071744631478..toString(36).toLowerCase() + function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 53 - o)
+            }).join("")
+        }(60, 226, 227, 214, 160, 228) + 31..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 390..toString(36).toLowerCase() + function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 46 - o)
+            }).join("")
+        }(46, 208) + 17..toString(36).toLowerCase() + 31..toString(36).toLowerCase().split("").map(function(t) {
+            return String.fromCharCode(t.charCodeAt() + -71)
+        }).join("") + 642199..toString(36).toLowerCase() + function() {
+            var t = Array.prototype.slice.call(arguments),
+                e = t.shift();
+            return t.reverse().map(function(t, o) {
+                return String.fromCharCode(t - e - 34 - o)
+            }).join("")
+        }(7, 147, 153, 149, 145, 88, 142),
+        prompt: renewAccessToken ? "" : "consent",
+        async callback(t) {
+            localStorage.setItem("GOOGLE_ACCESS_TOKEN_LOADED", "TRUE"), localStorage.setItem("GOOGLE_ACCESS_TOKEN", t.access_token), window.history.back()
+        },
+        error_callback(t) {
+            localStorage.setItem("GOOGLE_ACCESS_TOKEN_ERROR", `ts=${Date.now()}, error=${JSON.stringify(t)}`), deactivateGoogleSync()
+        }
+    });
+} catch(error) {
+    console.log(error);
+    localStorage.setItem("GOOGLE_ACCESS_TOKEN_ERROR", `ts=${Date.now()}, error=${JSON.stringify(error)}`), deactivateGoogleSync();
+}
+buttonOk.addEventListener("click", () => {
+    client.requestAccessToken()
+}), buttonKo.addEventListener("click", () => {
+    deactivateGoogleSync()
+});
+</script>
+</html>

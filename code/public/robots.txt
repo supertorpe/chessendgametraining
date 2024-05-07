@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://chess-endgame-trainer.mooo.com/sitemap.xml

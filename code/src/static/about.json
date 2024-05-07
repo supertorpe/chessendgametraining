@@ -1,0 +1,88 @@
+{
+    "items": [
+        {
+            "url": "http://ecochessopeningcodes.blogspot.com.es/2016/01/play-chess-endgame-positions-with.html",
+            "i18n": "about.eco-description"
+        },
+        {
+            "url": "https://github.com/jhlywa/chess.js",
+            "i18n": "about.chessjs-description"
+        },
+        {
+            "url": "https://github.com/lichess-org/chessground",
+            "i18n": "about.chessground-description"
+        },
+        {
+            "url": "https://github.com/lichess-org/lila-stockfish-web",
+            "i18n": "about.stockfish-js-description"
+        },
+        {
+            "url": "https://github.com/lichess-org/lila-tablebase",
+            "i18n": "about.syzygy-description"
+        },
+        {
+            "url": "https://www.typescriptlang.org",
+            "i18n": "about.typescript"
+        },
+        {
+            "url": "https://ionicframework.com",
+            "i18n": "about.ionic"
+        },
+        {
+            "url": "https://alpinejs.dev",
+            "i18n": "about.alpine-js"
+        },
+        {
+            "url": "https://github.com/rehhouari/alpinejs-i18n",
+            "i18n": "about.alpinejs-i18n"
+        },
+        {
+            "url": "https://github.com/krasimir/navigo",
+            "i18n": "about.navigo"
+        },
+        {
+            "url": "https://github.com/goldfire/howler.js",
+            "i18n": "about.howlerjs"
+        },
+        {
+            "url": "https://github.com/InYourHead/dom-to-image",
+            "i18n": "about.dom-to-image"
+        },
+        {
+            "url": "https://vitejs.dev",
+            "i18n": "about.vite"
+        },
+        {
+            "url": "https://www.iconfinder.com/icons/1688870/business_chess_strategy_icon",
+            "i18n": "about.logo"
+        },
+        {
+            "url": "https://www.flaticon.com/free-icon/pacifier_134980",
+            "i18n": "about.pacifier"
+        },
+        {
+            "url": "https://github.com/supertorpe/chessendgametraining",
+            "i18n": "about.pieces"
+        },
+        {
+            "url": "https://fonts.google.com/specimen/Russo+One",
+            "i18n": "about.font"
+        },
+        {
+            "url": "https://github.com/lichess-org/lila/blob/master/public/sound/standard/Move.mp3",
+            "i18n": "about.move-sound"
+        },
+        {
+            "url": "https://github.com/lichess-org/lila/blob/master/public/sound/standard/Capture.mp3",
+            "i18n": "about.capture-sound"
+        },
+        {
+            "url": "https://freesound.org/people/shinephoenixstormcrow/sounds/337049/",
+            "i18n": "about.success-sound"
+        },
+        {
+            "url": "https://freesound.org/people/Bertrof/sounds/131657/",
+            "i18n": "about.fail-sound"
+        }
+    ]
+}
