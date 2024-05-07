@@ -47,13 +47,13 @@ TARGET is checkmate by default. Examples:
 
 ## Screenshots
 <div style="display:flex;" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_1.png" width="14%" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_2.png" width="14%" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_3.png" width="14%" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_4.png" width="14%" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_5.png" width="14%" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_6.png" width="14%" >
-<img style="margin-left:10px;" src="code/public/assets/screenshots/screenshot_7.png" width="14%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_1.png" width="13.5%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_2.png" width="13.5%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_3.png" width="13.5%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_4.png" width="13.5%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_5.png" width="13.5%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_6.png" width="13.5%" >
+<img style="margin-left:2px;" src="code/public/assets/screenshots/screenshot_7.png" width="13.5%" >
 </div>
 
 ## 3dparty resources
