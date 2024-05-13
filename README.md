@@ -22,13 +22,13 @@ Chess Endgame Training is a web application to practice a variety of well organi
 
 * Uses the chessground board which allows you to draw circles and arrows.
 
-* Light and dark themes
+* Light and dark themes.
 
-* Multiple piece styles
+* Multiple piece styles.
 
-* Several board colors to choose from
+* Several board colors to choose from.
 
-* Multi language (currently English/Spanish)
+* Multi language (currently English/Spanish).
 
 * Board image capture.
 
@@ -99,7 +99,7 @@ Build for production
 ```
 ./exec.sh build-app
 ```
-If you don't want to use Docker, you can install Node.js (latest LTS) and a package manager (i.e. pnpm) to install de dependencies, start the development server and build for production.
+If you don't want to use Docker, you can install Node.js (latest LTS) and a package manager (i.e. pnpm) to install dependencies, start the development server and build for production.
 
 ### TWA / Android bundle
 
