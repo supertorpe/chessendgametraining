@@ -21,7 +21,7 @@ export default ({ mode }) => {
       sourcemap: DEV,
       outDir: '../docs',
       rollupOptions: {
-        external: ['lila-stockfish-web/linrock-nnue-7.js'],
+        external: ['lila-stockfish-web/sf16-7.js'],
       },
       modulePreload: {
         polyfill: false
@@ -50,7 +50,7 @@ export default ({ mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: 'node_modules/lila-stockfish-web/linrock-nnue-7*',
+            src: 'node_modules/lila-stockfish-web/sf16-7*',
             dest: 'assets/stockfish/'
           },
           {
@@ -83,7 +83,7 @@ export default ({ mode }) => {
           scope_extensions: [{ origin: 'https://chess-endgame-trainer.firebaseapp.com' }],
           background_color: '#000000',
           theme_color: '#000000',
-          orientation: 'any',
+          orientation: 'natural',
           dir: 'ltr',
           prefer_related_applications: false,
           categories: ['games'],

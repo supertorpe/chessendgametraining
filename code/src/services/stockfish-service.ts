@@ -17,7 +17,10 @@ class StockfishService {
     get messageEmitter(): EventEmitter<string> { return this._messageEmitter; }
 
     public postMessage(message: string) {
-        this.stockfish.postMessage(message);
+        if (this._usingLilaStockfish)
+            this.stockfish.uci(message);
+        else
+            this.stockfish.postMessage(message);
     }
 
     public onMessage(message: string) {
@@ -100,7 +103,7 @@ class StockfishService {
     }
 
     private initLilaStockfish() {
-        import('lila-stockfish-web/linrock-nnue-7.js').then((makeModule: any) => {
+        import('lila-stockfish-web/sf16-7.js').then((makeModule: any) => {
             makeModule
                 .default({
                     wasmMemory: this.sharedWasmMemory(1536!),
@@ -116,7 +119,7 @@ class StockfishService {
                     stockfish.setNnueBuffer(uint8Array);
                     stockfish.onError = (msg: string) => { console.log(msg); }
                     stockfish.listen = (msg: string) => { this.onMessage(msg); }
-                    stockfish.postMessage('uci');
+                    stockfish.uci('uci');
                 });
         });
     }
