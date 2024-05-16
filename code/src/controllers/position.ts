@@ -20,7 +20,7 @@ class PositionController extends BaseController {
   private board!: Api;
   private boardConfig!: Config;
   private position!: Position;
-  private fen!: string;
+  private fen = Alpine.reactive({ value: '' });
   private idxCategory: { value: number } = Alpine.reactive({ value: -1 });
   private idxSubcategory: { value: number } = Alpine.reactive({ value: -1 });
   private idxGame: { value: number } = Alpine.reactive({ value: -1 });
@@ -97,7 +97,7 @@ class PositionController extends BaseController {
     this.stockfishWarmup = true;
     stockfishService.postMessage('ucinewgame');
     stockfishService.postMessage('isready');
-    stockfishService.warmup(this.fen);
+    stockfishService.warmup(this.fen.value);
   }
 
   private resetPosition(newGame: boolean) {
@@ -107,7 +107,7 @@ class PositionController extends BaseController {
     if (newGame) {
       this.initStockfishGame();
     }
-    this.chess.load(this.fen);
+    this.chess.load(this.fen.value);
     this.gameOver.value = false;
     this.unfeasibleMate = false;
     this.player = this.chess.turn();
@@ -188,7 +188,7 @@ class PositionController extends BaseController {
         this.showNavNext.value = !(this.idxCategory.value === endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
         this.position = categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].games[this.idxGame.value];
         this.target.value = this.position.target;
-        this.fen = this.position.fen;
+        this.fen.value = this.position.fen;
         this.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory.value].name}`)} (${categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].name}) ${this.idxGame.value + 1}/${this.idxLastGame.value + 1}`;
         setupSEO('page-list.html', this.getSEOParams());
         window.history.replaceState(this.seo, this.seo, `/position/${this.idxCategory.value}/${this.idxSubcategory.value}/${this.idxGame.value}`);
@@ -257,7 +257,7 @@ class PositionController extends BaseController {
     this.stopStockfish();
     let prevFen;
     if (idx > -1) {
-      this.chess.load(this.fen);
+      this.chess.load(this.fen.value);
       const moves = this.getMoves()?.split(' ');
       moves?.forEach((move) => {
         if (move.trim()) {
@@ -307,7 +307,7 @@ class PositionController extends BaseController {
         });
       }
     } else {
-      this.chess.load(this.fen);
+      this.chess.load(this.fen.value);
       this.gameOver.value = this.chess.game_over();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       this.board.set({
@@ -351,9 +351,9 @@ class PositionController extends BaseController {
 
     const customFen = ($routeParams['fen1'] !== undefined);
     if (customFen) {
-      this.fen = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
+      this.fen.value = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
       this.target.value = $routeParams['target'] || 'checkmate';
-      this.seo = this.fen;
+      this.seo = this.fen.value;
     } else {
       this.idxCategory.value = parseInt($routeParams['idxCategory']);
       this.idxSubcategory.value = parseInt($routeParams['idxSubcategory']);
@@ -363,14 +363,14 @@ class PositionController extends BaseController {
       this.position = subcategory.games[this.idxGame.value];
       this.idxLastSubcategory.value = category.count - 1;
       this.idxLastGame.value = subcategory.count - 1;
-      this.fen = this.position.fen;
+      this.fen.value = this.position.fen;
       this.target.value = this.position.target;
       this.seo = `${window.AlpineI18n.t(`category.${category.name}`)} (${subcategory.name}) ${this.idxGame.value + 1}/${this.idxLastGame.value + 1}`;
       this.showNavPrev.value = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
       this.showNavNext.value = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
     }
     if (!isBot()) this.initStockfishGame();
-    this.chess.load(this.fen);
+    this.chess.load(this.fen.value);
     this.moveList.splice(0, this.moveList.length);
     this.moveList.push([]);
     this.movePointer.value = -1;
