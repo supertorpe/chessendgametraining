@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.0.1",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build --emptyOutDir",
@@ -15,7 +15,7 @@
     "chessground": "^9.1.1",
     "dom-to-image-hm": "github:InYourHead/dom-to-image",
     "howler": "^2.2.4",
-    "lila-stockfish-web": "^0.0.4",
+    "lila-stockfish-web": "^0.0.5",
     "navigo": "^8.11.1",
     "stockfish": "^16.0.0"
   },
