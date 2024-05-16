@@ -2987,7 +2987,7 @@
                             "target": "checkmate"
                         },
                         {
-                            "fen": "8/K6p/8/8/8/8/2B4P/2k5 w - -7 0 1",
+                            "fen": "8/K6p/8/8/8/8/2B4P/2k5 w - - 0 1",
                             "target": "checkmate"
                         },
                         {
@@ -14114,5 +14114,5 @@
             ]
         }
     ],
-    "version": 7
+    "version": 8
 }
