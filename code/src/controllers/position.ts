@@ -1013,7 +1013,7 @@ class PositionController extends BaseController {
     const history = this.chess.history({ verbose: true });
     let moves = '';
     history.forEach(move => moves += ` ${move.from}${move.to}${move.promotion || ''}`);
-    const command = `position fen ${this.fen} ${moves ? 'moves ' + moves : ''}`;
+    const command = `position fen ${this.fen.value} ${moves ? 'moves ' + moves : ''}`;
     stockfishService.postMessage(command);
     this.waitingForOpponent.value = true;
     redrawIconImages();
