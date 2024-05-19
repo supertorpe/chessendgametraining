@@ -1,4 +1,4 @@
-import { Category, EndgameDatabase, Position, Subcategory, endgameDatabase } from '../model';
+import { EndgameDatabase, Position, endgameDatabase } from '../model';
 import { configurationService } from './configuration-service';
 import { storageService } from './storage-service';
 import { EventEmitter, GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, textToImages, urlIcon, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE } from '../commons';
