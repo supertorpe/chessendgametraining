@@ -155,6 +155,18 @@ class EndgameDatabaseService {
         this._endgameDatabaseChangedEmitter.notify(database);
     }
 
+    private findGameByFen(data: EndgameDatabase, targetFen: string): Position | undefined {
+        for (const category of data.categories) {
+            for (const subcategory of category.subcategories) {
+                const game = subcategory.games.find(game => game.fen === targetFen);
+                if (game) {
+                    return game;
+                }
+            }
+        }
+        return undefined;
+    }
+
     private reconcileDatabases(localDatabase: EndgameDatabase, remoteDatabase: EndgameDatabase | undefined, defaultDatabase: EndgameDatabase) {
         if (!localDatabase && !remoteDatabase) {
             storageService.set('ENDGAME_DATABASE', defaultDatabase);
@@ -171,18 +183,8 @@ class EndgameDatabaseService {
         defaultDatabase.categories.forEach(category => {
             category.subcategories.forEach(subcategory => {
                 subcategory.games.forEach(game => {
-                    let localCategory: Category | undefined;
-                    let remoteCategory: Category | undefined;
-                    let localSubcategory: Subcategory | undefined;
-                    let remoteSubcategory: Subcategory | undefined;
-                    let localGame: Position | undefined;
-                    let remoteGame: Position | undefined;
-                    if (localDatabase) localCategory = localDatabase.categories.find(x => x.name === category.name);
-                    if (remoteDatabase) remoteCategory = remoteDatabase.categories.find(x => x.name === category.name);
-                    if (localCategory) localSubcategory = localCategory.subcategories.find(x => x.name === subcategory.name);
-                    if (remoteCategory) remoteSubcategory = remoteCategory.subcategories.find(x => x.name === subcategory.name);
-                    if (localSubcategory) localGame = localSubcategory.games.find(x => x.fen === game.fen);
-                    if (remoteSubcategory) remoteGame = remoteSubcategory.games.find(x => x.fen === game.fen);
+                    const localGame = this.findGameByFen(localDatabase, game.fen);
+                    const remoteGame = remoteDatabase ? this.findGameByFen(remoteDatabase, game.fen) : undefined;
                     const localRecord = localGame?.record;
                     const remoteRecord = remoteGame?.record;
                     if (localRecord != undefined && remoteRecord != undefined) {

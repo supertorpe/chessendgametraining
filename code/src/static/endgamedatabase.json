@@ -3650,115 +3650,6 @@
                 {
                     "games": [
                         {
-                            "fen": "8/8/3N4/3B4/4K3/7k/8/8 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/1N5B/8/8/5k2/8/1K6/8 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "2B5/8/3k4/8/8/8/1K6/7N w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "1N6/8/8/8/8/8/8/K1k1B3 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/8/8/8/8/8/7B/K1k2N2 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/8/8/6B1/8/K1k5 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/8/8/6B1/2k5/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/8/8/8/6B1/8/2k5/K4N2 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "5N2/8/8/B7/8/8/4k3/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "5N2/8/8/6B1/8/k7/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "4N3/8/8/8/7B/1k6/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "4N3/8/8/B7/8/1k6/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "5B2/8/5N2/8/8/1k6/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "1N6/8/8/8/8/2k5/8/K1B5 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/4B3/8/5N2/8/2k5/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3BN3/8/8/8/8/3k4/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/6B1/2k5/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/8/8/8/3k2B1/8/8/K4N2 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/8/3k3B/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/8/3k4/B7/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/6B1/4k3/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "4N3/8/8/B1k5/8/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "N7/7B/8/2k5/8/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "N3B3/8/8/2k5/8/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "N7/8/8/3k4/B7/8/8/K7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "3N4/8/8/3k4/8/8/8/K1B5 w - - 0 1",
-                            "target": "checkmate"
-                        }
-                    ],
-                    "name": "Knight and Bishop"
-                },
-                {
-                    "games": [
-                        {
                             "fen": "8/5k2/4p3/8/8/2N3N1/4K3/8 w - - 0 1",
                             "target": "checkmate"
                         },
@@ -5450,6 +5341,116 @@
                         }
                     ],
                     "name": "Knight Pawn vs Bishop"
+                },
+
+                {
+                    "games": [
+                        {
+                            "fen": "8/8/3N4/3B4/4K3/7k/8/8 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/1N5B/8/8/5k2/8/1K6/8 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "2B5/8/3k4/8/8/8/1K6/7N w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "1N6/8/8/8/8/8/8/K1k1B3 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/8/8/8/8/8/7B/K1k2N2 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/8/8/6B1/8/K1k5 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/8/8/6B1/2k5/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/8/8/8/6B1/8/2k5/K4N2 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "5N2/8/8/B7/8/8/4k3/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "5N2/8/8/6B1/8/k7/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "4N3/8/8/8/7B/1k6/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "4N3/8/8/B7/8/1k6/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "5B2/8/5N2/8/8/1k6/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "1N6/8/8/8/8/2k5/8/K1B5 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/4B3/8/5N2/8/2k5/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3BN3/8/8/8/8/3k4/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/6B1/2k5/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/8/8/8/3k2B1/8/8/K4N2 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/8/3k3B/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/8/3k4/B7/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/6B1/4k3/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "4N3/8/8/B1k5/8/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "N7/7B/8/2k5/8/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "N3B3/8/8/2k5/8/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "N7/8/8/3k4/B7/8/8/K7 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "3N4/8/8/3k4/8/8/8/K1B5 w - - 0 1",
+                            "target": "checkmate"
+                        }
+                    ],
+                    "name": "Knight and Bishop"
                 },
                 {
                     "games": [
@@ -8751,7 +8752,7 @@
                             "target": "checkmate"
                         }
                     ],
-                    "name": "Rook Rook vs Knight"
+                    "name": "Rook vs Knight"
                 },
                 {
                     "games": [
@@ -14114,5 +14115,5 @@
             ]
         }
     ],
-    "version": 8
+    "version": 9
 }
