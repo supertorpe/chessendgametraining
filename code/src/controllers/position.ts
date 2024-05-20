@@ -373,11 +373,16 @@ class PositionController extends BaseController {
     this.chess.load(this.fen.value);
     this.moveList.splice(0, this.moveList.length);
     this.moveList.push([]);
+    this.variantPointer.value = 0;
     this.movePointer.value = -1;
     this.gameOver.value = false;
     this.player = this.chess.turn();
+    this.stopping.value = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
+    this.assistanceUsed = false;
+    this.solvingTrivial = false;
     this.solving.value = false;
+    this.manualMode.value = false;
 
     const turnWhite = this.chess.turn() == 'w';
     const turnColor: Color = (turnWhite ? 'white' : 'black');
