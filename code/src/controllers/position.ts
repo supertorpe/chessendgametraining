@@ -624,20 +624,25 @@ class PositionController extends BaseController {
       this.variantPointer.value = i;
       this.movePointer.value = idx;
     } else if (isMove2) {
-      if (this.movePointer.value == -1) {
+      if (this.movePointer.value == -1 || (this.moveList[this.variantPointer.value][this.movePointer.value].move2 && this.moveList[this.variantPointer.value][this.movePointer.value].move2 != moveString)) {
         const move: MoveItem = {
           order: order,
           prevFen: prevFen,
-          move1: '...', san1: '...',
+          move1: this.movePointer.value == -1 ? '...' : this.moveList[this.variantPointer.value][this.movePointer.value].move1,
+          san1: this.movePointer.value == -1 ? '...' : this.moveList[this.variantPointer.value][this.movePointer.value].san1,
           move2: moveString, san2: history[history.length - 1].san
         };
         // create a new variant
         if (this.moveList[this.variantPointer.value].length > 0) {
-          this.moveList.push([]);
+          const moves: MoveItem[] = [];
+          for (let i = 0; i <= this.movePointer.value - 1; i++) {
+            moves.push(this.moveList[this.variantPointer.value][i]);
+          }
+          this.moveList.push(moves);
           this.variantPointer.value = this.moveList.length - 1;
         }
         this.moveList[this.variantPointer.value].push(move);
-        this.movePointer.value = 0;
+        this.movePointer.value = this.moveList[this.variantPointer.value].length - 1;
       } else {
         const move = this.moveList[this.variantPointer.value][this.movePointer.value];
         move.move2 = moveString;
