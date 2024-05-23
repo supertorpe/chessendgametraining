@@ -990,7 +990,7 @@ class PositionController extends BaseController {
         if (!this.waitingForOpponent.value) return;
         if (this.target.value == 'checkmate' && data.category != 'loss') this.unfeasibleMate = true;
         // stockfish search more interesting lines when there aren't any winning line
-        if (/*data.category == 'loss' || */(data.category == 'draw' /*&& data.moves.every((move: { category: string }) => move.category === "draw")*/)) {
+        if (data.category == 'loss' || (data.category == 'draw' /*&& data.moves.every((move: { category: string }) => move.category === "draw")*/)) {
           this.getStockfishMove();
         } else {
           const bestmove = data.moves[0].uci;
