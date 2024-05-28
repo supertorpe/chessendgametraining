@@ -150,3 +150,7 @@ export const pieceCount = (fen: string): { [key: string]: number } => {
 export const isBot = (): boolean => {
     return navigator.userAgent.toLowerCase().includes('bot');
 };
+
+export const queryParam = (param: string) : string | null => {
+    return new URLSearchParams(new URL(window.location.href).search).get(param);
+};

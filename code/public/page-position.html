@@ -45,11 +45,13 @@
                 <ion-grid class="info_moves">
                     <ion-row>
                         <ion-col>
-                            <ion-item class="ion-text-center">
-                                <ion-label
-                                    x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
-                            </ion-item>
-                            <ion-item button="true" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
+                            <template x-if="move.value.startsWith(player)">
+                                <ion-item class="ion-text-center" lines="full">
+                                    <ion-label
+                                        x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
+                                </ion-item>
+                            </template>
+                            <ion-item button="true" lines="none" x-bind:color="movePointer.value === -1 ? 'medium' : ''"
                                 x-on:click="gotoMove(-1)">
                                 <ion-label x-text="fen.value"></ion-label>
                             </ion-item>
@@ -59,7 +61,7 @@
                         <ion-col x-show="moveList.length > 1" x-bind:size="2">
                             <ion-list>
                                 <template x-for="(item, idx) in moveList" :key="idx">
-                                    <ion-item button="true" x-bind:color="idx == variantPointer.value ? 'medium' : ''"
+                                    <ion-item button="true" lines="none" x-bind:color="idx == variantPointer.value ? 'medium' : ''"
                                         x-on:click="gotoVariant(idx)"><ion-label x-text="idx+1"></ion-label></ion-item>
                                 </template>
                             </ion-list>

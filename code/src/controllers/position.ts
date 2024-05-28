@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, setupSEO } from '../commons';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, queryParam, setupSEO } from '../commons';
 import { Category, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -110,8 +110,11 @@ class PositionController extends BaseController {
     this.chess.load(this.fen.value);
     this.gameOver.value = false;
     this.unfeasibleMate = false;
-    this.player = this.chess.turn();
-    const turn = this.player == 'w' ? 'white' : 'black';
+    let forcePlayer: "w" | "b" | null = null;
+    const ply = queryParam('player');
+    if (ply && (ply == 'w' || ply == 'b')) forcePlayer = ply;
+    this.player = forcePlayer != null ? forcePlayer : this.chess.turn();
+    const turn = this.chess.turn() == 'w' ? 'white' : 'black';
     this.move.value = turn;
     this.board.set({
       fen: this.chess.fen(),
@@ -123,7 +126,7 @@ class PositionController extends BaseController {
         dests: this.toDests()
       }
     });
-    if (this.board.state.orientation != turn)
+    if (!this.board.state.orientation.startsWith(this.player))
       this.board.toggleOrientation();
     this.moveList.splice(0, this.moveList.length);
     this.moveList.push([]);
@@ -136,6 +139,7 @@ class PositionController extends BaseController {
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
     this.mustShowExitDialog = true;
+    if (this.player != this.chess.turn()) this.getOpponentMove();
   }
 
   private stopStockfish() {
@@ -320,6 +324,7 @@ class PositionController extends BaseController {
           dests: this.toDests()
         }
       });
+      if (this.player != this.chess.turn()) this.getOpponentMove();
     }
     this.trivialPositionInvitationShown = this.isTrivialPosition();
   }
@@ -348,7 +353,6 @@ class PositionController extends BaseController {
     this.useSyzygy = configurationService.configuration.useSyzygy;
     let category: Category;
     let subcategory: Subcategory;
-
     const customFen = ($routeParams['fen1'] !== undefined);
     if (customFen) {
       this.fen.value = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
@@ -376,7 +380,10 @@ class PositionController extends BaseController {
     this.variantPointer.value = 0;
     this.movePointer.value = -1;
     this.gameOver.value = false;
-    this.player = this.chess.turn();
+    let forcePlayer: "w" | "b" | null = null;
+    const ply = queryParam('player');
+    if (ply && (ply == 'w' || ply == 'b')) forcePlayer = ply;
+    this.player = forcePlayer != null ? forcePlayer : this.chess.turn();
     this.stopping.value = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.assistanceUsed = false;
@@ -390,7 +397,7 @@ class PositionController extends BaseController {
     this.boardConfig = {
       fen: this.chess.fen(),
       viewOnly: false,
-      orientation: turnColor,
+      orientation: this.player == 'w' ? 'white' : 'black',
       turnColor: turnColor,
       premovable: {
         enabled: false
@@ -429,6 +436,7 @@ class PositionController extends BaseController {
       customFen: customFen,
       fen: this.fen,
       target: self.target,
+      player: self.player,
       move: self.move,
       idxCategory: self.idxCategory,
       idxSubcategory: self.idxSubcategory,
@@ -553,6 +561,7 @@ class PositionController extends BaseController {
           self.resizeBoard();
         });
         this.$nextTick().then(() => { routeService.updatePageLinks(); });
+        if (self.player != this.chess.turn()) self.getOpponentMove.call(self);
         ['manualMode'].forEach((item) => {
           this.$watch(item, (_value) => {
             redrawIconImages();
@@ -679,7 +688,7 @@ class PositionController extends BaseController {
     for (let i = 0; i <= pointer; i++) {
       let move = this.moveList[this.variantPointer.value][i];
       if (move.san1 != '...' && move.san1 != '') result = `${result} ${move.san1}`;
-      if (move.san2 != '' && (i != pointer || this.chess.turn() != 'b')) result = `${result} ${move.san2}`;
+      if (move.san2 != '' && (i != pointer || this.player != 'b')) result = `${result} ${move.san2}`;
     }
     return result;
   }
@@ -817,7 +826,9 @@ class PositionController extends BaseController {
       let message;
       let inviteNextPuzzle = false;
       const categoryCount = endgameDatabaseService.endgameDatabase.count;
-      if (!goalAchieved)
+      if (!this.move.value.startsWith(this.player)) {
+        message = 'position.game-over';
+      } else if (!goalAchieved)
         message = 'position.keep-practicing';
       else if (this.assistanceUsed)
         message = 'position.used-assistance';
@@ -969,7 +980,7 @@ class PositionController extends BaseController {
             duration: 1000
           }).then(toast => toast.present());
         }
-      } else if (this.unfeasibleMate && this.target.value == 'checkmate') {
+      } else if (this.unfeasibleMate && this.target.value == 'checkmate' && this.move.value.startsWith(this.player)) {
         toastController.create({
           message: window.AlpineI18n.t('position.unfeasible-mate'),
           position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
