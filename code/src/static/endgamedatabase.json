@@ -2241,10 +2241,6 @@
                             "target": "checkmate"
                         },
                         {
-                            "fen": "8/6p1/4K3/6k1/6P1/6pP/6P1/8 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
                             "fen": "8/8/p7/1p6/1P6/P6k/7P/7K w - - 0 1",
                             "target": "checkmate"
                         },
@@ -2333,10 +2329,6 @@
                             "target": "checkmate"
                         },
                         {
-                            "fen": "8/7P/8/8/2pPp3/3kP3/8/5K2 b - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
                             "fen": "8/8/1p6/8/P4k1p/2PK3P/8/8 w - - 0 1",
                             "target": "checkmate"
                         },
@@ -2381,15 +2373,7 @@
                             "target": "draw"
                         },
                         {
-                            "fen": "6K1/8/4p3/8/3P3p/P7/P5k1/8 w - - 0 1",
-                            "target": "draw"
-                        },
-                        {
                             "fen": "5K2/1p5p/1P2k3/8/1P6/8/2P5/8 w - - 0 1",
-                            "target": "draw"
-                        },
-                        {
-                            "fen": "8/5K2/pp6/3k4/1P6/2P1P3/8/8 w - - 0 1",
                             "target": "draw"
                         },
                         {
@@ -14942,5 +14926,5 @@
             ]
         }
     ],
-    "version": 12
+    "version": 13
 }
