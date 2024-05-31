@@ -47,7 +47,13 @@ TARGET is checkmate by default. Examples:
 
 Optionally, you can change roles and play with the opponent pieces:
 
-[http://localhost:5173/fen/8/3k4/8/3K4/3P4/8/8/8 b - - 0 1?player=w](http://localhost:5173/fen/8/3k4/8/3K4/3P4/8/8/8%20b%20-%20-%200%201?player=w)
+[http://chess-endgame-trainer.mooo.com/fen/8/3k4/8/3K4/3P4/8/8/8 b - - 0 1?player=w](http://chess-endgame-trainer.mooo.com/fen/8/3k4/8/3K4/3P4/8/8/8%20b%20-%20-%200%201?player=w)
+
+
+You can also play random positions to achieve checkmate in 1 to 10 moves. 
+
+[http://chess-endgame-trainer.mooo.com/checkmate/3](http://chess-endgame-trainer.mooo.com/checkmate/3)
+
 
 ## Screenshots
 <div style="display:flex;" >

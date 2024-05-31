@@ -154,3 +154,8 @@ export const isBot = (): boolean => {
 export const queryParam = (param: string) : string | null => {
     return new URLSearchParams(new URL(window.location.href).search).get(param);
 };
+
+export const randomNumber = (min: number, max: number): number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
