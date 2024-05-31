@@ -373,8 +373,7 @@ class PositionController extends BaseController {
       this.fen.value = checkmateCatalog[this.checkmateMoves.value - 1][randomNumber(0, 999)];
       this.target.value = 'checkmate';
       this.seo = this.fen.value;
-    }
-    else if (customFen) {
+    } else if (customFen) {
       this.fen.value = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
       this.target.value = $routeParams['target'] || 'checkmate';
       this.seo = this.fen.value;
@@ -394,7 +393,9 @@ class PositionController extends BaseController {
       this.showNavPrev.value = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
       this.showNavNext.value = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
     }
-    if (!isBot()) this.initStockfishGame();
+    if (!isBot()) {
+      this.initStockfishGame();
+    }
     this.chess.load(this.fen.value);
     this.moveList.splice(0, this.moveList.length);
     this.moveList.push([]);
@@ -813,7 +814,7 @@ class PositionController extends BaseController {
       let goalAchieved = ('checkmate' !== this.target.value && !this.chess.in_checkmate() ||
         'checkmate' == this.target.value && this.chess.in_checkmate() && this.player != this.chess.turn());
       const moveCount = this.chess.history().length;
-      if (goalAchieved && this.checkmateMoves.value > 0 && this.checkmateMoves.value < moveCount) {
+      if (goalAchieved && this.checkmateMoves.value > 0 && this.checkmateMoves.value < Math.ceil(moveCount / 2)) {
         goalAchieved = false;
       }
       const record = goalAchieved && this.position && (!this.position.record || this.position.record < 0 || moveCount < this.position.record);
@@ -1169,7 +1170,10 @@ class PositionController extends BaseController {
         this.waitingForOpponent.value = false;
         this.solving.value = false;
         if (this.stockfishWarmup) {
-          stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
+          stockfishService.stopWarmup().then(() => {
+            this.stockfishWarmup = false;
+            resolve(true);
+          });
         } else {
           this.stopping.value = true;
           this.stopStockfish();

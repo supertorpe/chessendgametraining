@@ -35,9 +35,11 @@ class StockfishService {
 
     public stopWarmup(): Promise<void> {
         return new Promise(resolve => {
+            const timeout = setTimeout(() => { resolve(); }, 500);
             if (this._usingLilaStockfish) {
                 const stockfishListener = (msg: string) => {
                     if (msg.startsWith('bestmove')) {
+                        clearTimeout(timeout);
                         this.avoidNotifications = false;
                         this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
                         resolve();
@@ -47,6 +49,7 @@ class StockfishService {
             } else {
                 const stockfishListener = (event: MessageEvent<string>) => {
                     if (event.data.startsWith('bestmove')) {
+                        clearTimeout(timeout);
                         this.avoidNotifications = false;
                         this.stockfish.removeEventListener('message', stockfishListener);
                         resolve();
