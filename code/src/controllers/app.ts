@@ -32,6 +32,12 @@ class AppController extends BaseController {
                 endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {
                     this.categories = clone(database.categories);
                 });
+                configurationService.configuration.configurationChangedEmitter.addEventListener((event) => {
+                    switch (event.field) {
+                      case 'colorTheme': this.color = (event.config.colorTheme == 'dark' ? 'w' : 'b'); break;
+                      case 'pieceTheme': this.pieceTheme = event.config.pieceTheme; break;
+                    }
+                  });
                 ['categorySelected'].forEach((item) => {
                     this.$watch(item, (_value) => {
                         redrawIconImages();
