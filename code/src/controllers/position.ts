@@ -95,7 +95,10 @@ class PositionController extends BaseController {
     return dests;
   }
 
-  private initStockfishGame() {
+  private async initStockfishGame() {
+    if (this.stockfishWarmup) {
+      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    }
     this.stockfishWarmup = true;
     stockfishService.postMessage('ucinewgame');
     stockfishService.postMessage('isready');
@@ -361,10 +364,6 @@ class PositionController extends BaseController {
     });
     // prevent screen off
     requestWakeLock();
-
-    if (this.stockfishWarmup) {
-      stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
-    }
 
     this.useSyzygy = configurationService.configuration.useSyzygy;
     let category: Category;

@@ -10,6 +10,7 @@ class StockfishService {
     private _usingLilaStockfish!: boolean;
     private _messageEmitter: EventEmitter<string> = new EventEmitter<string>();
     private avoidNotifications = false;
+    private warmingUp = false;
 
     constructor() { }
 
@@ -24,52 +25,46 @@ class StockfishService {
     }
 
     public onMessage(message: string) {
-        console.log(message);
+        if (this.warmingUp && message.includes('score mate')) {
+            this.warmingUp = false;
+            this.postMessage('stop');
+        }
         if (!this.avoidNotifications) this._messageEmitter.notify(message);
     }
 
     public warmup(fen: string) {
+        this.warmingUp = true;
         this.avoidNotifications = true;
         this.postMessage(`position fen ${fen}`);
         this.postMessage('go infinite');
     }
 
     public stopWarmup(): Promise<void> {
-        console.log('stopWarmup...');
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
+            const onWarmupStop = () => {
+                this.warmingUp = false;
+                this.avoidNotifications = false;
+                if (this._usingLilaStockfish) {
+                    this.stockfish.listen = (msg: string) => this.onMessage(msg);
+                } else {
+                    this.stockfish.removeEventListener('message', stockfishListener as EventListener);
+                }
+                resolve();
+            };
+            const stockfishListener = (msgOrEvent: string | MessageEvent<string>) => {
+                const msg = typeof msgOrEvent === 'string' ? msgOrEvent : msgOrEvent.data;
+                if (msg.startsWith('bestmove')) {
+                    onWarmupStop();
+                }
+            };
+            if (!this.warmingUp) {
+                onWarmupStop();
+                return;
+            }
             if (this._usingLilaStockfish) {
-                const stockfishListener = (msg: string) => {
-                    console.log('stopWarmup listener...' + msg);
-                    if (msg.startsWith('bestmove')) {
-                        clearTimeout(timeout);
-                        this.avoidNotifications = false;
-                        this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
-                        console.log('stopWarmup resolve...');
-                        resolve();
-                    }
-                }
-                this.stockfish.listen =  (msg: string) => { stockfishListener(msg); }
-                const timeout = setTimeout(() => {
-                    this.avoidNotifications = false;
-                    this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
-                    resolve();
-                }, 500);
+                this.stockfish.listen = stockfishListener as (msg: string) => void;
             } else {
-                const stockfishListener = (event: MessageEvent<string>) => {
-                    console.log('stopWarmup listener...' + event.data);
-                    if (event.data.startsWith('bestmove')) {
-                        clearTimeout(timeout);
-                        this.avoidNotifications = false;
-                        this.stockfish.removeEventListener('message', stockfishListener);
-                        resolve();
-                    }
-                }
-                this.stockfish.addEventListener('message', stockfishListener);
-                const timeout = setTimeout(() => {
-                    this.avoidNotifications = false;
-                    this.stockfish.removeEventListener('message', stockfishListener);
-                    resolve();
-                }, 500);
+                this.stockfish.addEventListener('message', stockfishListener as EventListener);
             }
             this.postMessage('stop');
         });
@@ -146,7 +141,6 @@ class StockfishService {
         const self = this;
         this.stockfish = new Worker('assets/stockfish/stockfish-nnue-16-no-simd.js#stockfish-nnue-16-no-simd.wasm');
         this.stockfish.addEventListener('message', (event: MessageEvent<string>) => {
-            console.log(event.data);
             self.onMessage.call(self, event.data);
         });
         this.stockfish.postMessage('uci');
