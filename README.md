@@ -71,6 +71,7 @@ You can also play random positions to achieve checkmate in 1 to 10 moves.
 Following software and resources has been used:
 
 * [ECO Chess Opening Codes Endgame database](https://ecochessopeningcodes.blogspot.com/2016/01/play-chess-endgame-positions-with.html): Database of chess endgames
+* [Database with 100.000 checkmating pattern positions](https://github.com/calebjcourtney/chess-endgame-training)
 
 * [chess.js](https://github.com/jhlywa/chess.js): A Javascript chess library for chess move generation/validation, piece placement/movement, and check/checkmate/draw detection
 * [chessground](https://github.com/lichess-org/chessground): A Javascript chess board

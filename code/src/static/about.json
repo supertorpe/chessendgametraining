@@ -5,6 +5,10 @@
             "i18n": "about.eco-description"
         },
         {
+            "url": "https://github.com/calebjcourtney/chess-endgame-training",
+            "i18n": "about.checkmate-patterns-description"
+        },
+        {
             "url": "https://github.com/jhlywa/chess.js",
             "i18n": "about.chessjs-description"
         },
