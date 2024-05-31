@@ -8,8 +8,9 @@
         <ion-content>
             <ion-menu-toggle auto-hide="false">
                 <ion-list role="list">
-                    <ion-item lines="none" href="home" data-navigo  detail="false">
-                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="home-sharp"></ion-icon>
+                    <ion-item lines="none" href="home" data-navigo detail="false">
+                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px"
+                            data-name="home-sharp"></ion-icon>
                         <ion-label x-text="$t('app.home')"></ion-label>
                     </ion-item>
                     <template x-for="(category, idxCategory) in categories" :key="category.name">
@@ -18,7 +19,8 @@
                                 x-on:click="$event.stopPropagation(); selectCategory(category.name)">
                                 <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
                                     <template x-for="iconUrl in category.iconUrls">
-                                        <div class="thumbnail"><img width="32" height="32" class="aura" x-bind:src="iconUrl" alt="ariaDescriptionFromIcon(imageUrl)" /></div>
+                                        <div class="thumbnail"><img width="32" height="32" class="aura"
+                                                x-bind:src="iconUrl" alt="ariaDescriptionFromIcon(imageUrl)" /></div>
                                     </template>
                                 </div>
                                 <ion-label x-text="$t('category.' + category.name)"></ion-label>
@@ -32,37 +34,83 @@
                                     <ion-item color="light" button="true" detail="false"
                                         x-bind:href="'list/' + idxCategory + '/' + idxSubcategory" data-navigo>
                                         <template x-for="imageUrl in subcategory.imageUrls">
-                                            <img width="32" height="32" class="medium-thumbnail aura" x-bind:src="imageUrl"
-                                                alt="ariaDescriptionFromIcon(imageUrl)" />
+                                            <img width="32" height="32" class="medium-thumbnail aura"
+                                                x-bind:src="imageUrl" alt="ariaDescriptionFromIcon(imageUrl)" />
                                         </template>
                                     </ion-item>
                                 </template>
                             </template>
                         </span>
                     </template>
-                    <ion-item lines="none" button="true" detail="false" x-on:click="showSettings()"> 
-                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="settings-sharp"></ion-icon>
+
+                    <ion-item lines="none" button="true" detail="false"
+                        x-on:click="$event.stopPropagation(); selectCategory('checkmate-patterns')">
+                        <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
+                            <div class="thumbnail"><img width="32" height="32" class="aura"
+                                    x-bind:src="'assets/pieces/' + pieceTheme + '/' + color + 'K.svg'"
+                                    alt="Checkmate in..." /></div>
+                        </div>
+                        <ion-label x-text="$t('app.checkmate-patterns')"></ion-label>
+                        <ion-icon slot="end"
+                            x-bind:data-name="categorySelected == 'checkmate-patterns' ? 'caret-down' : 'caret-forward'"
+                            color="medium" class="aura"></ion-icon>
+                    </ion-item>
+                    <template x-if="categorySelected == 'checkmate-patterns'">
+                        <span>
+                            <ion-item color="light" button="true" detail="false" style="display: flex;width: 100%;">
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/1"
+                                    data-navigo>1</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/2"
+                                    data-navigo>2</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/3"
+                                    data-navigo>3</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/4"
+                                    data-navigo>4</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/5"
+                                    data-navigo>5</ion-button>
+                            </ion-item>
+                            <ion-item color="light" button="true" detail="false" style="display: flex;width: 100%;">
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/6"
+                                    data-navigo>6</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/7"
+                                    data-navigo>7</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/8"
+                                    data-navigo>8</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/9"
+                                    data-navigo>9</ion-button>
+                                <ion-button size="small" fill="clear" style="flex: 1;" color="dark" href="checkmate/10"
+                                    data-navigo>10</ion-button>
+                            </ion-item>
+                        </span>
+                    </template>
+
+                    <ion-item lines="none" button="true" detail="false" x-on:click="showSettings()">
+                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px"
+                            data-name="settings-sharp"></ion-icon>
                         <ion-label x-text="$t('app.settings')"></ion-label>
                     </ion-item>
-                    <ion-item lines="none" button="true" detail="false" x-on:click="showAbout()"> 
-                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px" data-name="information-circle"></ion-icon>
+                    <ion-item lines="none" button="true" detail="false" x-on:click="showAbout()">
+                        <ion-icon slot="start" color="dark" class="aura" style="margin-left: 5px"
+                            data-name="information-circle"></ion-icon>
                         <ion-label x-text="$t('app.about')"></ion-label>
                     </ion-item>
                     <ion-item lines="none">
                         <ion-grid>
                             <ion-row>
-                              <ion-col size="6">
-                                <ion-button color="light" size="default" expand="full" aria-label="github" href="https://github.com/supertorpe/chessendgametraining" target="_blank">
-                                  <ion-icon slot="start" class="aura" data-name="logo-github"></ion-icon>
-                                </ion-button>
-                              </ion-col>
-                              <ion-col size="6">
-                                <ion-button color="light" size="default" expand="full" aria-label="discord" href="https://discord.gg/ShmTWzJbYV" target="_blank">
-                                  <ion-icon slot="start" class="aura" data-name="logo-discord"></ion-icon>
-                                </ion-button>
-                              </ion-col>
+                                <ion-col size="6">
+                                    <ion-button color="light" size="default" expand="full" aria-label="github"
+                                        href="https://github.com/supertorpe/chessendgametraining" target="_blank">
+                                        <ion-icon slot="start" class="aura" data-name="logo-github"></ion-icon>
+                                    </ion-button>
+                                </ion-col>
+                                <ion-col size="6">
+                                    <ion-button color="light" size="default" expand="full" aria-label="discord"
+                                        href="https://discord.gg/ShmTWzJbYV" target="_blank">
+                                        <ion-icon slot="start" class="aura" data-name="logo-discord"></ion-icon>
+                                    </ion-button>
+                                </ion-col>
                             </ion-row>
-                          </ion-grid>
+                        </ion-grid>
                     </ion-item>
                 </ion-list>
             </ion-menu-toggle>

@@ -7,6 +7,7 @@
             },
             "menu": "Menu",
             "home": "Home",
+            "checkmate-patterns": "Checkmate in...",
             "settings": "Settings",
             "about": "About",
             "exit": "Exit",
@@ -49,6 +50,7 @@
                 "meta_description": "Position to practice chess endgame: {kind}"
             },
             "custom-position": "Custom position",
+            "checkmate-in": "Checkmate in ",
             "white": "white",
             "black": "black",
             "to": "to",
@@ -196,6 +198,7 @@
             },
             "menu": "Menú",
             "home": "Inicio",
+            "checkmate-patterns": "Mate en...",
             "settings": "Configuración",
             "about": "Acerca de",
             "exit": "Salir",
@@ -238,6 +241,7 @@
                 "meta_description": "Posición para practicar el fin de juego de ajedrez: {kind}"
             },
             "custom-position": "Posición personalizada",
+            "checkmate-in": "Mate en ",
             "white": "blancas",
             "black": "negras",
             "to": "buscan",

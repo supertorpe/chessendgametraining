@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { endgameDatabaseService, redrawIconImages, routeService } from '../services';
+import { configurationService, endgameDatabaseService, redrawIconImages, routeService, themeSwitcherService } from '../services';
 import { EndgameDatabase } from '../model';
 import { ariaDescriptionFromIcon, clone } from '../commons';
 import { settingsController } from './settings';
@@ -9,6 +9,8 @@ import { aboutController } from './about';
 class AppController extends BaseController {
     onEnter(_$routeParams?: any): void {
         Alpine.data('info', () => ({
+            pieceTheme: configurationService.configuration.pieceTheme,
+            color: themeSwitcherService.currentTheme() == 'dark' ? 'w' : 'b',
             categories: clone(endgameDatabaseService.endgameDatabase.categories),
             categorySelected: '',
             selectCategory(category: string) {

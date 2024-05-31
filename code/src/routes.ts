@@ -67,6 +67,13 @@ export const ROUTE_MAP = {
             hasParams: true
         },
         {
+            path: '/checkmate/:moves',
+            template: 'page-position.html',
+            tag: 'ion-router-outlet',
+            controller: positionController,
+            hasParams: true
+        },
+        {
             path: '/promotion',
             template: 'page-promotion.html',
             tag: 'ion-router-outlet',

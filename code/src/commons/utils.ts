@@ -150,3 +150,7 @@ export const pieceCount = (fen: string): { [key: string]: number } => {
 export const isBot = (): boolean => {
     return navigator.userAgent.toLowerCase().includes('bot');
 };
+
+export const randomNumber = (min: number, max: number): number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}

@@ -1,7 +1,7 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
-import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, setupSEO } from '../commons';
+import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, randomNumber, setupSEO } from '../commons';
 import { Category, MoveItem, Position, Subcategory } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -12,6 +12,7 @@ import { promotionController } from './promotion';
 import { alertController, menuController, toastController } from '@ionic/core';
 import { settingsController } from './settings';
 import domtoimage from 'dom-to-image-hm';
+import { checkmateCatalog } from '../static';
 
 class PositionController extends BaseController {
 
@@ -19,7 +20,7 @@ class PositionController extends BaseController {
   private chess: ChessInstance = Chess();
   private board!: Api;
   private boardConfig!: Config;
-  private position!: Position;
+  private position!: Position | undefined;
   private fen = Alpine.reactive({ value: '' });
   private idxCategory: { value: number } = Alpine.reactive({ value: -1 });
   private idxSubcategory: { value: number } = Alpine.reactive({ value: -1 });
@@ -31,6 +32,7 @@ class PositionController extends BaseController {
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
   private player!: "w" | "b";
   private target = Alpine.reactive({ value: '' });
+  private checkmateMoves = Alpine.reactive({ value: 0 });
   private move = Alpine.reactive({ value: '' });
   private useSyzygy = false;
   private gameOver = Alpine.reactive({ value: false });
@@ -205,9 +207,19 @@ class PositionController extends BaseController {
   }
 
   private showNextPosition() {
-    const canMoveNext = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
-    if (canMoveNext) {
-      this.movePosition(1);
+    if (this.checkmateMoves.value > 0) {
+      this.fen.value = checkmateCatalog[this.checkmateMoves.value - 1][randomNumber(0, 999)];
+      this.seo = this.fen.value;
+      this.showExitDialog().then(value => {
+        if (value) {
+          this.resetPosition(true);
+        }
+      });
+    } else {
+      const canMoveNext = !(this.idxCategory.value === endgameDatabaseService.endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
+      if (canMoveNext) {
+        this.movePosition(1);
+      }
     }
   }
 
@@ -350,11 +362,20 @@ class PositionController extends BaseController {
     let subcategory: Subcategory;
 
     const customFen = ($routeParams['fen1'] !== undefined);
-    if (customFen) {
+    const checkmatePattern = ($routeParams['moves'] !== undefined);
+    if (checkmatePattern) {
+      this.position = undefined;
+      this.checkmateMoves.value = $routeParams['moves'];
+      this.fen.value = checkmateCatalog[this.checkmateMoves.value - 1][randomNumber(0, 999)];
+      this.target.value = 'checkmate';
+      this.seo = this.fen.value;
+    }
+    else if (customFen) {
       this.fen.value = `${$routeParams['fen1']}/${$routeParams['fen2']}/${$routeParams['fen3']}/${$routeParams['fen4']}/${$routeParams['fen5']}/${$routeParams['fen6']}/${$routeParams['fen7']}/${$routeParams['fen8']}`;
       this.target.value = $routeParams['target'] || 'checkmate';
       this.seo = this.fen.value;
     } else {
+      this.checkmateMoves.value = 0;
       this.idxCategory.value = parseInt($routeParams['idxCategory']);
       this.idxSubcategory.value = parseInt($routeParams['idxSubcategory']);
       const category = endgameDatabaseService.endgameDatabase.categories[this.idxCategory.value];
@@ -427,6 +448,8 @@ class PositionController extends BaseController {
       boardTheme: configurationService.configuration.boardTheme,
       pieceTheme: configurationService.configuration.pieceTheme,
       customFen: customFen,
+      checkmatePattern: checkmatePattern,
+      checkmateMoves: this.checkmateMoves,
       fen: this.fen,
       target: self.target,
       move: self.move,
@@ -827,7 +850,7 @@ class PositionController extends BaseController {
         message = 'position.new-record';
       } else {
         this.mustShowExitDialog = false;
-        inviteNextPuzzle = !(this.idxCategory.value === categoryCount - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
+        inviteNextPuzzle = (this.position != undefined || this.checkmateMoves.value > 0) && !(this.idxCategory.value === categoryCount - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
         message = 'position.goal-achieved';
       }
 

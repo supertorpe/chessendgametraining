@@ -9,7 +9,20 @@
                     <ion-label class="responsive-text" x-text="$t('position.custom-position')"></ion-label>
                 </ion-title>
             </template>
-            <template x-if="!customFen">
+            <template x-if="checkmatePattern">
+                <ion-title class="ion-text-center">
+                    <ion-label class="responsive-text" x-text="$t('position.checkmate-in') + checkmateMoves.value"></ion-label>
+                </ion-title>
+            </template>
+            <template x-if="checkmatePattern">
+                <ion-buttons slot="end">
+                    <ion-button aria-label="Next position"
+                        x-on:click="showNextPosition()">
+                        <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </template>
+            <template x-if="!customFen && !checkmatePattern">
                 <ion-buttons slot="start">
                     <ion-button aria-label="Previous position" x-bind:disabled="!showNavPrev.value"
                         x-on:click="showPreviousPosition()">
@@ -17,7 +30,7 @@
                     </ion-button>
                 </ion-buttons>
             </template>
-            <template x-if="!customFen">
+            <template x-if="!customFen && !checkmatePattern">
                 <ion-buttons slot="end">
                     <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value"
                         x-on:click="showNextPosition()">
@@ -25,7 +38,7 @@
                     </ion-button>
                 </ion-buttons>
             </template>
-            <template x-if="!customFen">
+            <template x-if="!customFen && !checkmatePattern">
                 <ion-buttons style="display: flex; justify-content: center; align-items: center">
                     <ion-button expand="block" x-bind:href="'list/' + idxCategory.value + '/' + idxSubcategory.value"
                         data-navigo>
