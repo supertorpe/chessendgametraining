@@ -362,6 +362,10 @@ class PositionController extends BaseController {
     // prevent screen off
     requestWakeLock();
 
+    if (this.stockfishWarmup) {
+      stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    }
+
     this.useSyzygy = configurationService.configuration.useSyzygy;
     let category: Category;
     let subcategory: Subcategory;

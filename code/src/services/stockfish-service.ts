@@ -24,6 +24,7 @@ class StockfishService {
     }
 
     public onMessage(message: string) {
+        console.log(message);
         if (!this.avoidNotifications) this._messageEmitter.notify(message);
     }
 
@@ -34,20 +35,28 @@ class StockfishService {
     }
 
     public stopWarmup(): Promise<void> {
+        console.log('stopWarmup...');
         return new Promise(resolve => {
-            const timeout = setTimeout(() => { resolve(); }, 500);
             if (this._usingLilaStockfish) {
                 const stockfishListener = (msg: string) => {
+                    console.log('stopWarmup listener...' + msg);
                     if (msg.startsWith('bestmove')) {
                         clearTimeout(timeout);
                         this.avoidNotifications = false;
                         this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
+                        console.log('stopWarmup resolve...');
                         resolve();
                     }
                 }
                 this.stockfish.listen =  (msg: string) => { stockfishListener(msg); }
+                const timeout = setTimeout(() => {
+                    this.avoidNotifications = false;
+                    this.stockfish.listen = (msg: string) => { this.onMessage(msg); }
+                    resolve();
+                }, 500);
             } else {
                 const stockfishListener = (event: MessageEvent<string>) => {
+                    console.log('stopWarmup listener...' + event.data);
                     if (event.data.startsWith('bestmove')) {
                         clearTimeout(timeout);
                         this.avoidNotifications = false;
@@ -56,6 +65,11 @@ class StockfishService {
                     }
                 }
                 this.stockfish.addEventListener('message', stockfishListener);
+                const timeout = setTimeout(() => {
+                    this.avoidNotifications = false;
+                    this.stockfish.removeEventListener('message', stockfishListener);
+                    resolve();
+                }, 500);
             }
             this.postMessage('stop');
         });
