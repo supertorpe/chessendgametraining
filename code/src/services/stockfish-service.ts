@@ -11,11 +11,14 @@ class StockfishService {
     private _messageEmitter: EventEmitter<string> = new EventEmitter<string>();
     private avoidNotifications = false;
     private warmingUp = false;
+    private _debug = false;
 
     constructor() { }
 
     get version(): string { return this._version; }
     get messageEmitter(): EventEmitter<string> { return this._messageEmitter; }
+    get debug() : boolean { return this._debug; }
+    set debug(value: boolean) { this._debug = value; }
 
     public postMessage(message: string) {
         if (this._usingLilaStockfish)
@@ -25,6 +28,7 @@ class StockfishService {
     }
 
     public onMessage(message: string) {
+        if (this._debug) console.log(message);
         if (this.warmingUp && message.includes('score mate')) {
             this.warmingUp = false;
             this.postMessage('stop');

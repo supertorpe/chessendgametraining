@@ -368,6 +368,7 @@ class PositionController extends BaseController {
     this.useSyzygy = configurationService.configuration.useSyzygy;
     let category: Category;
     let subcategory: Subcategory;
+    stockfishService.debug = (queryParam('debug') == 'true');
     const customFen = ($routeParams['fen1'] !== undefined);
     const checkmatePattern = ($routeParams['moves'] !== undefined);
     if (checkmatePattern) {
@@ -1029,6 +1030,7 @@ class PositionController extends BaseController {
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
+        if ((queryParam('debug') == 'true')) console.log(JSON.stringify(data));
         if (this.target.value == 'checkmate' && data.category != 'loss') this.unfeasibleMate = true;
         // stockfish search more interesting lines when there aren't any winning line
         if (data.category == 'loss' || (data.category == 'draw' /*&& data.moves.every((move: { category: string }) => move.category === "draw")*/)) {
