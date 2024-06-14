@@ -30,7 +30,7 @@ class PositionController extends BaseController {
   private moveList: MoveItem[][] = Alpine.reactive([[]]);
   private variantPointer: { value: number } = Alpine.reactive({ value: 0 });
   private movePointer: { value: number } = Alpine.reactive({ value: -1 });
-  private player!: "w" | "b";
+  private player: { value: "w" | "b" } = Alpine.reactive({ value: 'w' });
   private target = Alpine.reactive({ value: '' });
   private checkmateMoves = Alpine.reactive({ value: 0 });
   private move = Alpine.reactive({ value: '' });
@@ -118,7 +118,7 @@ class PositionController extends BaseController {
     let forcePlayer: "w" | "b" | null = null;
     const ply = queryParam('player');
     if (ply && (ply == 'w' || ply == 'b')) forcePlayer = ply;
-    this.player = forcePlayer != null ? forcePlayer : this.chess.turn();
+    this.player.value = forcePlayer != null ? forcePlayer : this.chess.turn();
     const turn = this.chess.turn() == 'w' ? 'white' : 'black';
     this.move.value = turn;
     this.board.set({
@@ -131,7 +131,7 @@ class PositionController extends BaseController {
         dests: this.toDests()
       }
     });
-    if (!this.board.state.orientation.startsWith(this.player))
+    if (!this.board.state.orientation.startsWith(this.player.value))
       this.board.toggleOrientation();
     this.moveList.splice(0, this.moveList.length);
     this.moveList.push([]);
@@ -144,7 +144,7 @@ class PositionController extends BaseController {
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
     this.mustShowExitDialog = true;
-    if (this.player != this.chess.turn()) this.getOpponentMove();
+    if (this.player.value != this.chess.turn()) this.getOpponentMove();
   }
 
   private stopStockfish() {
@@ -339,7 +339,7 @@ class PositionController extends BaseController {
           dests: this.toDests()
         }
       });
-      if (this.player != this.chess.turn()) this.getOpponentMove();
+      if (this.player.value != this.chess.turn()) this.getOpponentMove();
     }
     this.trivialPositionInvitationShown = this.isTrivialPosition();
   }
@@ -409,7 +409,7 @@ class PositionController extends BaseController {
     let forcePlayer: "w" | "b" | null = null;
     const ply = queryParam('player');
     if (ply && (ply == 'w' || ply == 'b')) forcePlayer = ply;
-    this.player = forcePlayer != null ? forcePlayer : this.chess.turn();
+    this.player.value = forcePlayer != null ? forcePlayer : this.chess.turn();
     this.stopping.value = false;
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.assistanceUsed = false;
@@ -423,7 +423,7 @@ class PositionController extends BaseController {
     this.boardConfig = {
       fen: this.chess.fen(),
       viewOnly: false,
-      orientation: this.player == 'w' ? 'white' : 'black',
+      orientation: this.player.value == 'w' ? 'white' : 'black',
       turnColor: turnColor,
       premovable: {
         enabled: false
@@ -490,7 +490,7 @@ class PositionController extends BaseController {
           color: 'success',
           duration: 2000
         }).then(toast => toast.present());
-        if (this.chess.turn() != self.player) self.getOpponentMove();
+        if (this.chess.turn() != self.player.value) self.getOpponentMove();
       },
       showPreviousPosition() {
         self.showPreviousPosition.call(self);
@@ -589,7 +589,7 @@ class PositionController extends BaseController {
           self.resizeBoard();
         });
         this.$nextTick().then(() => { routeService.updatePageLinks(); });
-        if (self.player != this.chess.turn()) self.getOpponentMove.call(self);
+        if (self.player.value != this.chess.turn()) self.getOpponentMove.call(self);
         ['manualMode'].forEach((item) => {
           this.$watch(item, (_value) => {
             redrawIconImages();
@@ -629,7 +629,7 @@ class PositionController extends BaseController {
     if (orig == 'a0' || dest == 'a0') return;
     // check promotion
     if (this.chess.get(orig)?.type == 'p' && (dest.charAt(1) == '8' || dest.charAt(1) == '1')) {
-      routeService.openModal('promotion', 'page-promotion.html', promotionController, false, true, this.player).then((data: any) => {
+      routeService.openModal('promotion', 'page-promotion.html', promotionController, false, true, this.player.value).then((data: any) => {
         this.registerMove(orig, dest, data.piece);
       });
     } else {
@@ -716,7 +716,7 @@ class PositionController extends BaseController {
     for (let i = 0; i <= pointer; i++) {
       let move = this.moveList[this.variantPointer.value][i];
       if (move.san1 != '...' && move.san1 != '') result = `${result} ${move.san1}`;
-      if (move.san2 != '' && (i != pointer || this.player != 'b')) result = `${result} ${move.san2}`;
+      if (move.san2 != '' && (i != pointer || this.player.value != 'b')) result = `${result} ${move.san2}`;
     }
     return result;
   }
@@ -726,7 +726,7 @@ class PositionController extends BaseController {
     const pieceCounts = pieceCount(this.chess.fen());
     let playerHasRookOrQueen = false;
     for (const piece in pieceCounts) {
-      const isPlayerPiece = (piece == piece.toUpperCase() && this.player == 'w') || (piece == piece.toLowerCase() && this.player == 'b');
+      const isPlayerPiece = (piece == piece.toUpperCase() && this.player.value == 'w') || (piece == piece.toLowerCase() && this.player.value == 'b');
       if (!isPlayerPiece && piece.toUpperCase() != 'K' && pieceCounts[piece] > 0) return false;
       if (isPlayerPiece && (piece.toUpperCase() == 'Q' || piece.toUpperCase() == 'R') && pieceCounts[piece] > 0) playerHasRookOrQueen = true;
     }
@@ -816,7 +816,7 @@ class PositionController extends BaseController {
       this.solvingTrivial = false;
 
       let goalAchieved = ('checkmate' !== this.target.value && !this.chess.in_checkmate() ||
-        'checkmate' == this.target.value && this.chess.in_checkmate() && this.player != this.chess.turn());
+        'checkmate' == this.target.value && this.chess.in_checkmate() && this.player.value != this.chess.turn());
       const moveCount = this.chess.history().length;
       if (goalAchieved && this.checkmateMoves.value > 0 && this.checkmateMoves.value < Math.ceil(moveCount / 2)) {
         goalAchieved = false;
@@ -857,7 +857,7 @@ class PositionController extends BaseController {
       let message;
       let inviteNextPuzzle = false;
       const categoryCount = endgameDatabaseService.endgameDatabase.count;
-      if (!this.move.value.startsWith(this.player)) {
+      if (!this.move.value.startsWith(this.player.value)) {
         message = 'position.game-over';
       } else if (!goalAchieved)
         message = 'position.keep-practicing';
@@ -911,7 +911,7 @@ class PositionController extends BaseController {
   }
 
   private getOpponentMove() {
-    if (this.stopping.value && this.chess.turn() == this.player) {
+    if (this.stopping.value && this.chess.turn() == this.player.value) {
       this.stopping.value = false;
       this.waitingForOpponent.value = false;
       this.askingForHint.value = false;
@@ -992,7 +992,7 @@ class PositionController extends BaseController {
           ]
         }).then(alert => alert.present());
       } else if (this.mateDistance != 0) {
-        if (this.player == 'w' && this.mateDistance > 0 || this.player == 'b' && this.mateDistance < 0) {
+        if (this.player.value == 'w' && this.mateDistance > 0 || this.player.value == 'b' && this.mateDistance < 0) {
           toastController.create({
             message: window.AlpineI18n.t('position.mate-in', { moves: Math.abs(this.mateDistance) }),
             position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
@@ -1011,7 +1011,7 @@ class PositionController extends BaseController {
             duration: 1000
           }).then(toast => toast.present());
         }
-      } else if (this.unfeasibleMate && this.target.value == 'checkmate' && this.move.value.startsWith(this.player)) {
+      } else if (this.unfeasibleMate && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
         toastController.create({
           message: window.AlpineI18n.t('position.unfeasible-mate'),
           position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
@@ -1041,7 +1041,7 @@ class PositionController extends BaseController {
           const from = match[1];
           const to = match[2];
           const promotion = match[3];
-          if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm * (this.chess.turn() == this.player ? -1 : 1) * (this.player == 'b' ? -1 : 1);
+          if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm * (this.chess.turn() == this.player.value ? -1 : 1) * (this.player.value == 'b' ? -1 : 1);
           this.processOpponentMove(from, to, promotion);
         }
       })

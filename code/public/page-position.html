@@ -58,7 +58,7 @@
                 <ion-grid class="info_moves">
                     <ion-row>
                         <ion-col>
-                            <template x-if="move.value.startsWith(player)">
+                            <template x-if="move.value.startsWith(player.value)">
                                 <ion-item class="ion-text-center" lines="full">
                                     <ion-label
                                         x-text="$t('position.' + move.value) + ' ' + $t('position.to') + ' ' + $t('position.' + target.value)"></ion-label>
