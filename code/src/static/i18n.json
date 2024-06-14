@@ -163,7 +163,8 @@
                 "meta_description": "Version information and 3dparty resources used in Chess Endgame Training"
             },
             "title": "About",
-            "description": "Chess Endgame Training (v{version}) is a free and open source project.",
+            "description": "Chess Endgame Training is a free and open source project.",
+            "versions": "App v{version} | Database v{databaseVersion}",
             "source-code": "See project's source code",
             "third-party": "Following software and resources has been used:",
             "eco-description": "ECO Chess Opening Codes: database of chess endgames",
@@ -355,7 +356,8 @@
                 "meta_description": "Información de la versión y recursos de terceros utilizados en 'Finales de Ajedrez'"
             },
             "title": "Acerca de",
-            "description": "Chess Endgame Training (v{version}) es un proyecto open source",
+            "description": "Chess Endgame Training es un proyecto open source",
+            "versions": "App v{version} | Base de datos v{databaseVersion}",
             "source-code": "Ver código fuente del proyecto",
             "third-party": "Para su desarrollo se ha utilizado el siguiente software y recursos de terceros:",
             "eco-description": "ECO Chess Opening Codes: base de datos de finales de ajedrez",

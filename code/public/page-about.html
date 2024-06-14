@@ -11,7 +11,10 @@
 <ion-content class="ion-padding">
   <ion-list role="list">
     <ion-item lines="none">
-      <ion-label x-text="$t('about.description', {version: version})" class="ion-text-wrap"></ion-label>
+      <ion-label x-text="$t('about.description')" class="ion-text-wrap"></ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label x-text="$t('about.versions', {version: version, databaseVersion: databaseVersion})" class="ion-text-wrap"></ion-label>
     </ion-item>
     <ion-item lines="full">
       <ion-router-link target="_blank" href="https://github.com/supertorpe/chessendgametraining"
