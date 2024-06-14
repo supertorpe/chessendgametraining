@@ -75,10 +75,13 @@
     <ion-item>
       <ion-toggle id="toggleUseSyzygy" x-text="$t('settings.use-syzygy')" x-bind:aria-label="$t('settings.use-syzygy')" x-bind:checked="useSyzygy" color="primary"></ion-toggle>
     </ion-item>
-    <ion-item>
+    <ion-item lines="none">
+      <ion-label class="ion-text-center">Stockfish</ion-label>
+    </ion-item>
+    <ion-item lines="none">
       <ion-range id="stockfishDepthRange" label-placement="start" x-bind:aria-label="$t('settings.stockfish-depth')" x-bind:label="$t('settings.stockfish-depth') + ' (' + currentStockfishDepth +  ')'" min="10" max="30" color="primary" pin="true"></ion-range>
     </ion-item>
-    <ion-item>
+    <ion-item lines="none">
       <ion-range id="stockfishMovetimeRange" label-placement="start" x-bind:aria-label="$t('settings.stockfish-movetime')" x-bind:label="$t('settings.stockfish-movetime') + ' (' + currentStockfishMovetime +  ')'" min="1" max="60" color="primary" pin="true"></ion-range>
     </ion-item>
   </ion-list>

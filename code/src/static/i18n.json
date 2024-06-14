@@ -147,8 +147,8 @@
             "prevent-screen-off": "Keep screen on",
             "full-screen": "Full screen mode",
             "use-syzygy": "Use Syzygy tables",
-            "stockfish-depth": "Stockfish depth",
-            "stockfish-movetime": "Stockfish movetime",
+            "stockfish-depth": "Depth",
+            "stockfish-movetime": "Move time",
             "clean-dialog" : {
                 "title": "Are you sure?",
                 "subtitle": "Reset records",
@@ -340,8 +340,8 @@
             "prevent-screen-off": "Mantener pantalla encendida",
             "full-screen": "Ocupar toda la pantalla",
             "use-syzygy": "Usar tablas Syzygy",
-            "stockfish-depth": "Stockfish profundidad",
-            "stockfish-movetime": "Stockfish tiempo",
+            "stockfish-depth": "Profundidad",
+            "stockfish-movetime": "Tiempo",
             "clean-dialog" : {
                 "title": "¿Está seguro?",
                 "subtitle": "Eliminar records",
