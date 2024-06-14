@@ -12913,6 +12913,42 @@
                         {
                             "fen": "8/8/4n3/8/8/8/2nk4/K6Q w - - 0 1",
                             "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/8/8/6k1/6n1/K3n3/3Q4/8 w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "7Q/8/2kn4/2n5/8/8/4K3/8 w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/1kn4Q/1n6/8/8/8/K7/8 w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/8/4n1kn/8/8/K7/3Q4/8 w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/8/2n4Q/8/3n4/8/8/1k5K w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/4n3/1k6/8/4n3/8/8/2KQ4 b - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/4n3/8/7k/4n3/8/8/2KQ4 b - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/8/1Q6/8/6n1/4n3/7k/2K5 b - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "K7/8/1knn1Q2/8/8/8/8/8 b - - 0 1",
+                            "target": "draw"
                         }
                     ],
                     "name": "Queen vs Two Knights"
@@ -14974,5 +15010,5 @@
             ]
         }
     ],
-    "version": 15
+    "version": 16
 }
