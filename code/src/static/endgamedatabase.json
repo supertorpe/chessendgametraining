@@ -6767,43 +6767,6 @@
                 {
                     "games": [
                         {
-                            "fen": "8/8/2r5/8/1P6/1K5k/8/8 w - - 0 1",
-                            "target": "draw"
-                        },
-                        {
-                            "fen": "4k2r/8/7P/6K1/8/8/8/8 w - - 0 1",
-                            "target": "draw"
-                        },
-                        {
-                            "fen": "8/6K1/4r3/8/8/1k6/6P1/8 w - - 0 1",
-                            "target": "draw"
-                        },
-                        {
-                            "fen": "8/6k1/3PK3/6r1/8/8/8/8 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/8/1KP5/3r4/8/8/8/k7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/5k2/2PK4/5r2/8/8/8/8 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/8/8/K7/8/8/1P6/1r5k w - - 0 1",
-                            "target": "draw"
-                        },
-                        {
-                            "fen": "5r2/8/6K1/8/8/8/1k4P1/8 w - - 0 1",
-                            "target": "draw"
-                        }
-                    ],
-                    "name": "Pawn vs Rook"
-                },
-                {
-                    "games": [
-                        {
                             "fen": "8/8/8/8/8/p7/k1K5/2R5 w - - 0 1",
                             "target": "checkmate"
                         },
@@ -7029,6 +6992,22 @@
                         },
                         {
                             "fen": "8/6K1/4r3/8/8/1k6/6P1/8 w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/8/2r5/8/1P6/1K5k/8/8 w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "8/6k1/3PK3/6r1/8/8/8/8 w - - 0 1",
+                            "target": "checkmate"
+                        },
+                        {
+                            "fen": "8/8/8/K7/8/8/1P6/1r5k w - - 0 1",
+                            "target": "draw"
+                        },
+                        {
+                            "fen": "5r2/8/6K1/8/8/8/1k4P1/8 w - - 0 1",
                             "target": "draw"
                         }
                     ],
@@ -15019,5 +14998,5 @@
             ]
         }
     ],
-    "version": 17
+    "version": 18
 }
