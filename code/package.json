@@ -1,5 +1,5 @@
 {
-  "version": "3.0.10",
+  "version": "3.0.11",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build --emptyOutDir",
@@ -7,9 +7,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@ionic/core": "^8.2.1",
+    "@ionic/core": "^8.2.2",
     "@ionic/storage": "^4.0.0",
-    "alpinejs": "^3.14.0",
+    "alpinejs": "^3.14.1",
     "alpinejs-i18n": "^2.4.2",
     "chess.js": "^0.13.4",
     "chessground": "^9.1.1",
@@ -24,9 +24,9 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.14",
     "@types/howler": "^2.2.11",
-    "sass": "^1.77.4",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.13",
+    "sass": "^1.77.6",
+    "typescript": "^5.5.2",
+    "vite": "5.2.13",
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-static-copy": "^1.0.5"
   }
