@@ -1033,7 +1033,7 @@ class PositionController extends BaseController {
         if ((queryParam('debug') == 'true')) console.log(JSON.stringify(data));
         if (this.target.value == 'checkmate' && data.category != 'loss') this.unfeasibleMate = true;
         // stockfish search more interesting lines when there aren't any winning line
-        if (data.category == 'unknown' || data.category == 'loss' || (data.category == 'draw' /*&& data.moves.every((move: { category: string }) => move.category === "draw")*/)) {
+        if (data.category == 'unknown' || data.category == 'loss' || (data.category == 'draw' && data.moves.filter((move: { category: string }) => move.category === "draw").length > 3)) {
           this.getStockfishMove();
         } else {
           const bestmove = data.moves[0].uci;
