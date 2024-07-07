@@ -22,6 +22,7 @@ class ConfigurationService {
                     if (config.stockfishDepth === undefined) config.stockfishDepth = DEFAULT_CONFIG.stockfishDepth;
                     if (config.stockfishMovetime === undefined) config.stockfishMovetime = DEFAULT_CONFIG.stockfishMovetime;
                     if (config.automaticShowFirstPosition === undefined) config.automaticShowFirstPosition = DEFAULT_CONFIG.automaticShowFirstPosition;
+                    if (config.automaticShowNextPosition === undefined) config.automaticShowNextPosition = DEFAULT_CONFIG.automaticShowNextPosition;
                     if (config.preventScreenOff === undefined) config.preventScreenOff = DEFAULT_CONFIG.preventScreenOff;
                     if (config.colorTheme === undefined) config.colorTheme = DEFAULT_CONFIG.colorTheme;
                     if (config.playSounds === undefined) config.playSounds = DEFAULT_CONFIG.playSounds;
@@ -35,6 +36,7 @@ class ConfigurationService {
                         config.stockfishDepth,
                         config.stockfishMovetime,
                         config.automaticShowFirstPosition,
+                        config.automaticShowNextPosition,
                         config.preventScreenOff,
                         config.colorTheme,
                         config.playSounds,
@@ -88,6 +90,7 @@ class ConfigurationService {
                     if ('stockfishDepth' in remoteConfig) self._configuration.stockfishDepth = remoteConfig.stockfishDepth;
                     if ('stockfishMovetime' in remoteConfig) self._configuration.stockfishMovetime = remoteConfig.stockfishMovetime;
                     if ('automaticShowFirstPosition' in remoteConfig) self._configuration.automaticShowFirstPosition = remoteConfig.automaticShowFirstPosition;
+                    if ('automaticShowNextPosition' in remoteConfig) self._configuration.automaticShowNextPosition = remoteConfig.automaticShowNextPosition;
                     if ('preventScreenOff' in remoteConfig) self._configuration.preventScreenOff = remoteConfig.preventScreenOff;
                     if ('colorTheme' in remoteConfig) self._configuration.colorTheme = remoteConfig.colorTheme;
                     if ('playSounds' in remoteConfig) self._configuration.playSounds = remoteConfig.playSounds;

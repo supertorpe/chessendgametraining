@@ -56,11 +56,17 @@ class SettingsController extends BaseController {
                 this.currentBoardTheme = boardTheme;
                 configurationService.configuration.boardTheme = boardTheme;
             },
-            // goto position
-            gotoPosition: configurationService.configuration.automaticShowFirstPosition,
-            gotoPositionChanged(checked: boolean) {
-                this.gotoPosition = checked;
+            // goto first position
+            gotoFirstPosition: configurationService.configuration.automaticShowFirstPosition,
+            gotoFirstPositionChanged(checked: boolean) {
+                this.gotoFirstPosition = checked;
                 configurationService.configuration.automaticShowFirstPosition = checked;
+            },
+            // goto next position
+            gotoNextPosition: configurationService.configuration.automaticShowNextPosition,
+            gotoNextPositionChanged(checked: boolean) {
+                this.gotoNextPosition = checked;
+                configurationService.configuration.automaticShowNextPosition = checked;
             },
             // play sounds
             playSounds: configurationService.configuration.playSounds,
@@ -124,8 +130,11 @@ class SettingsController extends BaseController {
                 const togglePlaySounds = document.getElementById('togglePlaySounds') as IonToggle;
                 togglePlaySounds.addEventListener('ionChange', () => { this.playSoundsChanged(togglePlaySounds.checked); });
                 
-                const toggleGotoPosition = document.getElementById('toggleGotoPosition') as IonToggle;
-                toggleGotoPosition.addEventListener('ionChange', () => { this.gotoPositionChanged(toggleGotoPosition.checked); });
+                const toggleGotoFirstPosition = document.getElementById('toggleGotoFirstPosition') as IonToggle;
+                toggleGotoFirstPosition.addEventListener('ionChange', () => { this.gotoFirstPositionChanged(toggleGotoFirstPosition.checked); });
+                
+                const toggleGotoNextPosition = document.getElementById('toggleGotoNextPosition') as IonToggle;
+                toggleGotoNextPosition.addEventListener('ionChange', () => { this.gotoNextPositionChanged(toggleGotoNextPosition.checked); });
 
                 const toggleUseSyzygy = document.getElementById('toggleUseSyzygy') as IonToggle;
                 toggleUseSyzygy.addEventListener('ionChange', () => { this.useSyzygyChanged(toggleUseSyzygy.checked); });
@@ -152,7 +161,8 @@ class SettingsController extends BaseController {
                         case 'useSyzygy' : this.useSyzygy = event.config.useSyzygy; break;
                         case 'stockfishDepth' : this.currentStockfishDepth = event.config.stockfishDepth; break;
                         case 'stockfishMovetime' : this.currentStockfishMovetime = event.config.stockfishMovetime; break;
-                        case 'automaticShowFirstPosition' : this.gotoPosition = event.config.automaticShowFirstPosition; break;
+                        case 'automaticShowFirstPosition' : this.gotoFirstPosition = event.config.automaticShowFirstPosition; break;
+                        case 'automaticShowNextPosition' : this.gotoNextPosition = event.config.automaticShowNextPosition; break;
                         //case 'colorTheme' : this.currentTheme = event.config.colorTheme;
                         case 'playSounds' : this.playSounds = event.config.playSounds; break;
                         case 'highlightSquares' : this.highlightSquares = event.config.highlightSquares; break;

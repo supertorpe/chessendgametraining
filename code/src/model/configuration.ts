@@ -5,7 +5,7 @@ import { boardThemeSwitcherService, themeSwitcherService } from '../services';
 
 export type ConfigurationField =
 
-    'useSyzygy' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'preventScreenOff' |
+    'useSyzygy' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'automaticShowNextPosition' | 'preventScreenOff' |
     'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive';
 
 export type ConfigurationChangedEvent = { config: Configuration, field: ConfigurationField };
@@ -19,6 +19,7 @@ export class Configuration {
         private _stockfishDepth: number,
         private _stockfishMovetime: number,
         private _automaticShowFirstPosition: boolean,
+        private _automaticShowNextPosition: boolean,
         private _preventScreenOff: boolean,
         private _colorTheme: string,
         private _playSounds: boolean,
@@ -35,6 +36,7 @@ export class Configuration {
             stockfishDepth: this._stockfishDepth,
             stockfishMovetime: this._stockfishMovetime,
             automaticShowFirstPosition: this._automaticShowFirstPosition,
+            automaticShowNextPosition: this._automaticShowNextPosition,
             preventScreenOff: this._preventScreenOff,
             colorTheme: this._colorTheme,
             playSounds: this._playSounds,
@@ -60,6 +62,9 @@ export class Configuration {
 
     get automaticShowFirstPosition(): boolean { return this._automaticShowFirstPosition; }
     set automaticShowFirstPosition(value: boolean) { this._automaticShowFirstPosition = value; this._configurationChangedEmitter.notify({ config: this, field: 'automaticShowFirstPosition' }); }
+
+    get automaticShowNextPosition(): boolean { return this._automaticShowNextPosition; }
+    set automaticShowNextPosition(value: boolean) { this._automaticShowNextPosition = value; this._configurationChangedEmitter.notify({ config: this, field: 'automaticShowNextPosition' }); }
 
     get preventScreenOff(): boolean { return this._preventScreenOff; }
     set preventScreenOff(value: boolean) { this._preventScreenOff = value; this._configurationChangedEmitter.notify({ config: this, field: 'preventScreenOff' }); }
@@ -92,6 +97,7 @@ export const DEFAULT_CONFIG = new Configuration(
     15,
     5,
     true,
+    false,
     true,
     'dark',
     true,

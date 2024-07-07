@@ -875,6 +875,11 @@ class PositionController extends BaseController {
         message = 'position.goal-achieved';
       }
 
+      if (inviteNextPuzzle && configurationService.configuration.automaticShowNextPosition) {
+        this.showNextPosition();
+        return result;
+      }
+
       alertController.create({
         header: window.AlpineI18n.t(header),
         message: window.AlpineI18n.t(`${message}`),
