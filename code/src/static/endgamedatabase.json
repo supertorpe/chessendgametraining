@@ -7633,7 +7633,7 @@
                         },
                         {
                             "fen": "K7/8/8/8/5p2/7R/4kP2/8 w - - 0 1",
-                            "target": "draw"
+                            "target": "checkmate"
                         }
                     ],
                     "name": "Rook Pawn vs Pawn"
@@ -14998,5 +14998,5 @@
             ]
         }
     ],
-    "version": 18
+    "version": 19
 }
