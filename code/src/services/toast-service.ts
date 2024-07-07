@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import {  toastController } from '@ionic/core';
 
 export const showToast = (message: string, position: "top" | "bottom" | "middle", color: string, duration: number) => {

@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import AlpineI18n from 'alpinejs-i18n';
 import Alpine from 'alpinejs';
 import { i18nJson } from '../static';

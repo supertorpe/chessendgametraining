@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 // https://github.com/lichess-org/lila/blob/master/ui/common/src/wakeLock.ts
 
 let primerEvents = ['touchend', 'pointerup', 'pointerdown', 'mousedown', 'keydown'];

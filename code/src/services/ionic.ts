@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import { initialize } from '@ionic/core/components';
 
 // import { IonAccordionGroup } from '@ionic/core/components/ion-accordion-group';

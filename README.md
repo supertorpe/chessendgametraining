@@ -36,7 +36,6 @@ Chess Endgame Training is a web application to practice a variety of well organi
 
 * Button to open position analysis on Lichess.
 
-
 It is distributed in both [Android App](https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining) and [Progressive Web App](https://chess-endgame-trainer.mooo.com). The Web App allows to open an arbitrary position from a FEN string indicating the objective to achieve (checkmate or draw) : https://chess-endgame-trainer.mooo.com/fen/FEN_STRING/TARGET
 
 TARGET is checkmate by default. Examples:
@@ -132,3 +131,5 @@ The file .well-known/assetslinks.json includes the Sha256 fingerprint of the cer
 ```
 keytool -list -v -keystore [PATH_TO_KEYSTORE]
 ```
+## Acknowledgements
+This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at [UNIR](https://www.unir.net).

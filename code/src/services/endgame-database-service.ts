@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import { EndgameDatabase, Position, endgameDatabase } from '../model';
 import { configurationService } from './configuration-service';
 import { storageService } from './storage-service';

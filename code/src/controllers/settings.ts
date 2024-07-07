@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import { PIECE_THEMES, BOARD_THEMES } from '../commons';
 import { redrawIconImages, themeSwitcherService, configurationService } from '../services';
 import { BaseController } from './controller';

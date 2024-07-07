@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import { appController, homeController, aboutController, settingsController, listController, positionController, promotionController } from './controllers';
 
 export const ROUTE_MAP = {

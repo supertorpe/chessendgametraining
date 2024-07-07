@@ -1,3 +1,5 @@
+// This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
+
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, routeService, themeSwitcherService } from '../services';
