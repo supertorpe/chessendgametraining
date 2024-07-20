@@ -385,5 +385,198 @@
             "success-sound": "Audio de éxito: shinephoenixstormcrow en freesound.org",
             "fail-sound": "Audio de fallo: Bertrof from freesound.org"
         }
+    },
+    "ru": {
+        "app": {
+            "seo": {
+                "title": "Тренажер по эндшпилю",
+                "meta_description": "Практикуйте тысячи шахматных позиций в эндшпиле с различными комбинациями фигур: пешками, слонами, конями, ладьями и ферзем."
+            },
+            "menu": "Меню",
+            "home": "Начало",
+            "checkmate-patterns": "Мат в...",
+            "settings": "Настройки",
+            "about": "О программе",
+            "exit": "Выход",
+            "back-to-exit": "Нажмите назад еще раз чтобы выйти",
+            "button-google-login": "Нажмите здесь, чтобы войти в Google",
+            "button-google-cancel": "Отмена",
+            "database-loading-google-drive": "Синхронизация базы данных с Google Диском",
+            "database-sync-google-drive": "База данных синхронизирована с Google Диском.",
+            "database-sync-google-drive-ko": "Ошибка синхронизации с Google Диском."
+        },
+        "home": {
+            "seo": {
+                "title": "Тренажер по эндшпилю",
+                "meta_description": "Практикуйте тысячи шахматных позиций в эндшпиле с различными комбинациями фигур: пешками, слонами, конями, ладьями и ферзем."
+            },
+            "title": "Тренажер по эндшпилю",
+            "get-started": "Начать",
+            "presentation": "Описание",
+            "description": "Большой выбор эндшпильных позиций (от элементарных до самых сложных). Практикуйтесь пока не освоите все окончания"
+        },
+        "list": {
+            "seo": {
+                "title": "Эндшпили с {kind} - Тренажер по эндшпилю",
+                "meta_description": "Позиции для отработки шахматных эндшпилей: {kind}"
+            }
+        },
+        "category": {
+            "Basic": "Основы",
+            "Pawn": "Пешка", 
+            "Bishop": "Слон",
+            "Knight": "Конь",
+            "Knight-Bishop": "Конь и слон",
+            "Rook-Pawn": "Ладья и пешка",
+            "Rook-Pieces": "Ладья и легкие фигуры",
+            "Queen": "Ферзь"
+        },
+        "position": {
+            "seo": {
+                "title": "Позиция в эндшпиле с {kind} - Тренажер по эндшпилю",
+                "meta_description": "Позиция для тренировки шахматного эндшпиля: {kind}"
+            },
+            "custom-position": "Пользовательская позиция",
+            "checkmate-in": "Мат в ",
+            "white": "белые",
+            "black": "черные",
+            "to": "ставят",
+            "checkmate": "мат",
+            "draw": "ничья",
+            "personal-record": "Личный рекорд",
+            "moves": "ходов",
+            "your-turn": "Ваш ход",
+            "mode-manual": "Ручной режим: перемещайте также фигуры противника.",
+            "mode-engine": "Снова игра против машины",
+            "used-assistance": "Вы воспользовались помощью, запись не сохранена",
+            "new-record": "Новый личный рекорд",
+            "goal-achieved": "Цель достигнута",
+            "congratulations": "Поздравления",
+            "review": "обзор",
+            "next-puzzle": "следующая задача",
+            "in": "в",
+            "ups": "Ой!",
+            "keep-practicing": "продолжайте практиковаться, и у вас все получится!",
+            "ok": "OK",
+            "stalemate": "Пат",
+            "insufficent-material": "Недостаточно материала",
+            "three-repetition": "Троекратное повторение",
+            "rule-fifty": "Ничья: правило 50 ходов",
+            "game-over": "Игра окончена",
+            "mate-in": "Ва можете поставить мат за {moves}",
+            "receive-mate-in": "Вы получаете мат за {moves} ходов или меньше.",
+            "unfeasible-mate": "Невозможно поставить мат",
+            "white-advantage": "Преимущество белых",
+            "black-advantage": "Преимущество черных",
+            "querying-syzygy": "Запрос к базе Syzygy...",
+            "syzygy-error": "Ошибка Syzygy. Переход к Stockfish",
+            "stockfish-slow": "Stockfish работает медленно. Рассмотрите возможность уменьшения глубины поиска и/или времени перемещения на экране настроек.",
+            "confirm-exit": {
+                "header": "Внимание",
+                "message": "Уверены, что забросите игру?",
+                "no": "Нет",
+                "yes": "Да"
+            },
+            "confirm-restart": {
+                "header": "Внимание",
+                "message": "Обязательно перезапустить игру?",
+                "no": "Нет",
+                "yes": "Да"
+            },
+            "confirm-prune": {
+                "header": "Внимание",
+                "message": "Хотите удалить этот и последующие ходы?",
+                "no": "Нет",
+                "yes": "Да"
+            },
+            "confirm-prune-one": {
+                "header": "Внимание",
+                "message": "Хотите удалить этот ход?",
+                "no": "Нет",
+                "yes": "Да"
+            },
+            "confirm-trivial-position": {
+                "header": "Внимание",
+                "message": "Вы достигли тривиальной позиции. Хотите решить остальное автоматически?",
+                "no": "Нет",
+                "yes": "Да"
+            },
+            "clipboard": {
+                "header": "Копировать",
+                "message": "Что вы хотите скопировать?",
+                "fen": "FEN скопировано в буфер обмена.",
+                "pgn": "PGN скопирован в буфер обмена.",
+                "img": "Изображение загружено",
+                "img-capture": "Захват доски...",
+                "ok": "OK",
+                "cancel": "Отмена"
+            }
+        },
+        "settings": {
+            "seo": {
+                "title": "Настройки - Тренажер по эндшпилю",
+                "meta_description": "Настройки «Тренировки шахматного эндшпиля»"
+            },
+            "title": "Настройки",
+            "theme-dark": "Темный",
+            "theme-light": "Свет",
+            "clean-database": "Сбросить достижения",
+            "records-removed": "Достижения удалены",
+            "color-theme": "Цвет темы",
+            "piece-theme": "Стиль фигур",
+            "board-theme": "Стиль доски",
+            "save-changes": "Сохранить изменения",
+            "changes-saved": "Изменения сохранены",
+            "goto-first-position": "Показывать задачу в начале",
+            "goto-next-position": "Автопоказать следующую головоломку",
+            "play-sounds": "Звук",
+            "highlight-squares": "Выделение полей",
+            "sync-google-drive": "Синхронизировать данные на Google Диске",
+            "prevent-screen-off": "Оставьте экран включенным",
+            "full-screen": "Полноэкранный режим",
+            "use-syzygy": "Использовать Syzygy",
+            "stockfish-depth": "Глубина",
+            "stockfish-movetime": "Переместить время",
+            "clean-dialog" : {
+                "title": "Вы уверены?",
+                "subtitle": "Сбросить записи",
+                "message": "Все ваши записи будут потеряны!!!",
+                "cancel": "Отмена",
+                "continue": "Продолжать"
+            }
+        },
+        "about": {
+            "seo": {
+                "title": "Информация - Тренажер по эндшпилю",
+                "meta_description": "Информация о версии и сторонние ресурсы, используемые в обучении шахматному эндшпилю"
+            },
+            "title": "О программе",
+            "description": "Тренажер по эндшпилю - это бесплатный проект с открытым исходным кодом.",
+            "versions": "App v{version} | База данных v{databaseVersion}",
+            "source-code": "Исходный код",
+            "third-party": "Было использовано следующее программное обеспечение и ресурсы:",
+            "eco-description": "Дебютные коды шахмат ОЭС: база данных шахматных эндшпилей",
+            "checkmate-patterns-description": "База данных со 100 000 позициями шаблонов матов.",
+            "chessjs-description": "Chess.js: шахматная библиотека Javascript для генерации/проверки шахматных ходов, размещения/перемещения фигур и обнаружения проверки/мата/ничьи.",
+            "chessground-description": "Chessground: шахматная доска на языке Javascript.",
+            "stockfish-js-description": "lila-stockfish-web: реализация WASM шахматного движка Stockfish, используемого в Lichess.",
+            "syzygy-description": "Базы таблиц эндшпиля Syzygy: онлайн-база данных с информацией для всех позиций эндшпиля (до 7 фигур).",
+            "typescript": "TypeScript: JavaScript с синтаксисом типов.",
+            "ionic": "Ionic Framework: мобильный SDK для Интернета",
+            "alpine-js": "Alpine.js: облегченный фреймворк JavaScript.",
+            "alpinejs-i18n": "Alpine i18n: поддержка интернационализации (i18n) для Alpine.js.",
+            "navigo": "Navigo: простой JavaScript-маршрутизатор",
+            "howlerjs": "Howler.js: аудиобиблиотека Javascript для современного Интернета",
+            "dom-to-image": "dom-to-image: генерирует изображение из узла DOM с использованием холста HTML5.",
+            "vite": "Vite: инструмент для быстрой сборки",
+            "logo": "Логотип: разработан Inipagi из Iconfinder",
+            "pacifier": "Соска: разработана Smashicons из Flaticon.",
+            "pieces": "Шахматные фигуры: от авторов (подробнее...)",
+            "font": "Russo One: текстовый шрифт от Jovanny Lemonad",
+            "move-sound": "Переместить звук: из статических ресурсов Lichess",
+            "capture-sound": "Захват звука: из статических ресурсов Lichess.",
+            "success-sound": "Звук успеха: Shinephoenixstormcrow с сайта freesound.org",
+            "fail-sound": "Ошибка звука: Bertrof с сайта freesound.org."
+        }
     }
 }
