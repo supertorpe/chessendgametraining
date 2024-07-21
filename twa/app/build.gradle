@@ -25,7 +25,7 @@ def twaManifest = [
     hostName: 'chess-endgame-trainer.mooo.com', // The domain being opened in the TWA.
     launchUrl: '/?fullscreen=true', // The start path for the TWA. Must be relative to the domain.
     name: 'Chess Endgame Training', // The application name.
-    launcherName: 'chessendings', // The name shown on the Android Launcher.
+    launcherName: 'Chess Endgame Training', // The name shown on the Android Launcher.
     themeColor: '#000000', // The color used for the status bar.
     themeColorDark: '#000000', // The color used for the dark status bar.
     navigationColor: '#000000', // The color used for the navigation bar.
@@ -47,17 +47,17 @@ def twaManifest = [
     // 'customtabs' and 'webview'.
     fallbackType: 'customtabs',
     enableSiteSettingsShortcut: 'true',
-    orientation: 'any',
+    orientation: 'natural',
 ]
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.supertorpe.chessendgametraining"
         minSdkVersion 19
-        targetSdkVersion 33
-        versionCode 35
-        versionName "3.0.0"
+        targetSdkVersion 34
+        versionCode 36
+        versionName "3.0.15"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name

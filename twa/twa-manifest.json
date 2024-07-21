@@ -21,8 +21,8 @@
     "path": "/home/linux/proyectos/chessendgametraining.github/my-release-key.keystore",
     "alias": "my-key-alias"
   },
-  "appVersionName": "3.0.0",
-  "appVersionCode": 35,
+  "appVersionName": "3.0.15",
+  "appVersionCode": 36,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://chess-endgame-trainer.mooo.com/manifest.json",
@@ -40,5 +40,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "3.0.0"
+  "appVersion": "3.0.15"
 }
