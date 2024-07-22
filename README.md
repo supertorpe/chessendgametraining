@@ -28,7 +28,7 @@ Chess Endgame Training is a web application to practice a variety of well organi
 
 * Several board colors to choose from.
 
-* Multi language (currently English/Spanish).
+* Multi language (currently English/Spanish/Russian).
 
 * Board image capture.
 
