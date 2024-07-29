@@ -11793,27 +11793,6 @@
                 {
                     "games": [
                         {
-                            "fen": "8/8/K7/8/8/5p2/6k1/Q7 w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "8/8/7K/8/8/2p5/1k6/7Q w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "1Q6/1K6/8/8/8/5p2/8/7k w - - 0 1",
-                            "target": "checkmate"
-                        },
-                        {
-                            "fen": "Q7/8/8/4K3/8/3k4/2p5/8 w - - 0 1",
-                            "target": "checkmate"
-                        }
-                    ],
-                    "name": "Queen vs Pawn"
-                },
-                {
-                    "games": [
-                        {
                             "fen": "1rk5/4Q3/K7/8/8/8/8/8 w - - 0 1",
                             "target": "checkmate"
                         },
@@ -13863,7 +13842,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "Queen vs King Pawn"
+                    "name": "Queen vs Pawn"
                 },
                 {
                     "games": [
@@ -14998,5 +14977,5 @@
             ]
         }
     ],
-    "version": 19
+    "version": 20
 }
