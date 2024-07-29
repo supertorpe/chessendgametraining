@@ -814,6 +814,7 @@ class PositionController extends BaseController {
     const result = this.chess.game_over();
     if (result) {
       this.gameOver.value = true;
+      const wasSolving = this.solving.value;
       this.solving.value = false;
       this.solvingTrivial = false;
 
@@ -874,8 +875,8 @@ class PositionController extends BaseController {
         inviteNextPuzzle = (this.position != undefined || this.checkmateMoves.value > 0) && !(this.idxCategory.value === categoryCount - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
         message = 'position.goal-achieved';
       }
-
-      if (inviteNextPuzzle && configurationService.configuration.automaticShowNextPosition) {
+      if ((this.checkmateMoves.value == 0 || !wasSolving) &&  
+          (inviteNextPuzzle && configurationService.configuration.automaticShowNextPosition)) {
         this.showNextPosition();
         return result;
       }
