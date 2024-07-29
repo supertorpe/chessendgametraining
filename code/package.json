@@ -1,5 +1,5 @@
 {
-  "version": "3.0.15",
+  "version": "3.0.16",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build --emptyOutDir",
@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@ionic/core": "^8.2.5",
+    "@ionic/core": "^8.2.6",
     "@ionic/storage": "^4.0.0",
     "alpinejs": "^3.14.1",
     "alpinejs-i18n": "^2.4.2",
@@ -25,7 +25,7 @@
     "@types/google.accounts": "^0.0.14",
     "@types/howler": "^2.2.11",
     "sass": "^1.77.8",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "vite": "5.2.13",
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-static-copy": "^1.0.6"
