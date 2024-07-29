@@ -27,7 +27,8 @@ export class Configuration {
         private _highlightSquares: boolean,
         private _pieceTheme: string,
         private _boardTheme: string,
-        private _syncGoogleDrive: boolean
+        private _syncGoogleDrive: boolean,
+        private _changelog: string
     ) { }
 
     public serialize() {
@@ -44,7 +45,8 @@ export class Configuration {
             highlightSquares: this._highlightSquares,
             pieceTheme: this._pieceTheme,
             boardTheme: this._boardTheme,
-            syncGoogleDrive: this._syncGoogleDrive
+            syncGoogleDrive: this._syncGoogleDrive,
+            changelog: this._changelog
         };
     }
 
@@ -90,6 +92,9 @@ export class Configuration {
     get syncGoogleDrive(): boolean { return this._syncGoogleDrive; }
     set syncGoogleDrive(value: boolean) { this._syncGoogleDrive = value; this._configurationChangedEmitter.notify({ config: this, field: 'syncGoogleDrive' }); }
 
+    get changelog(): string { return this._changelog; }
+    set changelog(value: string) { this._changelog = value; }
+
 }
 
 export const DEFAULT_CONFIG = new Configuration(
@@ -105,5 +110,6 @@ export const DEFAULT_CONFIG = new Configuration(
     true,
     PIECE_THEMES[0],
     BOARD_THEMES[0].name,
-    false
+    false,
+    ''
 );

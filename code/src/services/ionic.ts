@@ -105,7 +105,7 @@ function tryDefine(impl: CustomElementConstructor, tag: string) {
   } catch (error) {}
 }
 
-initialize(/*{mode:'ios'}*/);
+initialize({innerHTMLTemplatesEnabled:true});
 
 // tryDefine(IonAccordionGroup, 'ion-accordion-group');
 // tryDefine(IonAccordion, 'ion-accordion');

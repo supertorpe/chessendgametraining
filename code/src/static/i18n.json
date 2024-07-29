@@ -5,6 +5,11 @@
                 "title": "Chess Endgame Training",
                 "meta_description": "Practice thousands of chess endgame positions with different combinations of pieces: pawns, bishops, knights, rooks and queen"
             },
+            "changelog": {
+                "title": "Changelog",
+                "description": "v3.0.17: show changelog at startup<br/><br/>v3.0.16: ignore 'autoshow next puzzle' when the position is automatically solved<br/><br/>Database v20: Remove Q vs P and rename Q vs K,P to Q vs P",
+                "button": "OK"
+            },
             "menu": "Menu",
             "home": "Home",
             "checkmate-patterns": "Checkmate in...",
@@ -199,6 +204,11 @@
                 "title": "Finales de Ajedrez",
                 "meta_description": "Practica miles de posiciones de finales de ajedrez con diferentes combinaciones de piezas: peones, alfiles, caballos, torres y reina"
             },
+            "changelog": {
+                "title": "Cambios",
+                "description": "v3.0.17: mostrar log de cambios durante el arranque<br/><br/>v3.0.16: ignorar 'auto siguiente puzzle' cuando se resuelve la posición automáticamente<br/><br/>Database v20: Eliminar Q vs P y renombrar Q vs K,P por Q vs P",
+                "button": "Aceptar"
+            },
             "menu": "Menú",
             "home": "Inicio",
             "checkmate-patterns": "Mate en...",
@@ -391,6 +401,11 @@
             "seo": {
                 "title": "Тренажер по эндшпилю",
                 "meta_description": "Практикуйте тысячи шахматных позиций в эндшпиле с различными комбинациями фигур: пешками, слонами, конями, ладьями и ферзем."
+            },
+            "changelog": {
+                "title": "Журнал изменений",
+                "description": "v3.0.17: показывать журнал изменений при запуске<br/><br/>v3.0.16: игнорировать 'автоматическое отображение следующей головоломки', когда позиция решена автоматически<br/><br/>База данных v20: удалить Q против P и переименовать Q против K,P в Q против P",
+                "button": "Ацептар"
             },
             "menu": "Меню",
             "home": "Начало",

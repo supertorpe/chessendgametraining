@@ -31,6 +31,7 @@ class ConfigurationService {
                     if (config.pieceTheme === undefined) config.pieceTheme = DEFAULT_CONFIG.pieceTheme;
                     if (config.boardTheme === undefined) config.boardTheme = DEFAULT_CONFIG.boardTheme;
                     if (config.syncGoogleDrive === undefined) config.syncGoogleDrive = DEFAULT_CONFIG.syncGoogleDrive;
+                    if (config.changelog === undefined) config.changelog = DEFAULT_CONFIG.changelog;
                     this._configuration = new Configuration(
                         config.useSyzygy,
                         config.stockfishDepth,
@@ -44,7 +45,8 @@ class ConfigurationService {
                         config.highlightSquares,
                         config.pieceTheme,
                         config.boardTheme,
-                        config.syncGoogleDrive
+                        config.syncGoogleDrive,
+                        config.changelog
                     );
                     this._configuration.configurationChangedEmitter.addEventListener((event: ConfigurationChangedEvent) => this.configurationChanged(event));
                     if (this._configuration.syncGoogleDrive) {
@@ -99,6 +101,7 @@ class ConfigurationService {
                     if ('pieceTheme' in remoteConfig) self._configuration.pieceTheme = remoteConfig.pieceTheme;
                     if ('boardTheme' in remoteConfig) self._configuration.boardTheme = remoteConfig.boardTheme;
                     if ('syncGoogleDrive' in remoteConfig) self._configuration.syncGoogleDrive = remoteConfig.syncGoogleDrive;
+                    if ('changelog' in remoteConfig) self._configuration.changelog = remoteConfig.changelog;
                     self.loadingFromGoogleDrive = false;
                     storageService.set('CONFIGURATION', this._configuration.serialize());
                     resolve(remoteConfig);

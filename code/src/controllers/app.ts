@@ -1,6 +1,8 @@
 // This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
 
 import Alpine from 'alpinejs';
+import { alertController } from '@ionic/core';
+import { version } from '../../package.json';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, routeService, themeSwitcherService } from '../services';
 import { EndgameDatabase } from '../model';
@@ -45,6 +47,22 @@ class AppController extends BaseController {
                         redrawIconImages();
                     });
                 });
+                const currentVersion = `${version}/${endgameDatabaseService.endgameDatabase.version}`;
+                if (configurationService.configuration.changelog != currentVersion) {
+                    alertController.create({
+                        header: window.AlpineI18n.t('app.changelog.title'),
+                        message: window.AlpineI18n.t('app.changelog.description'),
+                        buttons: [{
+                            text: window.AlpineI18n.t('app.changelog.button'),
+                            role: 'cancel',
+                            cssClass: 'overlay-button',
+                            handler: () => {
+                                configurationService.configuration.changelog = currentVersion;
+                                configurationService.save();
+                            }
+                        }]
+                    }).then(alert => alert.present());
+                }
             }
         }));
     }
