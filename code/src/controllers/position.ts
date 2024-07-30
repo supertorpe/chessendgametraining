@@ -37,6 +37,8 @@ class PositionController extends BaseController {
   private checkmateMoves = Alpine.reactive({ value: 0 });
   private move = Alpine.reactive({ value: '' });
   private useSyzygy = false;
+  private syzygyCandidates: any[] = [];
+  private syzygyBestCandidate: any = undefined;
   private gameOver = Alpine.reactive({ value: false });
   private showNavPrev = Alpine.reactive({ value: false });
   private showNavNext = Alpine.reactive({ value: false });
@@ -875,8 +877,8 @@ class PositionController extends BaseController {
         inviteNextPuzzle = (this.position != undefined || this.checkmateMoves.value > 0) && !(this.idxCategory.value === categoryCount - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
         message = 'position.goal-achieved';
       }
-      if ((this.checkmateMoves.value == 0 || !wasSolving) &&  
-          (inviteNextPuzzle && configurationService.configuration.automaticShowNextPosition)) {
+      if ((this.checkmateMoves.value == 0 || !wasSolving) &&
+        (inviteNextPuzzle && configurationService.configuration.automaticShowNextPosition)) {
         this.showNextPosition();
         return result;
       }
@@ -931,6 +933,8 @@ class PositionController extends BaseController {
     let moveFunk;
     let wait = false;
     this.mateDistance = 0;
+    this.syzygyCandidates = [];
+    this.syzygyBestCandidate = undefined;
     // not use syzygy when solving a trivial position
     if (!this.solvingTrivial && this.useSyzygy && pieceTotalCount(this.chess.fen()) <= 7) {
       moveFunk = this.getSyzygyMove;
@@ -1034,24 +1038,62 @@ class PositionController extends BaseController {
 
   private getSyzygyMove() {
     this.waitingForOpponent.value = true;
+    this.syzygyCandidates = [];
+    this.syzygyBestCandidate = undefined;
     redrawIconImages();
     syzygyService.get(this.chess.fen())
       .then(response => response.json().then(data => {
         if (!this.waitingForOpponent.value) return;
         if ((queryParam('debug') == 'true')) console.log(JSON.stringify(data));
         if (this.target.value == 'checkmate' && data.category != 'loss') this.unfeasibleMate = true;
-        // stockfish search more interesting lines when there aren't any winning line
-        if (data.category == 'unknown' || data.category == 'loss' || (data.category == 'draw' && data.moves.filter((move: { category: string }) => move.category === "draw").length > 3)) {
-          this.getStockfishMove();
-        } else {
-          const bestmove = data.moves[0].uci;
-          let match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
-          const from = match[1];
-          const to = match[2];
-          const promotion = match[3];
-          if (data.moves[0].dtm) this.mateDistance = data.moves[0].dtm * (this.chess.turn() == this.player.value ? -1 : 1) * (this.player.value == 'b' ? -1 : 1);
-          this.processOpponentMove(from, to, promotion);
+        // Only blindly accept syzygy result when category=win and all moves have dtm informed
+        // otherwise, annotate the candidates reported by syzygy and query stockfish
+        let move;
+        // if it's a winning position and all the moves come with DTM informed, take the first one (syzygy returns them in order)
+        if (data.category == 'win' && data.moves.filter((move: any) => move.category === "loss" && move.dtm == null).length == 0) {
+          move = data.moves[0];
         }
+        else {
+          // otherwise get the candidates
+          if (data.category == 'win') {
+            this.syzygyCandidates = data.moves.filter((move: any) => move.category == 'loss');
+          } else if (data.category == 'draw') {
+            this.syzygyCandidates = data.moves.filter((move: any) => move.category == 'draw');
+          }
+          // if there is only one candidate, use it
+          if (this.syzygyCandidates.length == 1) {
+            move = this.syzygyCandidates[0];
+          } else { // otherwise, query stockfish
+            // but firts, calc the best candidate:
+            if (data.category == 'win') {
+              // for winning positions, the best candidate is the one with the lowest absolute minimum DTM value
+              this.syzygyBestCandidate = this.syzygyCandidates.reduce((minMove, currentMove) => {
+                if (minMove.dtm === null && currentMove.dtm === null) {
+                  return minMove;
+                }
+                if (minMove.dtm === null) {
+                  return currentMove;
+                }
+                if (currentMove.dtm === null) {
+                  return minMove;
+                }
+                return Math.abs(currentMove.dtm) < Math.abs(minMove.dtm) ? currentMove : minMove;
+              }, this.syzygyCandidates[0]);
+            } else {
+              // for non winning positions, there is no clue as to which is best, so we take the first one
+              this.syzygyBestCandidate = this.syzygyCandidates[0];
+            }
+            this.getStockfishMove();
+            return;
+          }
+        }
+        const bestmove = move.uci;
+        const match = bestmove.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
+        const from = match[1];
+        const to = match[2];
+        const promotion = match[3];
+        if (move.dtm) this.mateDistance = move.dtm * (this.chess.turn() == this.player.value ? -1 : 1) * (this.player.value == 'b' ? -1 : 1);
+        this.processOpponentMove(from, to, promotion);
       })
       ).catch((_err) => {
         this.useSyzygy = false;
@@ -1107,9 +1149,21 @@ class PositionController extends BaseController {
         clearTimeout(this.stockfishWarnTimeout);
         this.stockfishWarnTimeout = null;
       }
-      const from = match[1];
-      const to = match[2];
-      const promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
+      let from = match[1];
+      let to = match[2];
+      let promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
+      // check if there are syzygy candidates. If so, make sure that stockfish suggestion is within them
+      if (this.syzygyCandidates.length > 0) {
+        const item = this.syzygyCandidates.filter((move: any) => { return move.uci == (promotion == undefined ? `${from}${to}` : `${from}${to}${promotion}`) });
+        if (item.length == 0) {
+          match = this.syzygyBestCandidate.uci.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
+          from = match[1];
+          to = match[2];
+          promotion = match[3];
+          this.syzygyCandidates = [];
+          this.syzygyBestCandidate = undefined;
+        }
+      }
       this.processOpponentMove(from, to, promotion);
     } else if (match = message.match(/^info .*\bscore (\w+) (-?\d+)/)) {
       const score = parseInt(match[2]) * (this.chess.turn() == 'w' ? 1 : -1);
