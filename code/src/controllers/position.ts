@@ -86,7 +86,7 @@ class PositionController extends BaseController {
       infoWrapper.style.width = '100%';
       infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
-    infoMoves.style.height = `${infoWrapper.clientHeight}px`;
+    infoMoves.style.height = `${infoWrapper.clientHeight - + actionButtons.clientHeight}px`;
     actionButtons.style.width = `${infoWrapper.clientWidth}px`;
   }
 
@@ -271,6 +271,20 @@ class PositionController extends BaseController {
     } else {
       this.gotoMove(idx - 1);
     }
+  }
+
+  private gotoPreviousMove() {
+    if (this.movePointer.value > -1)
+      this.gotoMove(this.movePointer.value - 1);
+  }
+
+  private gotoNextMove() {
+    if (this.movePointer.value < this.moveList[this.variantPointer.value].length - 1)
+      this.gotoMove(this.movePointer.value + 1);
+  }
+
+  private gotoLastMove() {
+    this.gotoMove(this.moveList[this.variantPointer.value].length - 1);
   }
 
   private gotoMove(idx: number) {
@@ -504,6 +518,15 @@ class PositionController extends BaseController {
       },
       showRestartDialog() {
         self.showRestartDialog.call(self);
+      },
+      gotoPreviousMove() {
+        self.gotoPreviousMove.call(self);
+      },
+      gotoNextMove() {
+        self.gotoNextMove.call(self);
+      },
+      gotoLastMove() {
+        self.gotoLastMove.call(self);
       },
       gotoMove(idx: number) {
         self.gotoMove.call(self, idx);

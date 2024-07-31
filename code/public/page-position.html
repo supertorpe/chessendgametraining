@@ -11,13 +11,13 @@
             </template>
             <template x-if="checkmatePattern">
                 <ion-title class="ion-text-center">
-                    <ion-label class="responsive-text" x-text="$t('position.checkmate-in') + checkmateMoves.value"></ion-label>
+                    <ion-label class="responsive-text"
+                        x-text="$t('position.checkmate-in') + checkmateMoves.value"></ion-label>
                 </ion-title>
             </template>
             <template x-if="checkmatePattern">
                 <ion-buttons slot="end">
-                    <ion-button aria-label="Next position"
-                        x-on:click="showNextPosition()">
+                    <ion-button aria-label="Next position" x-on:click="showNextPosition()">
                         <ion-icon slot="icon-only" class="aura" data-name="reload-outline"></ion-icon>
                     </ion-button>
                 </ion-buttons>
@@ -55,6 +55,24 @@
                 <div id="__chessboard__"></div>
             </div>
             <div class="info_wrapper">
+                <ion-buttons class="nav_buttons">
+                    <ion-button size="small" color="dark" aria-label="rewind"
+                        x-bind:disabled="movePointer.value == -1" x-on:click="gotoMove(-1)">
+                        <ion-icon class="aura rotated" data-name="play-forward"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" color="dark" aria-label="previous"
+                        x-bind:disabled="movePointer.value == -1" x-on:click="gotoPreviousMove()">
+                        <ion-icon class="aura rotated" data-name="play"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" color="dark" aria-label="next"
+                        x-bind:disabled="movePointer.value >= moveList[variantPointer.value].length - 1" x-on:click="gotoNextMove()">
+                        <ion-icon class="aura" data-name="play"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" color="dark" aria-label="fast forward"
+                        x-bind:disabled="movePointer.value >= moveList[variantPointer.value].length - 1" x-on:click="gotoLastMove()">
+                        <ion-icon class="aura" data-name="play-forward"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
                 <ion-grid class="info_moves">
                     <ion-row>
                         <ion-col>
@@ -74,7 +92,8 @@
                         <ion-col x-show="moveList.length > 1" x-bind:size="2">
                             <ion-list>
                                 <template x-for="(item, idx) in moveList" :key="idx">
-                                    <ion-item button="true" lines="none" x-bind:color="idx == variantPointer.value ? 'medium' : ''"
+                                    <ion-item button="true" lines="none"
+                                        x-bind:color="idx == variantPointer.value ? 'medium' : ''"
                                         x-on:click="gotoVariant(idx)"><ion-label x-text="idx+1"></ion-label></ion-item>
                                 </template>
                             </ion-list>

@@ -144,6 +144,17 @@ ion-alert {
     overflow-y: auto;
 }
 
+.nav_buttons {
+    display: flex;
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    ion-button {
+        flex: 1;
+        width: calc(100% / #{length(&)});
+    }
+}
 .action_buttons {
     display: flex;
     width: 100%;
@@ -156,7 +167,9 @@ ion-alert {
         width: calc(100% / #{length(&)});
     }
 }
-
+.rotated {
+    transform: rotate(180deg);
+}
 .padding-0 {
     padding-left: 0;
     padding-right: 0;
