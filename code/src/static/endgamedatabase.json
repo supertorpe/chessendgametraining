@@ -10464,7 +10464,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "Rook Pawn vs Two Knights Pawn "
+                    "name": "Rook Pawn vs Two Knights Pawn"
                 },
                 {
                     "games": [
@@ -13838,7 +13838,7 @@
                             "target": "checkmate"
                         },
                         {
-                            "fen": "7K/8/1Q6/8/8/8/1pk5/8 w - - 0 1 ",
+                            "fen": "7K/8/1Q6/8/8/8/1pk5/8 w - - 0 1",
                             "target": "checkmate"
                         },
                         {
@@ -13873,7 +13873,6 @@
                             "fen": "7K/8/5P2/8/8/8/qk6/8 w - - 0 1",
                             "target": "draw"
                         },
-                        
                         {
                             "fen": "8/1K6/P7/8/3q4/8/8/7k w - - 0 1",
                             "target": "draw"
@@ -14320,7 +14319,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "Queen Two Pawn vs Queen Pawn "
+                    "name": "Queen Two Pawn vs Queen Pawn"
                 },
                 {
                     "games": [
@@ -15014,5 +15013,5 @@
             ]
         }
     ],
-    "version": 21
+    "version": 22
 }
