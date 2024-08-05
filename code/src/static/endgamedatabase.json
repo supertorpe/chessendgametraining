@@ -348,7 +348,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "King Pawn vs King"
+                    "name": "Pawn vs King"
                 },
                 {
                     "games": [
@@ -809,7 +809,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "King Pawn vs King Pawn"
+                    "name": "Pawn vs Pawn"
                 },
                 {
                     "games": [
@@ -862,7 +862,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "King Two Pawns vs King"
+                    "name": "Two Pawns vs King"
                 },
                 {
                     "games": [
@@ -2985,7 +2985,7 @@
                             "target": "checkmate"
                         }
                     ],
-                    "name": "Two Bishops"
+                    "name": "Two Bishops vs King"
                 },
                 {
                     "games": [
@@ -3002,7 +3002,7 @@
                             "target": "checkmate"
                         }
                     ],
-                    "name": "King Bishop Pawn vs King"
+                    "name": "Bishop Pawn vs King"
                 },
                 {
                     "games": [
@@ -3031,7 +3031,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "King vs Bishop Pawn King"
+                    "name": "King vs Bishop Pawn"
                 },
                 {
                     "games": [
@@ -3493,7 +3493,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "Bishop vs Pawn Bishop"
+                    "name": "Bishop vs Bishop Pawn"
                 },
                 {
                     "games": [
@@ -3995,7 +3995,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "Bishop One Pawns vs Bishop Two Pawns"
+                    "name": "Bishop One Pawn vs Bishop Two Pawns"
                 },
                 {
                     "games": [
@@ -6175,7 +6175,7 @@
                             "target": "checkmate"
                         }
                     ],
-                    "name": "Knight and Bishop"
+                    "name": "Knight Bishop vs King"
                 },
                 {
                     "games": [
@@ -9149,7 +9149,7 @@
                             "target": "draw"
                         }
                     ],
-                    "name": "Two Rooks Three Pawns vs Two Rooks and Two Pawns"
+                    "name": "Two Rooks Three Pawns vs Two Rooks Two Pawns"
                 },
                 {
                     "games": [
@@ -15013,5 +15013,5 @@
             ]
         }
     ],
-    "version": 22
+    "version": 23
 }
