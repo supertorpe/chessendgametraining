@@ -105,6 +105,10 @@ cg-board square.current-premove {
     pointer-events: none;
 }
 
+.black-white .cg-wrap piece {
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 1.0));
+}
+
 cg-board piece.dragging {
     cursor: move;
     z-index: 9;
