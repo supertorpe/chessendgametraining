@@ -7,9 +7,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@ionic/core": "^8.3.1",
+    "@ionic/core": "^8.3.4",
     "@ionic/storage": "^4.0.0",
-    "alpinejs": "^3.14.1",
+    "alpinejs": "^3.14.3",
     "alpinejs-i18n": "^2.4.2",
     "chess.js": "^0.13.4",
     "chessground": "^9.1.1",
@@ -24,8 +24,8 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.14",
     "@types/howler": "^2.2.12",
-    "sass": "^1.79.4",
-    "typescript": "^5.6.2",
+    "sass": "^1.80.6",
+    "typescript": "^5.6.3",
     "vite": "5.2.13",
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-static-copy": "^1.0.6"
