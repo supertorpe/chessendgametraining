@@ -1,7 +1,7 @@
 // This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
 
 import { PIECE_THEMES, BOARD_THEMES } from '../commons';
-import { redrawIconImages, themeSwitcherService, configurationService } from '../services';
+import { redrawIconImages, themeSwitcherService, configurationService, endgameDatabaseService } from '../services';
 import { BaseController } from './controller';
 import Alpine from 'alpinejs';
 import { toastController } from '@ionic/core';
@@ -116,6 +116,55 @@ class SettingsController extends BaseController {
                     toast.present();
                     this.close();
                 });
+            },
+            exportData() {
+                endgameDatabaseService.exportData();
+            },
+            importData() {
+                const fileInput = document.getElementById('import_file') as HTMLInputElement;
+                fileInput.addEventListener("change", (event: Event) => {
+                    const input = event.target as HTMLInputElement;
+                    if (input.files && input.files.length === 1) {
+                        const file = input.files[0];
+                        const reader = new FileReader();
+                        reader.onload = async (e) => {
+                            if (e.target && typeof e.target.result === "string") {
+                                const jsonData = e.target.result;
+                                try {
+                                    const data = JSON.parse(jsonData);
+                                    endgameDatabaseService.importData(data).then(async () => {
+                                        const toast = await toastController.create({
+                                            message: window.AlpineI18n.t('settings.import-finished'),
+                                            position: 'middle',
+                                            color: 'success',
+                                            duration: 1000
+                                        });
+                                        toast.present();
+                                    });
+                                } catch (error) {
+                                    const toast = await toastController.create({
+                                        message: window.AlpineI18n.t('settings.import-error'),
+                                        position: 'middle',
+                                        color: 'warning',
+                                        duration: 1000
+                                    });
+                                    toast.present();
+                                }
+                            }
+                        };
+                        reader.onerror = async () => {
+                            const toast = await toastController.create({
+                                message: window.AlpineI18n.t('settings.import-error'),
+                                position: 'middle',
+                                color: 'warning',
+                                duration: 1000
+                            });
+                            toast.present();
+                        };
+                        reader.readAsText(file);
+                    }
+                });
+                fileInput.click();
             },
             close() {
                 (document.querySelector('ion-modal') as IonModal).dismiss();

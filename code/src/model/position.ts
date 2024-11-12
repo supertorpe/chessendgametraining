@@ -5,3 +5,11 @@ export interface Position {
     fen: string;
     record: number;
 }
+
+export const isPosition = (obj: any): boolean => {
+    return (
+        typeof obj.target === 'string' &&
+        typeof obj.fen === 'string' &&
+        (obj.record === undefined || typeof obj.record === 'number')
+    );
+};

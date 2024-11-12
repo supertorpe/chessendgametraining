@@ -1,6 +1,6 @@
 // This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
 
-import { EndgameDatabase, Position, endgameDatabase } from '../model';
+import { EndgameDatabase, Position, endgameDatabase, isEndgameDatabase } from '../model';
 import { configurationService } from './configuration-service';
 import { storageService } from './storage-service';
 import { EventEmitter, GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, textToImages, urlIcon, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE } from '../commons';
@@ -138,6 +138,28 @@ class EndgameDatabaseService {
                 }
             });
         });
+    }
+
+    public exportData() {
+        const jsonString = JSON.stringify(this._endgameDatabase);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const link = document.createElement('a');
+        document.body.appendChild(link);
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'chess-endgame-training.json');
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
+    public importData(data: EndgameDatabase): Promise<EndgameDatabase> {
+        if (isEndgameDatabase(data)) {
+            this._endgameDatabase = data;
+            this._endgameDatabaseChangedEmitter.notify(this._endgameDatabase);
+            return this.save();
+        } else {
+            throw new Error('Invalid data');
+        }
     }
 
     private enrich(database: EndgameDatabase, pieceTheme: string) {

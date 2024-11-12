@@ -76,6 +76,17 @@
       <ion-toggle id="toggleSyncGoogleDrive" x-text="$t('settings.sync-google-drive')" x-bind:aria-label="$t('settings.sync-google-drive')" x-bind:checked="syncGoogleDrive" color="primary"></ion-toggle>
     </ion-item>
     <ion-item>
+      <ion-button x-on:click="exportData()" color="tertiary" size="default" expand="full">
+        <ion-icon slot="start" class="aura" data-name="cloud-download-outline"></ion-icon>
+        <ion-label x-text="$t('settings.export-data')"></ion-label>
+      </ion-button>
+      <ion-button x-on:click="importData()" color="tertiary" size="default" expand="full">
+        <ion-icon slot="start" class="aura" data-name="cloud-upload-outline"></ion-icon>
+        <ion-label x-text="$t('settings.import-data')"></ion-label>
+      </ion-button>
+      <input type="file" id="import_file" accept=".json" style="display: none;">
+    </ion-item>
+    <ion-item>
       <ion-toggle id="toggleUseSyzygy" x-text="$t('settings.use-syzygy')" x-bind:aria-label="$t('settings.use-syzygy')" x-bind:checked="useSyzygy" color="primary"></ion-toggle>
     </ion-item>
     <ion-item lines="none">
