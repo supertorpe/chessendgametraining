@@ -4,7 +4,7 @@ import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, queryParam, randomNumber, setupSEO } from '../commons';
-import { Category, MoveItem, Position, Subcategory } from '../model';
+import { MoveItem, Position } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -384,8 +384,8 @@ class PositionController extends BaseController {
     requestWakeLock();
 
     this.useSyzygy = configurationService.configuration.useSyzygy;
-    let category: Category;
-    let subcategory: Subcategory;
+    // let category: Category;
+    // let subcategory: Subcategory;
     stockfishService.debug = (queryParam('debug') == 'true');
     const customFen = ($routeParams['fen1'] !== undefined);
     const checkmatePattern = ($routeParams['moves'] !== undefined);
@@ -487,8 +487,8 @@ class PositionController extends BaseController {
       idxCategory: self.idxCategory,
       idxSubcategory: self.idxSubcategory,
       idxGame: self.idxGame,
-      category: category,
-      subcategory: subcategory,
+      // category: category,
+      // subcategory: subcategory,
       game: this.position,
       moveList: self.moveList,
       variantPointer: self.variantPointer,
