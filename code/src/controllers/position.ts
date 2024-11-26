@@ -384,8 +384,6 @@ class PositionController extends BaseController {
     requestWakeLock();
 
     this.useSyzygy = configurationService.configuration.useSyzygy;
-    // let category: Category;
-    // let subcategory: Subcategory;
     stockfishService.debug = (queryParam('debug') == 'true');
     const customFen = ($routeParams['fen1'] !== undefined);
     const checkmatePattern = ($routeParams['moves'] !== undefined);
@@ -487,8 +485,6 @@ class PositionController extends BaseController {
       idxCategory: self.idxCategory,
       idxSubcategory: self.idxSubcategory,
       idxGame: self.idxGame,
-      // category: category,
-      // subcategory: subcategory,
       game: this.position,
       moveList: self.moveList,
       variantPointer: self.variantPointer,
