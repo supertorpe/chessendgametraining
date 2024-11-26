@@ -24,7 +24,7 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.15",
     "@types/howler": "^2.2.12",
-    "sass": "^1.81.0",
+    "sass-embedded": "^1.81.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.0",
     "vite-plugin-pwa": "^0.21.0",
