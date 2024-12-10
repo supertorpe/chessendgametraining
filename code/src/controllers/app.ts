@@ -6,7 +6,7 @@ import { version } from '../../package.json';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, routeService, themeSwitcherService } from '../services';
 import { EndgameDatabase } from '../model';
-import { ariaDescriptionFromIcon, clone } from '../commons';
+import { ariaDescriptionFromIcon, clone, isPWA, isTWA } from '../commons';
 import { settingsController } from './settings';
 import { aboutController } from './about';
 
@@ -17,6 +17,7 @@ class AppController extends BaseController {
             color: themeSwitcherService.currentTheme() == 'dark' ? 'w' : 'b',
             categories: clone(endgameDatabaseService.endgameDatabase.categories),
             categorySelected: '',
+            showExit: isPWA() || isTWA(),
             selectCategory(category: string) {
                 if (this.categorySelected != category) {
                     this.categorySelected = category;
@@ -31,6 +32,9 @@ class AppController extends BaseController {
             },
             showAbout() {
                 routeService.openModal('about', 'page-about.html', aboutController, true, false);
+            },
+            exit() {
+                window.close();
             },
             init() {
                 endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {

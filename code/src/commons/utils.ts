@@ -153,6 +153,14 @@ export const isBot = (): boolean => {
     return navigator.userAgent.toLowerCase().includes('bot');
 };
 
+export const isPWA = () => {
+    return window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+};
+
+export const isTWA = () => {
+    return navigator.userAgent.includes('com.android.chrome');
+};
+
 export const queryParam = (param: string) : string | null => {
     return new URLSearchParams(new URL(window.location.href).search).get(param);
 };

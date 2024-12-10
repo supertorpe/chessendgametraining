@@ -94,6 +94,11 @@
                             data-name="information-circle"></ion-icon>
                         <ion-label x-text="$t('app.about')"></ion-label>
                     </ion-item>
+                    <ion-item x-show="showExit" lines="none" button="true" detail="false" x-on:click="exit()">
+                        <ion-icon slot="start" class="aura" style="margin-left: 5px"
+                            data-name="information-exit-outline"></ion-icon>
+                        <ion-label x-text="$t('app.exit')"></ion-label>
+                    </ion-item>
                     <ion-item lines="none">
                         <ion-grid>
                             <ion-row>
