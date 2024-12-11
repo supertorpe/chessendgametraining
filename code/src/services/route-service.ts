@@ -126,6 +126,12 @@ class RouteService {
 
     public init(routeMap: RouteMap) {
         this.navigo = new Navigo(routeMap.mainRoute.path, { hash: routeMap.hash });
+        const originalNavigate = this.navigo.navigate;
+        this.navigo.navigate = (path: string, options: { [key: string]: any } = {}) => {
+            options.historyAPIMethod = 'replaceState';
+            originalNavigate.call(this.navigo, path, options);
+        };
+
         const mainRoute = this.open(routeMap.mainRoute);
         routeMap.routes.forEach((route) => {
             const oRoute = this.open(route);
