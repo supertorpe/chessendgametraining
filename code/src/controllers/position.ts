@@ -1185,7 +1185,7 @@ class PositionController extends BaseController {
       }
       this.processOpponentMove(from, to, promotion);
     } else if (match = message.match(/^info .*\bscore (\w+) (-?\d+)/)) {
-      const score = parseInt(match[2]) * (this.chess.turn() == 'w' ? 1 : -1);
+      const score = parseInt(match[2]) * (this.chess.turn() == this.player.value ? 1 : -1);
       if (match[1] == 'mate') {
         if (this.mateDistance == 0 || Math.abs(score) < this.mateDistance) this.mateDistance = score;
       } else if (this.target.value == 'checkmate') {
