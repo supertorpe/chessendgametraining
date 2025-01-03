@@ -34,7 +34,7 @@
                                 <ion-button
                                     x-bind:href="'position/' + idxCategory + '/' + idxSubcategory + '/' + ((i-1)*6+j-1)"
                                     data-navigo
-                                    x-bind:color="!subcategory.games[(i-1)*6+j-1]?.record ? ( subcategory.games[(i-1)*6+j-1].target == 'draw' ? 'medium' : 'light' ) : subcategory.games[(i-1)*6+j-1]?.record < 0 ? 'warning' : 'success'"
+                                    x-bind:color="!subcategory.games[(i-1)*6+j-1]?.record ? ( subcategory.games[(i-1)*6+j-1]?.target == 'draw' ? 'medium' : 'light' ) : subcategory.games[(i-1)*6+j-1]?.record < 0 ? 'warning' : 'success'"
                                     expand="block" x-text="1 + (i-1)*6+j-1"></ion-button>
                             </ion-col>
                         </template>

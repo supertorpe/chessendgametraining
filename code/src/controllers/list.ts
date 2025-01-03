@@ -2,7 +2,7 @@
 
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { endgameDatabaseService } from '../services';
+import { endgameDatabaseService, routeService } from '../services';
 import { ariaDescriptionFromIcon, clone, setupSEO } from '../commons';
 import { EndgameDatabase } from '../model';
 
@@ -54,6 +54,7 @@ class ListController extends BaseController {
                     self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
                     setupSEO('page-list.html', self.getSEOParams());
                     window.history.replaceState(this.title, this.title, `/list/${this.idxCategory}/${this.idxSubcategory}`);
+                    this.$nextTick().then(() => { routeService.updatePageLinks(); });
                 }
             },
             showNext() {
@@ -75,6 +76,7 @@ class ListController extends BaseController {
                     self.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
                     setupSEO('page-list.html', self.getSEOParams());
                     window.history.replaceState(this.title, this.title, `/list/${this.idxCategory}/${this.idxSubcategory}`);
+                    this.$nextTick().then(() => { routeService.updatePageLinks(); });
                 }
             },
             ariaDescriptionFromIcon: ariaDescriptionFromIcon,
