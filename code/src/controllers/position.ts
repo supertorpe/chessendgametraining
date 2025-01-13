@@ -1188,7 +1188,7 @@ class PositionController extends BaseController {
       const score = parseInt(match[2]) * (this.chess.turn() == this.player.value ? 1 : -1);
       if (match[1] == 'mate') {
         if (this.mateDistance == 0 || Math.abs(score) < this.mateDistance) this.mateDistance = score;
-      } else if (this.target.value == 'checkmate') {
+      } else if (this.target.value == 'checkmate' && this.syzygyCandidates.length == 0) { // only set unfeasibleMate if it hasn't been previously set by syzygy
         this.unfeasibleMate = (score < 15);
       }
     }
