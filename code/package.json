@@ -1,5 +1,5 @@
 {
-  "version": "3.0.23",
+  "version": "3.0.24",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build --emptyOutDir",
@@ -9,8 +9,8 @@
   "dependencies": {
     "@ionic/core": "^8.4.1",
     "@ionic/storage": "^4.0.0",
-    "alpinejs": "^3.14.7",
-    "alpinejs-i18n": "^2.4.2",
+    "alpinejs": "^3.14.8",
+    "alpinejs-i18n": "^2.5.2",
     "chess.js": "^0.13.4",
     "chessground": "^9.1.1",
     "dom-to-image-hm": "github:InYourHead/dom-to-image",
@@ -24,9 +24,9 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.15",
     "@types/howler": "^2.2.12",
-    "sass-embedded": "^1.82.0",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.3",
+    "sass-embedded": "^1.83.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
     "vite-plugin-pwa": "^0.21.1",
     "vite-plugin-static-copy": "^2.2.0"
   }
