@@ -6701,7 +6701,7 @@
                         },
                         {
                             "fen": "4B3/8/8/7n/8/8/p1PK4/bkB5 w - - 0 1",
-                            "target": "checkmate"
+                            "target": "draw"
                         },
                         {
                             "fen": "5b2/8/8/1p6/8/1K6/BP2n3/k5B1 w - - 0 1",
@@ -15013,5 +15013,5 @@
             ]
         }
     ],
-    "version": 27
+    "version": 28
 }
