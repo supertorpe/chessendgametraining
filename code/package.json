@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@ionic/core": "^8.4.1",
+    "@ionic/core": "^8.4.3",
     "@ionic/storage": "^4.0.0",
     "alpinejs": "^3.14.8",
     "alpinejs-i18n": "^2.5.2",
@@ -15,7 +15,7 @@
     "chessground": "^9.1.1",
     "dom-to-image-hm": "github:InYourHead/dom-to-image",
     "howler": "^2.2.4",
-    "lila-stockfish-web": "^0.0.5",
+    "lila-stockfish-web": "^0.0.8",
     "navigo": "^8.11.1",
     "stockfish": "^16.0.0"
   },
@@ -24,9 +24,9 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.15",
     "@types/howler": "^2.2.12",
-    "sass-embedded": "^1.83.1",
+    "sass-embedded": "^1.85.0",
     "typescript": "^5.7.3",
-    "vite": "^6.0.7",
+    "vite": "^6.1.0",
     "vite-plugin-pwa": "^0.21.1",
     "vite-plugin-static-copy": "^2.2.0"
   }
