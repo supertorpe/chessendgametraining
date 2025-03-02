@@ -53,7 +53,7 @@ class PositionController extends BaseController {
   private manualMode = Alpine.reactive({ value: false });
   private mustShowExitDialog = true;
   private stopping = Alpine.reactive({ value: false });
-  private stockfishWarmup = false;
+  // private stockfishWarmup = false;
   private stockfishWarningShowed = false;
   private stockfishWarnTimeout: number | null = null;
 
@@ -100,13 +100,13 @@ class PositionController extends BaseController {
   }
 
   private async initStockfishGame() {
-    if (this.stockfishWarmup) {
-      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
-    }
-    this.stockfishWarmup = true;
+    // if (this.stockfishWarmup) {
+    //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    // }
+    // this.stockfishWarmup = true;
     stockfishService.postMessage('ucinewgame');
     stockfishService.postMessage('isready');
-    stockfishService.warmup(this.fen.value);
+    // stockfishService.warmup(this.fen.value);
   }
 
   private resetPosition(newGame: boolean) {
@@ -770,9 +770,9 @@ class PositionController extends BaseController {
     }
   */
   private async registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
-    if (this.stockfishWarmup) {
-      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
-    }
+    // if (this.stockfishWarmup) {
+    //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    // }
     const nextMove = () => {
       if (!this.manualMode.value) {
         this.getOpponentMove();
@@ -966,9 +966,9 @@ class PositionController extends BaseController {
   }
 
   private async processOpponentMove(from: string, to: string, promotion: string | undefined) {
-    if (this.stockfishWarmup) {
-      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
-    }
+    // if (this.stockfishWarmup) {
+    //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    // }
     this.waitingForOpponent.value = false;
     if (!this.solvingTrivial && (this.askingForHint.value || this.solving.value)) this.assistanceUsed = true;
     redrawIconImages();
@@ -1129,9 +1129,9 @@ class PositionController extends BaseController {
   }
 
   private async getStockfishMove() {
-    if (this.stockfishWarmup) {
-      await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
-    }
+    // if (this.stockfishWarmup) {
+    //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
+    // }
     const history = this.chess.history({ verbose: true });
     let moves = '';
     history.forEach(move => moves += ` ${move.from}${move.to}${move.promotion || ''}`);
@@ -1255,16 +1255,16 @@ class PositionController extends BaseController {
       if ((this.moveList.length == 1 && this.moveList[0].length == 0) || !this.mustShowExitDialog) {
         this.waitingForOpponent.value = false;
         this.solving.value = false;
-        if (this.stockfishWarmup) {
-          stockfishService.stopWarmup().then(() => {
-            this.stockfishWarmup = false;
-            resolve(true);
-          });
-        } else {
+        // if (this.stockfishWarmup) {
+        //   stockfishService.stopWarmup().then(() => {
+        //     this.stockfishWarmup = false;
+        //     resolve(true);
+        //   });
+        // } else {
           this.stopping.value = true;
           this.stopStockfish();
           resolve(true);
-        }
+        // }
         return;
       }
       const alert = await alertController.create({
@@ -1284,14 +1284,14 @@ class PositionController extends BaseController {
             handler: () => {
               this.waitingForOpponent.value = false;
               this.solving.value = false;
-              if (this.stockfishWarmup) {
-                stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
-              } else {
+              // if (this.stockfishWarmup) {
+              //   stockfishService.stopWarmup().then(() => { this.stockfishWarmup = false; resolve(true); });
+              // } else {
                 this.stopping.value = true;
                 redrawIconImages();
                 this.stopStockfish();
                 resolve(true);
-              }
+              // }
             }
           }
         ]
