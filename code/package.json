@@ -1,5 +1,5 @@
 {
-  "version": "3.0.24",
+  "version": "3.0.25",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build --emptyOutDir",
@@ -15,7 +15,7 @@
     "chessground": "^9.1.1",
     "dom-to-image-hm": "github:InYourHead/dom-to-image",
     "howler": "^2.2.4",
-    "lila-stockfish-web": "^0.0.8",
+    "lila-stockfish-web": "^0.0.9",
     "navigo": "^8.11.1",
     "stockfish": "^16.0.0"
   },
@@ -24,10 +24,10 @@
     "@types/chess.js": "^0.13.7",
     "@types/google.accounts": "^0.0.15",
     "@types/howler": "^2.2.12",
-    "sass-embedded": "^1.85.0",
-    "typescript": "^5.7.3",
-    "vite": "^6.1.0",
+    "sass-embedded": "^1.85.1",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0",
     "vite-plugin-pwa": "^0.21.1",
-    "vite-plugin-static-copy": "^2.2.0"
+    "vite-plugin-static-copy": "^2.3.0"
   }
 }

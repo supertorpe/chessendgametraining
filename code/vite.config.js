@@ -216,6 +216,7 @@ export default ({ mode }) => {
           ]
         }
       })
-    ]
+    ],
+    optimizeDeps: { exclude: ['lila-stockfish-web'] },
   })
 }
