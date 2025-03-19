@@ -92,6 +92,12 @@ class SettingsController extends BaseController {
                 this.useSyzygy = checked;
                 configurationService.configuration.useSyzygy = checked;
             },
+            // threefold repetition check
+            threeFoldRepetitionCheck: configurationService.configuration.threeFoldRepetitionCheck,
+            threeFoldRepetitionCheckChanged(checked: boolean) {
+                this.threeFoldRepetitionCheck = checked;
+                configurationService.configuration.threeFoldRepetitionCheck = checked;
+            },
             // stockfish depth
             currentStockfishDepth: configurationService.configuration.stockfishDepth,
             changeStockfishDepth(value: number) {
@@ -188,6 +194,9 @@ class SettingsController extends BaseController {
                 const toggleUseSyzygy = document.getElementById('toggleUseSyzygy') as IonToggle;
                 toggleUseSyzygy.addEventListener('ionChange', () => { this.useSyzygyChanged(toggleUseSyzygy.checked); });
           
+                const toggleThreefoldRepetitionCheck = document.getElementById('toggleThreefoldRepetitionCheck') as IonToggle;
+                toggleThreefoldRepetitionCheck.addEventListener('ionChange', () => { this.threeFoldRepetitionCheckChanged(toggleThreefoldRepetitionCheck.checked); });
+          
                 const stockfishDepthRange = document.getElementById('stockfishDepthRange') as IonRange;
                 stockfishDepthRange.value = configurationService.configuration.stockfishDepth;
                 stockfishDepthRange.addEventListener('ionChange', () => {
@@ -208,6 +217,7 @@ class SettingsController extends BaseController {
                 configurationService.configuration.configurationChangedEmitter.addEventListener(async (event) => {
                     switch (event.field) {
                         case 'useSyzygy' : this.useSyzygy = event.config.useSyzygy; break;
+                        case 'threeFoldRepetitionCheck' : this.threeFoldRepetitionCheck = event.config.threeFoldRepetitionCheck; break;
                         case 'stockfishDepth' : this.currentStockfishDepth = event.config.stockfishDepth; break;
                         case 'stockfishMovetime' : this.currentStockfishMovetime = event.config.stockfishMovetime; break;
                         case 'automaticShowFirstPosition' : this.gotoFirstPosition = event.config.automaticShowFirstPosition; break;

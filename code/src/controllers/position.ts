@@ -37,6 +37,7 @@ class PositionController extends BaseController {
   private checkmateMoves = Alpine.reactive({ value: 0 });
   private move = Alpine.reactive({ value: '' });
   private useSyzygy = false;
+  private threeFoldRepetitionCheck = true;
   private syzygyCandidates: any[] = [];
   private syzygyBestCandidate: any = undefined;
   private gameOver = Alpine.reactive({ value: false });
@@ -384,6 +385,7 @@ class PositionController extends BaseController {
     requestWakeLock();
 
     this.useSyzygy = configurationService.configuration.useSyzygy;
+    this.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck;
     stockfishService.debug = (queryParam('debug') == 'true');
     const customFen = ($routeParams['fen1'] !== undefined);
     const checkmatePattern = ($routeParams['moves'] !== undefined);
@@ -642,6 +644,7 @@ class PositionController extends BaseController {
               break;
             }
             case 'useSyzygy': self.useSyzygy = configurationService.configuration.useSyzygy; break;
+            case 'threeFoldRepetitionCheck': self.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck; break;
           }
         });
       }
@@ -832,7 +835,7 @@ class PositionController extends BaseController {
   }
 
   private checkEnding(): boolean {
-    const result = this.chess.game_over();
+    const result = this.chess.game_over() && (this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition());
     if (result) {
       this.gameOver.value = true;
       const wasSolving = this.solving.value;
@@ -1042,7 +1045,7 @@ class PositionController extends BaseController {
             duration: 1000
           }).then(toast => toast.present());
         }
-      } else if (this.unfeasibleMate && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
+      } else if (this.unfeasibleMate && (this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition()) && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
         toastController.create({
           message: window.AlpineI18n.t('position.unfeasible-mate'),
           position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',

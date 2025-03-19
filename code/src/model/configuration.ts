@@ -5,7 +5,7 @@ import { boardThemeSwitcherService, themeSwitcherService } from '../services';
 
 export type ConfigurationField =
 
-    'useSyzygy' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'automaticShowNextPosition' | 'preventScreenOff' |
+    'useSyzygy' | 'threeFoldRepetitionCheck' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'automaticShowNextPosition' | 'preventScreenOff' |
     'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive';
 
 export type ConfigurationChangedEvent = { config: Configuration, field: ConfigurationField };
@@ -16,6 +16,7 @@ export class Configuration {
 
     constructor(
         private _useSyzygy: boolean,
+        private _threeFoldRepetitionCheck: boolean,
         private _stockfishDepth: number,
         private _stockfishMovetime: number,
         private _automaticShowFirstPosition: boolean,
@@ -34,6 +35,7 @@ export class Configuration {
     public serialize() {
         return {
             useSyzygy: this._useSyzygy,
+            threeFoldRepetitionCheck: this._threeFoldRepetitionCheck,
             stockfishDepth: this._stockfishDepth,
             stockfishMovetime: this._stockfishMovetime,
             automaticShowFirstPosition: this._automaticShowFirstPosition,
@@ -55,6 +57,9 @@ export class Configuration {
 
     get useSyzygy(): boolean { return this._useSyzygy; }
     set useSyzygy(value: boolean) { this._useSyzygy = value; this._configurationChangedEmitter.notify({ config: this, field: 'useSyzygy' }); }
+
+    get threeFoldRepetitionCheck(): boolean { return this._threeFoldRepetitionCheck; }
+    set threeFoldRepetitionCheck(value: boolean) { this._threeFoldRepetitionCheck = value; this._configurationChangedEmitter.notify({ config: this, field: 'threeFoldRepetitionCheck' }); }
 
     get stockfishDepth(): number { return this._stockfishDepth; }
     set stockfishDepth(value: number) { this._stockfishDepth = value; this._configurationChangedEmitter.notify({ config: this, field: 'stockfishDepth' }); }
@@ -99,8 +104,9 @@ export class Configuration {
 
 export const DEFAULT_CONFIG = new Configuration(
     true,
-    15,
-    5,
+    true,
+    20,
+    10,
     true,
     false,
     true,

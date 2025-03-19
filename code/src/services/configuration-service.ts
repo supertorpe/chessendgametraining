@@ -19,6 +19,7 @@ class ConfigurationService {
             storageService.get('CONFIGURATION').then(config => {
                 if (config) {
                     if (config.useSyzygy === undefined) config.useSyzygy = DEFAULT_CONFIG.useSyzygy;
+                    if (config.threeFoldRepetitionCheck === undefined) config.threeFoldRepetitionCheck = DEFAULT_CONFIG.threeFoldRepetitionCheck;
                     if (config.stockfishDepth === undefined) config.stockfishDepth = DEFAULT_CONFIG.stockfishDepth;
                     if (config.stockfishMovetime === undefined) config.stockfishMovetime = DEFAULT_CONFIG.stockfishMovetime;
                     if (config.automaticShowFirstPosition === undefined) config.automaticShowFirstPosition = DEFAULT_CONFIG.automaticShowFirstPosition;
@@ -34,6 +35,7 @@ class ConfigurationService {
                     if (config.changelog === undefined) config.changelog = DEFAULT_CONFIG.changelog;
                     this._configuration = new Configuration(
                         config.useSyzygy,
+                        config.threeFoldRepetitionCheck,
                         config.stockfishDepth,
                         config.stockfishMovetime,
                         config.automaticShowFirstPosition,
@@ -89,6 +91,7 @@ class ConfigurationService {
                 .then((remoteConfig) => {
                     self.loadingFromGoogleDrive = true;
                     if ('useSyzygy' in remoteConfig) self._configuration.useSyzygy = remoteConfig.useSyzygy;
+                    if ('threeFoldRepetitionCheck' in remoteConfig) self._configuration.threeFoldRepetitionCheck = remoteConfig.threeFoldRepetitionCheck;
                     if ('stockfishDepth' in remoteConfig) self._configuration.stockfishDepth = remoteConfig.stockfishDepth;
                     if ('stockfishMovetime' in remoteConfig) self._configuration.stockfishMovetime = remoteConfig.stockfishMovetime;
                     if ('automaticShowFirstPosition' in remoteConfig) self._configuration.automaticShowFirstPosition = remoteConfig.automaticShowFirstPosition;
