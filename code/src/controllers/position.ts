@@ -835,7 +835,7 @@ class PositionController extends BaseController {
   }
 
   private checkEnding(): boolean {
-    const result = this.chess.game_over() && (this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition());
+    const result = this.chess.game_over() && (this.chess.in_checkmate() || this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition());
     if (result) {
       this.gameOver.value = true;
       const wasSolving = this.solving.value;
