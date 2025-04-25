@@ -1,6 +1,8 @@
 [Chess Endgame Training](https://github.com/supertorpe/chessendgametraining)
 
-<a style="margin-bottom: 0;" href='https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="80px"/></a>
+<a style="margin-bottom: 0;" href='https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="80px"/></a><br/>
+<a style="margin-bottom: 0;" href='[https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining](https://discord.com/invite/ShmTWzJbYV)'><img alt='Discord server' src='https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/67ece93be2524af5cf14dc1c_Logo-black-bg.svg' style="height:55px"/></a>
+
 
 Chess Endgame Training is a web application to practice a variety of well organized chess endgames.
 
