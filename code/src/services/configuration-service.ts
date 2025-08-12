@@ -16,7 +16,7 @@ class ConfigurationService {
 
     public init(): Promise<Configuration> {
         return new Promise<Configuration>(resolve => {
-            storageService.get('CONFIGURATION').then(config => {
+            storageService.get('CONFIGURATION').then((config: Partial<Configuration>) => {
                 if (config) {
                     if (config.useSyzygy === undefined) config.useSyzygy = DEFAULT_CONFIG.useSyzygy;
                     if (config.threeFoldRepetitionCheck === undefined) config.threeFoldRepetitionCheck = DEFAULT_CONFIG.threeFoldRepetitionCheck;
@@ -24,6 +24,7 @@ class ConfigurationService {
                     if (config.stockfishMovetime === undefined) config.stockfishMovetime = DEFAULT_CONFIG.stockfishMovetime;
                     if (config.automaticShowFirstPosition === undefined) config.automaticShowFirstPosition = DEFAULT_CONFIG.automaticShowFirstPosition;
                     if (config.automaticShowNextPosition === undefined) config.automaticShowNextPosition = DEFAULT_CONFIG.automaticShowNextPosition;
+                    if (config.solveTrivialPosition === undefined) config.solveTrivialPosition = DEFAULT_CONFIG.solveTrivialPosition;
                     if (config.preventScreenOff === undefined) config.preventScreenOff = DEFAULT_CONFIG.preventScreenOff;
                     if (config.colorTheme === undefined) config.colorTheme = DEFAULT_CONFIG.colorTheme;
                     if (config.playSounds === undefined) config.playSounds = DEFAULT_CONFIG.playSounds;
@@ -40,6 +41,7 @@ class ConfigurationService {
                         config.stockfishMovetime,
                         config.automaticShowFirstPosition,
                         config.automaticShowNextPosition,
+                        config.solveTrivialPosition,
                         config.preventScreenOff,
                         config.colorTheme,
                         config.playSounds,

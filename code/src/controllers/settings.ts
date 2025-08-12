@@ -9,6 +9,8 @@ import { IonModal } from '@ionic/core/components/ion-modal';
 import { IonToggle } from '@ionic/core/components/ion-toggle';
 import { IonRange } from '@ionic/core/components/ion-range';
 
+type AutoSolveTrivialOptions = "prompt" | "yes" | "no"
+
 class SettingsController extends BaseController {
     onEnter(_$routeParams?: any): void {
 
@@ -67,6 +69,21 @@ class SettingsController extends BaseController {
             gotoNextPositionChanged(checked: boolean) {
                 this.gotoNextPosition = checked;
                 configurationService.configuration.automaticShowNextPosition = checked;
+            },
+            // automatically solve trivial positions
+            get autoSolveTrivial(): AutoSolveTrivialOptions {
+                const solve = configurationService.configuration.solveTrivialPosition;
+                if (solve === true) return "yes"
+                if (solve === false) return "no"
+                return "prompt"
+            }, 
+            autoSolveTrivialChanged(value: AutoSolveTrivialOptions) {
+                // Set to null to have the user be prompted
+                // or set it to automatically do the desired behavior
+                const setting =
+                    value === "prompt" ? null :
+                    value === "yes";
+                configurationService.configuration.solveTrivialPosition = setting;
             },
             // play sounds
             playSounds: configurationService.configuration.playSounds,
@@ -187,6 +204,11 @@ class SettingsController extends BaseController {
                 
                 const toggleGotoFirstPosition = document.getElementById('toggleGotoFirstPosition') as IonToggle;
                 toggleGotoFirstPosition.addEventListener('ionChange', () => { this.gotoFirstPositionChanged(toggleGotoFirstPosition.checked); });
+
+                const autoSolveTrivial = document.getElementById('autoSolveTrivial') as HTMLIonSelectElement;
+                autoSolveTrivial.addEventListener('ionChange', () => { 
+                    this.autoSolveTrivialChanged(autoSolveTrivial.value)
+                });
                 
                 const toggleGotoNextPosition = document.getElementById('toggleGotoNextPosition') as IonToggle;
                 toggleGotoNextPosition.addEventListener('ionChange', () => { this.gotoNextPositionChanged(toggleGotoNextPosition.checked); });

@@ -116,6 +116,7 @@
             "confirm-trivial-position": {
                 "header": "Attention",
                 "message": "You have reached a trivial position. Do you want to solve the rest automatically?",
+                "remember": "Remember my choice",
                 "no": "No",
                 "yes": "Yes"
             },
@@ -160,6 +161,12 @@
             "threefold-repetition-check": "Threefold repetition check",
             "stockfish-depth": "Depth",
             "stockfish-movetime": "Move time",
+            "auto-solve-trivial": {
+                "title": "Auto solve trivial positions",
+                "prompt": "Prompt Me",
+                "no": "No",
+                "yes": "Yes"
+            },
             "clean-dialog" : {
                 "title": "Are you sure?",
                 "subtitle": "Reset records",
@@ -320,6 +327,7 @@
             "confirm-trivial-position": {
                 "header": "Atención",
                 "message": "Ha llegado a una posición trivial. ¿Quiere resolver el resto automáticamente?",
+                "remember": "Recuerda mi elección",
                 "no": "No",
                 "yes": "Sí"
             },
@@ -364,6 +372,12 @@
             "threefold-repetition-check": "Comprobar triple repetición",
             "stockfish-depth": "Profundidad",
             "stockfish-movetime": "Tiempo",
+            "auto-solve-trivial": {
+                "title": "Resolver automáticamente posiciones triviales",
+                "prompt": "Pregúntame",
+                "no": "No",
+                "yes": "Sí"
+            },
             "clean-dialog" : {
                 "title": "¿Está seguro?",
                 "subtitle": "Eliminar records",
@@ -523,6 +537,7 @@
             "confirm-trivial-position": {
                 "header": "Внимание",
                 "message": "Вы достигли тривиальной позиции. Хотите решить остальное автоматически?",
+                "remember": "Помните мой выбор",
                 "no": "Нет",
                 "yes": "Да"
             },
@@ -567,6 +582,12 @@
             "threefold-repetition-check": "Тройная повторная проверка",
             "stockfish-depth": "Глубина",
             "stockfish-movetime": "Переместить время",
+            "auto-solve-trivial": {
+                "title": "Автоматическое решение тривиальных задач",
+                "prompt": "Спросите меня",
+                "no": "Нет",
+                "yes": "Да"
+            },
             "clean-dialog" : {
                 "title": "Вы уверены?",
                 "subtitle": "Сбросить записи",

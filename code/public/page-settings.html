@@ -67,6 +67,13 @@
       <ion-toggle id="toggleGotoNextPosition" x-text="$t('settings.goto-next-position')" x-bind:aria-label="$t('settings.goto-next-position')" x-bind:checked="gotoNextPosition" color="primary"></ion-toggle>
     </ion-item>
     <ion-item>
+       <ion-select id="autoSolveTrivial" x-bind:value="autoSolveTrivial" x-bind:label="$t('settings.auto-solve-trivial.title')">
+        <ion-select-option value="prompt" x-text="$t('settings.auto-solve-trivial.prompt')"></ion-select-option>
+        <ion-select-option value="yes" x-text="$t('settings.auto-solve-trivial.yes')"></ion-select-option>
+        <ion-select-option value="no" x-text="$t('settings.auto-solve-trivial.no')"></ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
       <ion-toggle id="toggleThreefoldRepetitionCheck" x-text="$t('settings.threefold-repetition-check')" x-bind:aria-label="$t('settings.threefold-repetition-check')" x-bind:checked="threeFoldRepetitionCheck" color="primary"></ion-toggle>
     </ion-item>
     <ion-item>

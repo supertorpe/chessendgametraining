@@ -47,6 +47,7 @@ class PositionController extends BaseController {
   private askingForHint = Alpine.reactive({ value: false });
   private solving = Alpine.reactive({ value: false });
   private solvingTrivial = false;
+  private rememberTrivialSelection = false;
   private assistanceUsed = false;
   private trivialPositionInvitationShown = false;
   private mateDistance = 0;
@@ -805,29 +806,13 @@ class PositionController extends BaseController {
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
-      if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
-        this.trivialPositionInvitationShown = true;
-        alertController.create({
-          header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
-          message: window.AlpineI18n.t('position.confirm-trivial-position.message'),
-          buttons: [
-            {
-              text: window.AlpineI18n.t('position.confirm-trivial-position.no'),
-              role: 'cancel',
-              cssClass: 'overlay-button',
-              handler: () => {
-                nextMove();
-              }
-            }, {
-              text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
-              cssClass: 'overlay-button',
-              handler: () => {
-                this.solvingTrivial = true;
-                this.solve();
-              }
-            }
-          ]
-        }).then(alert => alert.present());
+      const isTrivial = this.isTrivialPosition();
+      const autoSolve = configurationService.configuration.solveTrivialPosition;
+      if (isTrivial && autoSolve) {
+        this.solveTrivialPosition();
+      }
+      else if (isTrivial && autoSolve === null && !this.trivialPositionInvitationShown) {
+        await this.showTrivialPositionAlert(() => nextMove(), () => this.solveTrivialPosition());
       } else {
         nextMove();
       }
@@ -968,6 +953,53 @@ class PositionController extends BaseController {
     else moveFunk.call(this);
   }
 
+  private solveTrivialPosition() {
+    this.solvingTrivial = true;
+    this.solve();
+  }
+
+  private async showTrivialPositionAlert(onNoClick: () => void, onYesClick: () => void) {
+    this.trivialPositionInvitationShown = true;
+    const alert = await alertController.create({
+      header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
+      message: window.AlpineI18n.t('position.confirm-trivial-position.message'),
+      inputs: [
+        {
+          type: "checkbox",
+          label: window.AlpineI18n.t('position.confirm-trivial-position.remember'),
+          handler: (data) => {
+            this.rememberTrivialSelection = data.checked ?? false
+          }
+        }
+      ],
+      buttons: [
+        {
+          text: window.AlpineI18n.t('position.confirm-trivial-position.no'),
+          role: 'cancel',
+          cssClass: 'overlay-button',
+          handler: async () => {
+            if (this.rememberTrivialSelection) {
+              configurationService.configuration.solveTrivialPosition = false;
+              await configurationService.save();
+            }
+            onNoClick()
+          }
+        }, {
+          text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
+          cssClass: 'overlay-button',
+          handler: async () => {
+            if (this.rememberTrivialSelection) {
+              configurationService.configuration.solveTrivialPosition = true;
+              await configurationService.save();
+            }
+            onYesClick()
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   private async processOpponentMove(from: string, to: string, promotion: string | undefined) {
     // if (this.stockfishWarmup) {
     //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
@@ -1000,31 +1032,16 @@ class PositionController extends BaseController {
     });
     if (!ended) {
       soundService.playAudio('move');
+      const isTrivial = this.isTrivialPosition();
+      const autoSolve = configurationService.configuration.solveTrivialPosition;
       if (this.solving.value) {
         this.getOpponentMove();
-      } else if (!this.trivialPositionInvitationShown && this.isTrivialPosition()) {
-        this.trivialPositionInvitationShown = true;
-        alertController.create({
-          header: window.AlpineI18n.t('position.confirm-trivial-position.header'),
-          message: window.AlpineI18n.t('position.confirm-trivial-position.message'),
-          buttons: [
-            {
-              text: window.AlpineI18n.t('position.confirm-trivial-position.no'),
-              role: 'cancel',
-              cssClass: 'overlay-button',
-              handler: () => {
-
-              }
-            }, {
-              text: window.AlpineI18n.t('position.confirm-trivial-position.yes'),
-              cssClass: 'overlay-button',
-              handler: () => {
-                this.solvingTrivial = true;
-                this.solve();
-              }
-            }
-          ]
-        }).then(alert => alert.present());
+      } 
+      else if (isTrivial && autoSolve) {
+        this.solveTrivialPosition();
+      }
+      else if (isTrivial && autoSolve === null && !this.trivialPositionInvitationShown) {
+        await this.showTrivialPositionAlert(() => {}, () => this.solveTrivialPosition());
       } else if (this.mateDistance != 0) {
         if (this.player.value == 'w' && this.mateDistance > 0 || this.player.value == 'b' && this.mateDistance < 0) {
           toastController.create({

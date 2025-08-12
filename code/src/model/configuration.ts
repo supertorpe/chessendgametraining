@@ -5,8 +5,8 @@ import { boardThemeSwitcherService, themeSwitcherService } from '../services';
 
 export type ConfigurationField =
 
-    'useSyzygy' | 'threeFoldRepetitionCheck' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'automaticShowNextPosition' | 'preventScreenOff' |
-    'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive';
+    'useSyzygy' | 'threeFoldRepetitionCheck' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'automaticShowNextPosition' |
+    'solveTrivialPosition' | 'preventScreenOff' | 'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive';
 
 export type ConfigurationChangedEvent = { config: Configuration, field: ConfigurationField };
 
@@ -21,6 +21,7 @@ export class Configuration {
         private _stockfishMovetime: number,
         private _automaticShowFirstPosition: boolean,
         private _automaticShowNextPosition: boolean,
+        private _solveTrivialPosition: boolean | null,
         private _preventScreenOff: boolean,
         private _colorTheme: string,
         private _playSounds: boolean,
@@ -40,6 +41,7 @@ export class Configuration {
             stockfishMovetime: this._stockfishMovetime,
             automaticShowFirstPosition: this._automaticShowFirstPosition,
             automaticShowNextPosition: this._automaticShowNextPosition,
+            solveTrivialPosition: this._solveTrivialPosition,
             preventScreenOff: this._preventScreenOff,
             colorTheme: this._colorTheme,
             playSounds: this._playSounds,
@@ -72,6 +74,9 @@ export class Configuration {
 
     get automaticShowNextPosition(): boolean { return this._automaticShowNextPosition; }
     set automaticShowNextPosition(value: boolean) { this._automaticShowNextPosition = value; this._configurationChangedEmitter.notify({ config: this, field: 'automaticShowNextPosition' }); }
+
+    get solveTrivialPosition(): boolean | null { return this._solveTrivialPosition; }
+    set solveTrivialPosition(value: boolean | null) { this._solveTrivialPosition = value; this._configurationChangedEmitter.notify({ config: this, field: 'solveTrivialPosition' }); }
 
     get preventScreenOff(): boolean { return this._preventScreenOff; }
     set preventScreenOff(value: boolean) { this._preventScreenOff = value; this._configurationChangedEmitter.notify({ config: this, field: 'preventScreenOff' }); }
@@ -109,6 +114,7 @@ export const DEFAULT_CONFIG = new Configuration(
     10,
     true,
     false,
+    null,
     true,
     'dark',
     true,
