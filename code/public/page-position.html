@@ -51,8 +51,39 @@
     </ion-header>
     <ion-content>
         <div class="container">
-            <div x-bind:class="[boardTheme, pieceTheme]">
+            <div x-bind:class="[boardTheme, pieceTheme]" style="position: relative;">
                 <div id="__chessboard__"></div>
+                <!-- Visual Feedback Overlay -->
+                <div x-show="visualFeedback.showSuccess" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-90"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-90"
+                     class="visual-feedback-overlay success-feedback">
+                    <ion-icon name="checkmark-circle" class="feedback-icon success-icon"></ion-icon>
+                </div>
+                <div x-show="visualFeedback.showIncorrect" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 scale-90"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-90"
+                     class="visual-feedback-overlay incorrect-feedback">
+                    <ion-icon name="close-circle" class="feedback-icon incorrect-icon"></ion-icon>
+                </div>
+                <div x-show="visualFeedback.showProgress" 
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="visual-feedback-overlay progress-feedback">
+                     <ion-spinner name="circular" class="feedback-spinner"></ion-spinner>
+                </div>
             </div>
             <div class="info_wrapper">
                 <ion-buttons class="nav_buttons">

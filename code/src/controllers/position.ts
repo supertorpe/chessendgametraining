@@ -2,7 +2,7 @@
 
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, keyboardShortcutsService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, queryParam, randomNumber, setupSEO } from '../commons';
 import { MoveItem, Position } from '../model';
 import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
@@ -58,6 +58,14 @@ class PositionController extends BaseController {
   // private stockfishWarmup = false;
   private stockfishWarningShowed = false;
   private stockfishWarnTimeout: number | null = null;
+  public visualFeedback = Alpine.reactive({
+    showSuccess: false,
+    showIncorrect: false,
+    showProgress: false,
+    successTimeout: null as number | null,
+    incorrectTimeout: null as number | null,
+    progressTimeout: null as number | null,
+  });
 
   constructor() {
     super();
@@ -88,7 +96,7 @@ class PositionController extends BaseController {
       infoWrapper.style.width = '100%';
       infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
-    infoMoves.style.height = `${infoWrapper.clientHeight - + actionButtons.clientHeight}px`;
+    infoMoves.style.height = `${infoWrapper.clientHeight - actionButtons.clientHeight}px`;
     actionButtons.style.width = `${infoWrapper.clientWidth}px`;
   }
 
@@ -385,6 +393,68 @@ class PositionController extends BaseController {
     // prevent screen off
     requestWakeLock();
 
+    // Define and add keyboard shortcuts
+    const shortcuts = [
+      {
+        key: 'ArrowLeft',
+        description: 'Navigate to previous position',
+        action: () => self.showPreviousPosition.call(self)
+      },
+      {
+        key: 'ArrowRight',
+        description: 'Navigate to next position',
+        action: () => self.showNextPosition.call(self)
+      },
+      {
+        key: 'r',
+        description: 'Restart current position',
+        action: () => self.showRestartDialog.call(self)
+      },
+      {
+        key: 'Escape',
+        description: 'Stop thinking or exit',
+        action: () => {
+          if (self.solving.value || self.waitingForOpponent.value) {
+            self.stop.call(self);
+          }
+          // Additional escape logic can be added here for modals, etc.
+        }
+      },
+      {
+        key: 'h',
+        description: 'Get a hint',
+        action: () => self.hint.call(self)
+      },
+      {
+        key: 's',
+        description: 'Solve current position',
+        action: () => self.solve.call(self)
+      }
+    ];
+
+    shortcuts.forEach(shortcut => {
+      keyboardShortcutsService.addShortcut(shortcut);
+    });
+
+    // Start listening for keyboard events
+    keyboardShortcutsService.init();
+
+    // Cleanup on exit
+    this.onExit = () => {
+      keyboardShortcutsService.destroy();
+      // ... existing exit logic ...
+      return self.showExitDialog().then((result) => {
+        if (result) {
+          self.stopStockfish();
+          menuController.get(MAIN_MENU_ID).then(function (menu) {
+            if (menu) menu.swipeGesture = true;
+          });
+          releaseWakeLock();
+        }
+        return result;
+      });
+    };
+
     this.useSyzygy = configurationService.configuration.useSyzygy;
     this.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck;
     stockfishService.debug = (queryParam('debug') == 'true');
@@ -540,7 +610,7 @@ class PositionController extends BaseController {
         self.stop.call(self);
       },
       hint() {
-        self.getHint.call(self);
+        self.hint.call(self);
       },
       solve() {
         self.solve.call(self);
@@ -648,6 +718,33 @@ class PositionController extends BaseController {
             case 'threeFoldRepetitionCheck': self.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck; break;
           }
         });
+      },
+      showVisualFeedback(type: 'success' | 'incorrect' | 'progress') {
+        const feedback = self.visualFeedback;
+        feedback.showSuccess = type === 'success';
+        feedback.showIncorrect = type === 'incorrect';
+        feedback.showProgress = type === 'progress';
+
+        // Clear existing timeouts
+        if (feedback.successTimeout) clearTimeout(feedback.successTimeout);
+        if (feedback.incorrectTimeout) clearTimeout(feedback.incorrectTimeout);
+        if (feedback.progressTimeout) clearTimeout(feedback.progressTimeout);
+
+        // Set timeout to hide feedback
+        const timeout = 2000; // 2 seconds
+        if (type === 'success') {
+          feedback.successTimeout = window.setTimeout(() => {
+            feedback.showSuccess = false;
+          }, timeout) as unknown as number;
+        } else if (type === 'incorrect') {
+          feedback.incorrectTimeout = window.setTimeout(() => {
+            feedback.showIncorrect = false;
+          }, timeout) as unknown as number;
+        } else if (type === 'progress') {
+          feedback.progressTimeout = window.setTimeout(() => {
+            feedback.showProgress = false;
+          }, timeout) as unknown as number;
+        }
       }
     }));
   }
@@ -806,6 +903,8 @@ class PositionController extends BaseController {
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
+      // Show progress feedback while opponent is thinking
+      (this as any).showVisualFeedback('progress'); 
       const isTrivial = this.isTrivialPosition();
       const autoSolve = configurationService.configuration.solveTrivialPosition;
       if (isTrivial && autoSolve) {
@@ -837,8 +936,10 @@ class PositionController extends BaseController {
 
       if (goalAchieved) {
         soundService.playAudio('success');
+        (this as any).showVisualFeedback('success'); // Show success feedback
       } else {
         soundService.playAudio('fail');
+        // (this as any).showVisualFeedback('incorrect'); // Optionally show incorrect feedback for game over
       }
 
       // update database status
@@ -917,7 +1018,7 @@ class PositionController extends BaseController {
     return result;
   }
 
-  private getHint() {
+  public hint() {
     this.askingForHint.value = true;
     this.getOpponentMove();
   }
@@ -1010,6 +1111,11 @@ class PositionController extends BaseController {
     if (this.askingForHint.value) {
       this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
       this.askingForHint.value = false;
+      // Show progress feedback briefly after hint is shown
+      (this as any).showVisualFeedback('progress');
+      setTimeout(() => {
+        (this as any).showVisualFeedback('incorrect'); // Or some other indicator for hint
+      }, 1000);
       return;
     }
     const promo = (promotion == 'r' || promotion == 'n' || promotion == 'b' || promotion == 'q') ? promotion : undefined;
@@ -1035,9 +1141,11 @@ class PositionController extends BaseController {
       const isTrivial = this.isTrivialPosition();
       const autoSolve = configurationService.configuration.solveTrivialPosition;
       if (this.solving.value) {
+        (this as any).showVisualFeedback('progress'); // Show progress while solving continues
         this.getOpponentMove();
       } 
       else if (isTrivial && autoSolve) {
+        (this as any).showVisualFeedback('progress');
         this.solveTrivialPosition();
       }
       else if (isTrivial && autoSolve === null && !this.trivialPositionInvitationShown) {
@@ -1069,7 +1177,7 @@ class PositionController extends BaseController {
           positionAnchor: '__chessboard__',
           animated: false,
           color: 'warning',
-          duration: 1000
+            duration: 1000
         }).then(toast => toast.present());
       }
     }
