@@ -11,4 +11,6 @@ export * from './stockfish-service';
 export * from './sound-service';
 export * from './wakelock-service';
 export * from './google-drive-service';
+export * from './language-service';
+export * from './keyboard-shortcuts-service';
 export * from './services';

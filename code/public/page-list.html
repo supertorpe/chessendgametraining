@@ -22,6 +22,10 @@
             <template x-for="imageUrl in subcategory.imageUrls">
                 <img x-bind:src="imageUrl" alt="ariaDescriptionFromIcon(imageUrl)" class="responsive-thumbnail aura" />
             </template>
+            <div class="progress-info" x-show="getProgressPercentage() > 0">
+                <span x-text="getSolvedCount() + '/' + gameCount"></span>
+                <span x-text="' (' + getProgressPercentage() + '%)'"></span>
+            </div>
         </ion-title>
     </ion-toolbar>
     <ion-content class="list-content">
@@ -35,7 +39,19 @@
                                     x-bind:href="'position/' + idxCategory + '/' + idxSubcategory + '/' + ((i-1)*6+j-1)"
                                     data-navigo
                                     x-bind:color="!subcategory.games[(i-1)*6+j-1]?.record ? ( subcategory.games[(i-1)*6+j-1]?.target == 'draw' ? 'medium' : 'light' ) : subcategory.games[(i-1)*6+j-1]?.record < 0 ? 'warning' : 'success'"
-                                    expand="block" x-text="1 + (i-1)*6+j-1"></ion-button>
+                                    expand="block">
+                                    <div class="button-content">
+                                        <span x-text="1 + (i-1)*6+j-1"></span>
+                                        <div class="difficulty-stars">
+                                            <template x-for="star in getDifficultyStars(subcategory.games[(i-1)*6+j-1]?.record)">
+                                                <ion-icon name="star" class="star-filled"></ion-icon>
+                                            </template>
+                                            <template x-for="star in 5 - getDifficultyStars(subcategory.games[(i-1)*6+j-1]?.record)">
+                                                <ion-icon name="star-outline" class="star-empty"></ion-icon>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </ion-button>
                             </ion-col>
                         </template>
                     </template>

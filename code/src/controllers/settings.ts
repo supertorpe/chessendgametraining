@@ -1,7 +1,7 @@
 // This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
 
 import { PIECE_THEMES, BOARD_THEMES } from '../commons';
-import { redrawIconImages, themeSwitcherService, configurationService, endgameDatabaseService } from '../services';
+import { redrawIconImages, themeSwitcherService, configurationService, endgameDatabaseService, languageService } from '../services';
 import { BaseController } from './controller';
 import Alpine from 'alpinejs';
 import { toastController } from '@ionic/core';
@@ -57,6 +57,30 @@ class SettingsController extends BaseController {
             setBoardTheme(boardTheme: string) {
                 this.currentBoardTheme = boardTheme;
                 configurationService.configuration.boardTheme = boardTheme;
+            },
+            // language
+            showLanguages: false,
+            availableLanguages: languageService.getSupportedLanguages(),
+            currentLanguage: configurationService.configuration.language,
+            toggleLanguages() {
+                this.showLanguages = !this.showLanguages;
+                this.showThemes = false;
+                this.showPieceThemes = false;
+                this.showBoardThemes = false;
+            },
+            setLanguage(languageCode: string) {
+                this.currentLanguage = languageCode;
+                configurationService.configuration.language = languageCode;
+                languageService.setLanguage(languageCode);
+            },
+            getCurrentLanguageDisplay() {
+                if (this.currentLanguage === 'auto') {
+                    const detectedLang = languageService.detectBrowserLanguage();
+                    const lang = this.availableLanguages.find(l => l.code === detectedLang);
+                    return `Auto (${lang?.nativeName || 'English'})`;
+                }
+                const lang = this.availableLanguages.find(l => l.code === this.currentLanguage);
+                return lang?.nativeName || 'English';
             },
             // goto first position
             gotoFirstPosition: configurationService.configuration.automaticShowFirstPosition,
@@ -231,7 +255,7 @@ class SettingsController extends BaseController {
                     if (typeof stockfishMovetimeRange.value ===  'number') this.changeStockfishMovetime(stockfishMovetimeRange.value);
                 });
 
-                ['showThemes', 'showPieceThemes', 'showBoardThemes'].forEach((item) => {
+                ['showThemes', 'showPieceThemes', 'showBoardThemes', 'showLanguages'].forEach((item) => {
                     this.$watch(item, (_value) => {
                         redrawIconImages();
                     });
@@ -250,6 +274,7 @@ class SettingsController extends BaseController {
                         case 'pieceTheme' : this.currentPieceTheme = event.config.pieceTheme; break;
                         case 'boardTheme' : this.currentBoardTheme = event.config.boardTheme; break;
                         case 'syncGoogleDrive' : this.syncGoogleDrive = event.config.syncGoogleDrive; break;
+                        case 'language' : this.currentLanguage = event.config.language; break;
                     }
                 });
             }

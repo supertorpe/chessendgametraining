@@ -10,6 +10,7 @@ import { boardThemeSwitcherService } from './board-theme-switcher-service';
 import { syzygyService } from './syzygy-service';
 import { stockfishService } from './stockfish-service';
 import { soundService } from './sound-service';
+import { keyboardShortcutsService } from './keyboard-shortcuts-service';
 import { isBot } from '../commons';
 
 export function services_initialize() {
@@ -22,6 +23,7 @@ export function services_initialize() {
         .then(() => boardThemeSwitcherService.init())
         .then(() => endgameDatabaseService.init())
         .then(() => alpineService.init())
+        .then(() => keyboardShortcutsService.init())
+        .then(() => keyboardShortcutsService.addCommonShortcuts())
         ;
-
 }

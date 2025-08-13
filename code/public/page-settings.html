@@ -60,6 +60,24 @@
       </template>
       </ion-item>
     </template>
+    <ion-item x-on:click="toggleLanguages()" button="true" detail="false">
+      <ion-label>Language / Dil / Язык / Idioma</ion-label>
+      <ion-note slot="end" x-text="getCurrentLanguageDisplay()"></ion-note>
+      <ion-icon slot="end" x-bind:data-name="showLanguages ? 'caret-down' : 'caret-forward'" color="medium"
+        class="aura"></ion-icon>
+    </ion-item>
+    <template x-if="showLanguages">
+      <ion-item x-on:click="setLanguage('auto')" button="true" detail="false"
+        x-bind:color="currentLanguage === 'auto' ? 'medium' : ''">
+        <ion-label>🌐 Auto</ion-label>
+      </ion-item>
+      <template x-for="language in availableLanguages" :key="language.code">
+        <ion-item x-on:click="setLanguage(language.code)" button="true" detail="false"
+          x-bind:color="currentLanguage === language.code ? 'medium' : ''">
+          <ion-label x-text="language.flag + ' ' + language.nativeName"></ion-label>
+        </ion-item>
+      </template>
+    </template>
     <ion-item>
       <ion-toggle id="toggleGotoFirstPosition" x-text="$t('settings.goto-first-position')" x-bind:aria-label="$t('settings.goto-first-position')" x-bind:checked="gotoFirstPosition" color="primary"></ion-toggle>
     </ion-item>
