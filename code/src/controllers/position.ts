@@ -67,6 +67,34 @@ class PositionController extends BaseController {
     progressTimeout: null as number | null,
   });
 
+  public showVisualFeedback(type: 'success' | 'incorrect' | 'progress') {
+    const feedback = this.visualFeedback;
+    feedback.showSuccess = type === 'success';
+    feedback.showIncorrect = type === 'incorrect';
+    feedback.showProgress = type === 'progress';
+
+    // Clear existing timeouts
+    if (feedback.successTimeout) clearTimeout(feedback.successTimeout);
+    if (feedback.incorrectTimeout) clearTimeout(feedback.incorrectTimeout);
+    if (feedback.progressTimeout) clearTimeout(feedback.progressTimeout);
+
+    // Set timeout to hide feedback
+    const timeout = 2000; // 2 seconds
+    if (type === 'success') {
+      feedback.successTimeout = window.setTimeout(() => {
+        feedback.showSuccess = false;
+      }, timeout) as unknown as number;
+    } else if (type === 'incorrect') {
+      feedback.incorrectTimeout = window.setTimeout(() => {
+        feedback.showIncorrect = false;
+      }, timeout) as unknown as number;
+    } else if (type === 'progress') {
+      feedback.progressTimeout = window.setTimeout(() => {
+        feedback.showProgress = false;
+      }, timeout) as unknown as number;
+    }
+  }
+
   constructor() {
     super();
     stockfishService.messageEmitter.addEventListener((message: string) => this.stockfishMessage(message));
@@ -569,6 +597,7 @@ class PositionController extends BaseController {
       showNavNext: self.showNavNext,
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
+      visualFeedback: self.visualFeedback,
       toggleManualMode() {
         this.manualMode.value = !this.manualMode.value;
         toastController.create({
@@ -678,6 +707,9 @@ class PositionController extends BaseController {
       lichessAnalysis() {
         window.open(`https://lichess.org/analysis/${this.chess.fen()}`, '_blank');
       },
+      showVisualFeedback(type: 'success' | 'incorrect' | 'progress') {
+        self.showVisualFeedback(type);
+      },
       init() {
         self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
         // resize the board on the next tick, when the DOM of the chessboard has been loaded
@@ -719,33 +751,6 @@ class PositionController extends BaseController {
           }
         });
       },
-      showVisualFeedback(type: 'success' | 'incorrect' | 'progress') {
-        const feedback = self.visualFeedback;
-        feedback.showSuccess = type === 'success';
-        feedback.showIncorrect = type === 'incorrect';
-        feedback.showProgress = type === 'progress';
-
-        // Clear existing timeouts
-        if (feedback.successTimeout) clearTimeout(feedback.successTimeout);
-        if (feedback.incorrectTimeout) clearTimeout(feedback.incorrectTimeout);
-        if (feedback.progressTimeout) clearTimeout(feedback.progressTimeout);
-
-        // Set timeout to hide feedback
-        const timeout = 2000; // 2 seconds
-        if (type === 'success') {
-          feedback.successTimeout = window.setTimeout(() => {
-            feedback.showSuccess = false;
-          }, timeout) as unknown as number;
-        } else if (type === 'incorrect') {
-          feedback.incorrectTimeout = window.setTimeout(() => {
-            feedback.showIncorrect = false;
-          }, timeout) as unknown as number;
-        } else if (type === 'progress') {
-          feedback.progressTimeout = window.setTimeout(() => {
-            feedback.showProgress = false;
-          }, timeout) as unknown as number;
-        }
-      }
     }));
   }
 

@@ -62,7 +62,9 @@
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-90"
                      class="visual-feedback-overlay success-feedback">
-                    <ion-icon name="checkmark-circle" class="feedback-icon success-icon"></ion-icon>
+                    <svg class="feedback-icon success-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm114.069 190.839l-131.087 131.087c-9.373 9.373-24.569 9.373-33.941 0l-75.47-75.47c-9.373-9.373-9.373-24.569 0-33.941s24.569-9.373 33.941 0l56.985 56.985L336.128 165.9c9.373-9.373 24.569-9.373 33.941 0 9.372 9.372 9.372 24.568 0 33.939z"/>
+                    </svg>
                 </div>
                 <div x-show="visualFeedback.showIncorrect" 
                      x-transition:enter="transition ease-out duration-300"
@@ -72,7 +74,9 @@
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-90"
                      class="visual-feedback-overlay incorrect-feedback">
-                    <ion-icon name="close-circle" class="feedback-icon incorrect-icon"></ion-icon>
+                    <svg class="feedback-icon incorrect-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm164.069 325.839l-184.069-184.07-49.07 49.071 184.069 184.07 49.07-49.071zM88.431 325.839l49.07 49.071 184.069-184.07-49.07-49.071L88.431 325.839z"/>
+                    </svg>
                 </div>
                 <div x-show="visualFeedback.showProgress" 
                      x-transition:enter="transition ease-out duration-300"
