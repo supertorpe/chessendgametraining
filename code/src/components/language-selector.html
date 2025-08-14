@@ -1,0 +1,52 @@
+<div class="language-selector" x-data="{
+    currentLang: $store.i18n.currentLanguage,
+    languages: [
+        { code: 'en', name: 'English' },
+        { code: 'tr', name: 'Türkçe' }
+    ]
+}" x-init="currentLang = $store.i18n.currentLanguage">
+    <select x-model="currentLang" @change="$store.i18n.setLanguage(currentLang)"
+           class="language-select"
+          :title="$store.i18n.t('language-selector')">
+        <template x-for="lang in languages" :key="lang.code">
+            <option :value="lang.code" x-text="lang.name"></option>
+        </template>
+    </select>
+</div>
+
+<style>
+.language-selector {
+    position: relative;
+    display: inline-block;
+}
+
+.language-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.language-select:hover {
+    border-color: #999;
+}
+
+.language-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .language-select {
+        font-size: 12px;
+        padding: 6px 10px;
+        min-width: 100px;
+    }
+}
+</style>
