@@ -73,14 +73,14 @@
   - Create language preference persistence in configuration service
   - _Requirements: 1.1, 1.2_
 
-- [ ] 4.3 Add automatic Turkish language detection
+- [x] 4.3 Add automatic Turkish language detection
 
   - Implement browser language detection for Turkish (tr, tr-TR)
   - Add fallback logic for Turkish language variants
   - Create automatic language initialization on first app load
   - _Requirements: 1.1_
-- [] 5. Implement enhanced UI components
-- [] 5.1 Add keyboard shortcuts system
+- [x] 5. Implement enhanced UI components
+- [x] 5.1 Add keyboard shortcuts system
 
   - Create keyboard shortcut definitions for common actions
   - Implement keyboard event handling for position navigation
