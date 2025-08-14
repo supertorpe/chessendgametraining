@@ -73,29 +73,28 @@
   - Create language preference persistence in configuration service
   - _Requirements: 1.1, 1.2_
 
-- [x] 4.3 Add automatic Turkish language detection
+- [ ] 4.3 Add automatic Turkish language detection
 
   - Implement browser language detection for Turkish (tr, tr-TR)
   - Add fallback logic for Turkish language variants
   - Create automatic language initialization on first app load
   - _Requirements: 1.1_
-
-- [x] 5. Implement enhanced UI components
-- [x] 5.1 Add keyboard shortcuts system
+- [] 5. Implement enhanced UI components
+- [] 5.1 Add keyboard shortcuts system
 
   - Create keyboard shortcut definitions for common actions
   - Implement keyboard event handling for position navigation
   - Add keyboard shortcuts for move input and game controls
   - _Requirements: 3.1_
 
-- [x] 5.2 Create enhanced visual feedback system
+- [] 5.2 Create enhanced visual feedback system
 
   - Implement animated feedback for puzzle completion
   - Add visual indicators for correct and incorrect moves
   - Create progress animations and success celebrations
   - _Requirements: 3.2_
 
-- [x] 5.3 Add progress indicators and statistics
+- [] 5.3 Add progress indicators and statistics
 
   - Create progress tracking components for position lists
   - Implement difficulty rating display for positions

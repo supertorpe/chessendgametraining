@@ -5,7 +5,7 @@ import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, keyboardShortcutsService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, queryParam, randomNumber, setupSEO } from '../commons';
 import { MoveItem, Position } from '../model';
-import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
+import { Chess, SQUARES, Square, PieceSymbol } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
 import { MoveMetadata, Color, Key } from 'chessground/types';
@@ -19,7 +19,7 @@ import { checkmateCatalog } from '../static';
 class PositionController extends BaseController {
 
   private seo!: string;
-  private chess: ChessInstance = Chess();
+  private chess: Chess = new Chess();
   private board!: Api;
   private boardConfig!: Config;
   private position!: Position | undefined;
@@ -344,7 +344,7 @@ class PositionController extends BaseController {
       const lastMove = history[history.length - 1];
       const prevLastMove = history.length > 1 ? history[history.length - 2] : undefined;
 
-      this.gameOver.value = this.chess.game_over();
+      this.gameOver.value = this.chess.isGameOver();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       if (prevFen) {
         this.board.set({
@@ -383,7 +383,7 @@ class PositionController extends BaseController {
       }
     } else {
       this.chess.load(this.fen.value);
-      this.gameOver.value = this.chess.game_over();
+      this.gameOver.value = this.chess.isGameOver();
       const turn = this.chess.turn() == 'w' ? 'white' : 'black';
       this.board.set({
         fen: this.chess.fen(),
@@ -711,13 +711,22 @@ class PositionController extends BaseController {
         self.showVisualFeedback(type);
       },
       init() {
-        self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
-        // resize the board on the next tick, when the DOM of the chessboard has been loaded
-        requestAnimationFrame(() => {
-          self.resizeBoard();
+        const chessboardElement = document.getElementById('__chessboard__');
+        if (chessboardElement) {
+          self.board = Chessground(chessboardElement, self.boardConfig);
+          // resize the board on the next tick, when the DOM of the chessboard has been loaded
+          requestAnimationFrame(() => {
+            self.resizeBoard();
+          });
+        }
+        
+        this.$nextTick().then(() => {
+          routeService.updatePageLinks();
         });
-        this.$nextTick().then(() => { routeService.updatePageLinks(); });
-        if (self.player.value != this.chess.turn()) self.getOpponentMove.call(self);
+        
+        if (self.player.value != this.chess.turn()) {
+          self.getOpponentMove.call(self);
+        }
         ['manualMode'].forEach((item) => {
           this.$watch(item, (_value) => {
             redrawIconImages();
@@ -875,7 +884,7 @@ class PositionController extends BaseController {
       return !(whiteHasOtherPieces && blackHasOtherPieces);
     }
   */
-  private async registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
+  private async registerMove(source: Square, target: Square, promotion: Exclude<PieceSymbol, "p" | "k"> | undefined) {
     // if (this.stockfishWarmup) {
     //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
     // }
@@ -924,15 +933,15 @@ class PositionController extends BaseController {
   }
 
   private checkEnding(): boolean {
-    const result = this.chess.game_over() && (this.chess.in_checkmate() || this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition());
+    const result = this.chess.isGameOver() && (this.chess.isCheckmate() || this.threeFoldRepetitionCheck || !this.chess.isThreefoldRepetition());
     if (result) {
       this.gameOver.value = true;
       const wasSolving = this.solving.value;
       this.solving.value = false;
       this.solvingTrivial = false;
 
-      let goalAchieved = ('checkmate' !== this.target.value && !this.chess.in_checkmate() ||
-        'checkmate' == this.target.value && this.chess.in_checkmate() && this.player.value != this.chess.turn());
+      let goalAchieved = ('checkmate' !== this.target.value && !this.chess.isCheckmate() ||
+        'checkmate' == this.target.value && this.chess.isCheckmate() && this.player.value != this.chess.turn());
       const moveCount = this.chess.history().length;
       if (goalAchieved && this.checkmateMoves.value > 0 && this.checkmateMoves.value < Math.ceil(moveCount / 2)) {
         goalAchieved = false;
@@ -959,15 +968,15 @@ class PositionController extends BaseController {
       }
 
       let header;
-      if (this.chess.in_checkmate())
+      if (this.chess.isCheckmate())
         header = 'position.checkmate';
-      else if (this.chess.in_stalemate())
+      else if (this.chess.isStalemate())
         header = 'position.stalemate';
-      else if (this.chess.insufficient_material())
+      else if (this.chess.isInsufficientMaterial())
         header = 'position.insufficent-material';
-      else if (this.chess.in_threefold_repetition())
+      else if (this.chess.isThreefoldRepetition())
         header = 'position.three-repetition';
-      else if (this.chess.in_draw())
+      else if (this.chess.isDraw())
         header = 'position.rule-fifty';
       else
         header = 'position.game-over';
@@ -1114,12 +1123,22 @@ class PositionController extends BaseController {
     if (!this.solvingTrivial && (this.askingForHint.value || this.solving.value)) this.assistanceUsed = true;
     redrawIconImages();
     if (this.askingForHint.value) {
-      this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
+      // Show the hint move on the board
+      this.board.move(from as Key, to as Key);
       this.askingForHint.value = false;
-      // Show progress feedback briefly after hint is shown
+      // Show hint feedback
       (this as any).showVisualFeedback('progress');
       setTimeout(() => {
-        (this as any).showVisualFeedback('incorrect'); // Or some other indicator for hint
+        // Revert the move and show the current position
+        this.board.set({
+          fen: this.chess.fen(),
+          turnColor: this.chess.turn() == 'w' ? 'white' : 'black',
+          viewOnly: false,
+          movable: {
+            color: this.chess.turn() == 'w' ? 'white' : 'black',
+            dests: this.toDests()
+          }
+        });
       }, 1000);
       return;
     }
@@ -1175,7 +1194,7 @@ class PositionController extends BaseController {
             duration: 1000
           }).then(toast => toast.present());
         }
-      } else if (this.unfeasibleMate && (this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition()) && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
+      } else if (this.unfeasibleMate && (this.threeFoldRepetitionCheck || !this.chess.isThreefoldRepetition()) && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
         toastController.create({
           message: window.AlpineI18n.t('position.unfeasible-mate'),
           position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
@@ -1202,15 +1221,21 @@ class PositionController extends BaseController {
         // otherwise, annotate the candidates reported by syzygy and query stockfish
         let move;
         // if it's a winning position and all the moves come with DTM informed, take the first one (syzygy returns them in order)
-        if (data.category == 'win' && data.moves.filter((move: any) => move.category === "loss" && move.dtm == null).length == 0) {
+        if (data.category == 'win' && data.moves.filter((move: any) => {
+          return move.category === "loss" && move.dtm == null;
+        }).length == 0) {
           move = data.moves[0];
         }
         else {
           // otherwise get the candidates
           if (data.category == 'win') {
-            this.syzygyCandidates = data.moves.filter((move: any) => move.category == 'loss');
+            this.syzygyCandidates = data.moves.filter((move: any) => {
+              return move.category == 'loss';
+            });
           } else if (data.category == 'draw') {
-            this.syzygyCandidates = data.moves.filter((move: any) => move.category == 'draw');
+            this.syzygyCandidates = data.moves.filter((move: any) => {
+              return move.category == 'draw';
+            });
           }
           // if there is only one candidate, use it
           if (this.syzygyCandidates.length == 1) {
@@ -1306,7 +1331,9 @@ class PositionController extends BaseController {
       let promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
       // check if there are syzygy candidates. If so, make sure that stockfish suggestion is within them
       if (this.syzygyCandidates.length > 0) {
-        const item = this.syzygyCandidates.filter((move: any) => { return move.uci == (promotion == undefined ? `${from}${to}` : `${from}${to}${promotion}`) });
+        const item = this.syzygyCandidates.filter((move: any) => {
+          return move.uci == (promotion == undefined ? `${from}${to}` : `${from}${to}${promotion}`);
+        });
         if (item.length == 0) {
           match = this.syzygyBestCandidate.uci.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
           from = match[1];
