@@ -1,0 +1,504 @@
+<ion-app x-data="positionApp()">
+  <!-- Debug: Check Alpine.js binding -->
+  <div x-data="{ debug: Alpine?.data }" x-init="console.log('Alpine debug:', debug)">
+    Alpine.js binding test
+  </div>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button default-href="/list/0/0"></ion-back-button>
+      </ion-buttons>
+      <ion-title x-text="$t('position.title')"></ion-title>
+      <ion-buttons slot="end">
+        <ion-button @click="showSettings()">
+          <ion-icon name="settings"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <!-- Debug: Alpine.js initialization -->
+    <div x-data="{
+      alpineReady: false,
+      init() {
+        console.log('Alpine debug component initializing...');
+        this.alpineReady = true;
+        console.log('Alpine debug component ready:', this.alpineReady);
+      }
+    }">
+      <div x-show="alpineReady" class="alpine-debug">
+        Alpine.js Status: <span x-text="alpineReady ? 'Ready' : 'Not Ready'"></span>
+      </div>
+    </div>
+    
+    <!-- Debug: positionApp function -->
+    <div x-data="{
+      positionAppStatus: 'unknown',
+      positionAppData: null,
+      initCalled: false,
+      initExecuted: false,
+      initMessage: '',
+      chessBoardCreated: false,
+      chessgroundTest: null,
+      i18nStatus: 'unknown',
+      i18nTitle: '',
+      i18nDirectTest: '',
+      i18nDirect: null,
+      i18nStore: null,
+      i18nLocale: '',
+      i18nAvailable: false,
+      i18nDirectCall: null,
+      i18nDirectCall2: null,
+      i18nDirectCall3: null,
+      i18nDirectCall4: null,
+      i18nDirectCall5: null,
+      i18nDirectCall6: null,
+      i18nDirectCall7: null,
+      i18nDirectCall8: null,
+      i18nDirectCall9: null,
+      i18nDirectCall10: null,
+      i18nDirectCall11: null,
+      i18nDirectCall12: null,
+      i18nDirectCall13: null,
+      i18nDirectCall14: null,
+      i18nDirectCall15: null,
+      i18nDirectCall16: null,
+      i18nDirectCall17: null,
+      i18nDirectCall18: null,
+      i18nDirectCall19: null,
+      i18nDirectCall20: null,
+      i18nDirectCall21: null,
+      i18nDirectCall22: null,
+      i18nDirectCall23: null,
+      i18nDirectCall24: null,
+      i18nDirectCall25: null,
+      i18nDirectCall26: null,
+      i18nDirectCall27: null,
+      i18nDirectCall28: null,
+      i18nDirectCall29: null,
+      i18nDirectCall30: null,
+      i18nDirectCall31: null,
+      i18nDirectCall32: null,
+      i18nDirectCall33: null,
+      i18nDirectCall34: null,
+      i18nDirectCall35: null,
+      i18nDirectCall36: null,
+      i18nDirectCall37: null,
+      i18nDirectCall38: null,
+      i18nDirectCall39: null,
+      i18nDirectCall40: null,
+      i18nDirectCall41: null,
+      i18nDirectCall42: null,
+      i18nDirectCall43: null,
+      i18nDirectCall44: null,
+      i18nDirectCall45: null,
+      i18nDirectCall46: null,
+      i18nDirectCall47: null,
+      i18nDirectCall48: null,
+      i18nDirectCall49: null,
+      i18nDirectCall50: null,
+      i18nDirectCall51: null,
+      i18nDirectCall52: null,
+      i18nDirectCall53: null,
+      i18nDirectCall54: null,
+      i18nDirectCall55: null,
+      i18nDirectCall56: null,
+      i18nDirectCall57: null,
+      i18nDirectCall58: null,
+      init() {
+        console.log('positionApp debug check...');
+        if (typeof window.positionApp === 'function') {
+          this.positionAppStatus = 'function';
+          console.log('positionApp is a function');
+          try {
+            const appData = window.positionApp();
+            this.positionAppData = appData;
+            console.log('positionApp data:', appData);
+            
+            // Check if init method exists
+            if (typeof appData.init === 'function') {
+              console.log('positionApp has init method');
+              this.initCalled = true;
+              this.initMessage = 'init method found';
+              
+              // Try to call init method
+              try {
+                appData.init();
+                this.initExecuted = true;
+                this.initMessage = 'init executed successfully';
+                console.log('positionApp.init() executed successfully');
+                
+                // Check if chess board was created
+                setTimeout(() => {
+                  const boardElement = document.getElementById('chess-board');
+                  this.chessBoardCreated = !!boardElement;
+                  console.log('Chess board element:', boardElement);
+                  console.log('Chess board created:', this.chessBoardCreated);
+                }, 100);
+              } catch (initError) {
+                console.error('Error executing positionApp.init():', initError);
+                this.initExecuted = false;
+                this.initMessage = 'init execution failed: ' + initError;
+              }
+            } else {
+              console.log('positionApp does not have init method');
+              this.initMessage = 'init method not found';
+            }
+          } catch (error) {
+            console.error('Error getting positionApp data:', error);
+            this.positionAppStatus = 'error';
+            this.initMessage = 'error getting positionApp data: ' + error;
+          }
+        } else {
+          this.positionAppStatus = 'not function';
+          console.log('positionApp is not a function:', typeof window.positionApp);
+          this.initMessage = 'positionApp is not a function';
+        }
+      }
+    }">
+      positionApp Status: <span x-text="positionAppStatus"></span>
+      <div x-show="positionAppData">
+        positionApp Keys: <span x-text="Object.keys(positionAppData || {}).join(', ')"></span>
+      </div>
+      <div x-show="initCalled">
+        init Method: <span x-text="initCalled ? 'Found' : 'Not Found'"></span>
+      </div>
+      <div x-show="initMessage">
+        init Message: <span x-text="initMessage"></span>
+      </div>
+      <div x-show="chessBoardCreated !== null">
+        Chess Board Created: <span x-text="chessBoardCreated ? 'Yes' : 'No'"></span>
+      </div>
+      <div x-show="chessBoardCreated === false">
+        Chess Board Debug:
+        <span x-text="'Element found: ' + !!document.getElementById('chess-board')"></span>,
+        <span x-text="'Element by __chessboard__: ' + !!document.getElementById('__chessboard__')"></span>
+      </div>
+      <div x-show="chessBoardCreated === false">
+        All board elements:
+        <span x-text="Array.from(document.querySelectorAll('[id*=\"chess\"], [id*=\"board\"]')).map(el => el.id).join(', ')"></span>
+      </div>
+      <div x-show="chessBoardCreated === false">
+        Chessground check:
+        <span x-text="'Chessground available: ' + typeof window.Chessground !== 'undefined'"></span>
+      </div>
+      <div x-show="chessBoardCreated === false">
+        Chessground version: <span x-text="typeof window.Chessground !== 'undefined' ? window.Chessground.name || 'unknown' : 'N/A'"></span>
+      </div>
+      <div x-show="chessBoardCreated === false">
+        Chessground debug:
+        <span x-text="'Chessground function: ' + typeof window.Chessground"></span>,
+        <span x-text="'Chessground constructor: ' + (typeof window.Chessground === 'function' ? 'function' : 'not function')"></span>
+      </div>
+      <div x-show="chessBoardCreated === false">
+        Chessground test call:
+        <span x-text="'Testing Chessground call...'"></span>
+        <span x-init="
+          try {
+            const testBoard = document.createElement('div');
+            testBoard.id = 'test-chessboard';
+            document.body.appendChild(testBoard);
+            const result = window.Chessground(testBoard, { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' });
+            console.log('Chessground test result:', result);
+            this.chessgroundTest = 'success';
+          } catch (error) {
+            console.error('Chessground test error:', error);
+            this.chessgroundTest = 'error: ' + error;
+          }
+        "></span>
+        <span x-show="chessgroundTest !== null">Chessground Test Result: <span x-text="chessgroundTest"></span></span>
+      </div>
+      <div x-show="i18nStatus !== 'unknown'">
+        Alpine I18n Status: <span x-text="i18nStatus"></span>
+      </div>
+      <div x-show="i18nTitle">
+        I18n Title Test: <span x-text="i18nTitle"></span>
+      </div>
+      <div x-show="i18nDirectTest">
+        I18n Direct Test: <span x-text="i18nDirectTest"></span>
+      </div>
+      <div x-show="i18nDirect !== null">
+        I18n Direct: <span x-text="i18nDirect"></span>
+      </div>
+      <div x-show="i18nStore !== null">
+        I18n Store: <span x-text="i18nStore"></span>
+      </div>
+      <div x-show="i18nLocale">
+        I18n Locale: <span x-text="i18nLocale"></span>
+      </div>
+      <div x-show="i18nAvailable">
+        I18n Available: <span x-text="i18nAvailable ? 'Yes' : 'No'"></span>
+      </div>
+      <div x-show="i18nDirectCall !== null">
+        I18n Direct Call: <span x-text="i18nDirectCall"></span>
+      </div>
+      <div x-show="i18nDirectCall2 !== null">
+        I18n Direct Call 2: <span x-text="i18nDirectCall2"></span>
+      </div>
+      <div x-show="i18nDirectCall3 !== null">
+        I18n Direct Call 3: <span x-text="i18nDirectCall3"></span>
+      </div>
+      <div x-show="i18nDirectCall4 !== null">
+        I18n Direct Call 4: <span x-text="i18nDirectCall4"></span>
+      </div>
+      <div x-show="i18nDirectCall5 !== null">
+        I18n Direct Call 5: <span x-text="i18nDirectCall5"></span>
+      </div>
+      <div x-show="i18nDirectCall6 !== null">
+        I18n Direct Call 6: <span x-text="i18nDirectCall6"></span>
+      </div>
+      <div x-show="i18nDirectCall7 !== null">
+        I18n Direct Call 7: <span x-text="i18nDirectCall7"></span>
+      </div>
+      <div x-show="i18nDirectCall8 !== null">
+        I18n Direct Call 8: <span x-text="i18nDirectCall8"></span>
+      </div>
+      <div x-show="i18nDirectCall9 !== null">
+        I18n Direct Call 9: <span x-text="i18nDirectCall9"></span>
+      </div>
+      <div x-show="i18nDirectCall10 !== null">
+        I18n Direct Call 10: <span x-text="i18nDirectCall10"></span>
+      </div>
+      <div x-show="i18nDirectCall11 !== null">
+        I18n Direct Call 11: <span x-text="i18nDirectCall11"></span>
+      </div>
+      <div x-show="i18nDirectCall12 !== null">
+        I18n Direct Call 12: <span x-text="i18nDirectCall12"></span>
+      </div>
+      <div x-show="i18nDirectCall13 !== null">
+        I18n Direct Call 13: <span x-text="i18nDirectCall13"></span>
+      </div>
+      <div x-show="i18nDirectCall14 !== null">
+        I18n Direct Call 14: <span x-text="i18nDirectCall14"></span>
+      </div>
+      <div x-show="i18nDirectCall15 !== null">
+        I18n Direct Call 15: <span x-text="i18nDirectCall15"></span>
+      </div>
+      <div x-show="i18nDirectCall16 !== null">
+        I18n Direct Call 16: <span x-text="i18nDirectCall16"></span>
+      </div>
+      <div x-show="i18nDirectCall17 !== null">
+        I18n Direct Call 17: <span x-text="i18nDirectCall17"></span>
+      </div>
+      <div x-show="i18nDirectCall18 !== null">
+        I18n Direct Call 18: <span x-text="i18nDirectCall18"></span>
+      </div>
+      <div x-show="i18nDirectCall19 !== null">
+        I18n Direct Call 19: <span x-text="i18nDirectCall19"></span>
+      </div>
+      <div x-show="i18nDirectCall20 !== null">
+        I18n Direct Call 20: <span x-text="i18nDirectCall20"></span>
+      </div>
+      <div x-show="i18nDirectCall21 !== null">
+        I18n Direct Call 21: <span x-text="i18nDirectCall21"></span>
+      </div>
+      <div x-show="i18nDirectCall22 !== null">
+        I18n Direct Call 22: <span x-text="i18nDirectCall22"></span>
+      </div>
+      <div x-show="i18nDirectCall23 !== null">
+        I18n Direct Call 23: <span x-text="i18nDirectCall23"></span>
+      </div>
+      <div x-show="i18nDirectCall24 !== null">
+        I18n Direct Call 24: <span x-text="i18nDirectCall24"></span>
+      </div>
+      <div x-show="i18nDirectCall25 !== null">
+        I18n Direct Call 25: <span x-text="i18nDirectCall25"></span>
+      </div>
+      <div x-show="i18nDirectCall26 !== null">
+        I18n Direct Call 26: <span x-text="i18nDirectCall26"></span>
+      </div>
+      <div x-show="i18nDirectCall27 !== null">
+        I18n Direct Call 27: <span x-text="i18nDirectCall27"></span>
+      </div>
+      <div x-show="i18nDirectCall28 !== null">
+        I18n Direct Call 28: <span x-text="i18nDirectCall28"></span>
+      </div>
+      <div x-show="i18nDirectCall29 !== null">
+        I18n Direct Call 29: <span x-text="i18nDirectCall29"></span>
+      </div>
+      <div x-show="i18nDirectCall30 !== null">
+        I18n Direct Call 30: <span x-text="i18nDirectCall30"></span>
+      </div>
+      <div x-show="i18nDirectCall31 !== null">
+        I18n Direct Call 31: <span x-text="i18nDirectCall31"></span>
+      </div>
+      <div x-show="i18nDirectCall32 !== null">
+        I18n Direct Call 32: <span x-text="i18nDirectCall32"></span>
+      </div>
+      <div x-show="i18nDirectCall33 !== null">
+        I18n Direct Call 33: <span x-text="i18nDirectCall33"></span>
+      </div>
+      <div x-show="i18nDirectCall34 !== null">
+        I18n Direct Call 34: <span x-text="i18nDirectCall34"></span>
+      </div>
+      <div x-show="i18nDirectCall35 !== null">
+        I18n Direct Call 35: <span x-text="i18nDirectCall35"></span>
+      </div>
+      <div x-show="i18nDirectCall36 !== null">
+        I18n Direct Call 36: <span x-text="i18nDirectCall36"></span>
+      </div>
+      <div x-show="i18nDirectCall37 !== null">
+        I18n Direct Call 37: <span x-text="i18nDirectCall37"></span>
+      </div>
+      <div x-show="i18nDirectCall38 !== null">
+        I18n Direct Call 38: <span x-text="i18nDirectCall38"></span>
+      </div>
+      <div x-show="i18nDirectCall39 !== null">
+        I18n Direct Call 39: <span x-text="i18nDirectCall39"></span>
+      </div>
+      <div x-show="i18nDirectCall40 !== null">
+        I18n Direct Call 40: <span x-text="i18nDirectCall40"></span>
+      </div>
+      <div x-show="i18nDirectCall41 !== null">
+        I18n Direct Call 41: <span x-text="i18nDirectCall41"></span>
+      </div>
+      <div x-show="i18nDirectCall42 !== null">
+        I18n Direct Call 42: <span x-text="i18nDirectCall42"></span>
+      </div>
+      <div x-show="i18nDirectCall43 !== null">
+        I18n Direct Call 43: <span x-text="i18nDirectCall43"></span>
+      </div>
+      <div x-show="i18nDirectCall44 !== null">
+        I18n Direct Call 44: <span x-text="i18nDirectCall44"></span>
+      </div>
+      <div x-show="i18nDirectCall45 !== null">
+        I18n Direct Call 45: <span x-text="i18nDirectCall45"></span>
+      </div>
+      <div x-show="i18nDirectCall46 !== null">
+        I18n Direct Call 46: <span x-text="i18nDirectCall46"></span>
+      </div>
+      <div x-show="i18nDirectCall47 !== null">
+        I18n Direct Call 47: <span x-text="i18nDirectCall47"></span>
+      </div>
+      <div x-show="i18nDirectCall48 !== null">
+        I18n Direct Call 48: <span x-text="i18nDirectCall48"></span>
+      </div>
+      <div x-show="i18nDirectCall49 !== null">
+        I18n Direct Call 49: <span x-text="i18nDirectCall49"></span>
+      </div>
+      <div x-show="i18nDirectCall50 !== null">
+        I18n Direct Call 50: <span x-text="i18nDirectCall50"></span>
+      </div>
+      <div x-show="i18nDirectCall51 !== null">
+        I18n Direct Call 51: <span x-text="i18nDirectCall51"></span>
+      </div>
+      <div x-show="i18nDirectCall52 !== null">
+        I18n Direct Call 52: <span x-text="i18nDirectCall52"></span>
+      </div>
+      <div x-show="i18nDirectCall53 !== null">
+        I18n Direct Call 53: <span x-text="i18nDirectCall53"></span>
+      </div>
+      <div x-show="i18nDirectCall54 !== null">
+        I18n Direct Call 54: <span x-text="i18nDirectCall54"></span>
+      </div>
+      <div x-show="i18nDirectCall55 !== null">
+        I18n Direct Call 55: <span x-text="i18nDirectCall55"></span>
+      </div>
+      <div x-show="i18nDirectCall56 !== null">
+        I18n Direct Call 56: <span x-text="i18nDirectCall56"></span>
+      </div>
+      <div x-show="i18nDirectCall57 !== null">
+        I18n Direct Call 57: <span x-text="i18nDirectCall57"></span>
+      </div>
+    </div>
+    
+    <!-- Debug: Loading status -->
+    <div x-data="{ isLoading: true }" x-init="setTimeout(() => { isLoading = false; console.log('Loading timeout reached'); }, 5000)">
+      <div x-show="isLoading" class="loading-debug">
+        Debug: Loading status - <span x-text="isLoading ? 'Still loading...' : 'Loaded'"></span>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="board-container">
+        <div id="__chessboard__" class="chess-board"></div>
+      </div>
+      
+      <div class="info_wrapper">
+        <div class="info_moves">
+          <template x-for="(variant, variantIdx) in moveList" :key="variantIdx">
+            <div class="move-variant">
+              <div x-show="variantIdx > 0" class="variant-label" x-text="variantIdx + 1 + '.'"></div>
+              <template x-for="(move, moveIdx) in variant" :key="moveIdx">
+                <div class="move-item"
+                     :id="'item-' + moveIdx"
+                     :class="{ 'current-move': moveIdx === movePointer.value, 'selected-move': variantIdx === variantPointer.value }"
+                     @click="gotoMove(moveIdx)">
+                  <span x-show="move.san1 && move.san1 !== '...'" class="move-number" x-text="move.order + (chess.turn() === 'b' ? '.' : '')"></span>
+                  <span class="move-text" x-text="move.san1 || '...'"></span>
+                  <span x-show="move.san2 && move.san2 !== ''" class="move-text" x-text="move.san2"></span>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+        
+        <div class="action_buttons">
+          <ion-button fill="outline" @click="showPreviousPosition()" :disabled="!showNavPrev.value">
+            <ion-icon name="chevron-back"></ion-icon>
+            <span x-text="$t('position.previous')"></span>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="showRestartDialog()">
+            <ion-icon name="refresh"></ion-icon>
+            <span x-text="$t('position.restart')"></span>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="showNextPosition()" :disabled="!showNavNext.value">
+            <span x-text="$t('position.next')"></span>
+            <ion-icon name="chevron-forward"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="gotoPreviousMove()" :disabled="movePointer.value <= 0">
+            <ion-icon name="play-skip-back"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="gotoNextMove()" :disabled="movePointer.value >= moveList[variantPointer.value].length - 1">
+            <ion-icon name="play-skip-forward"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="gotoLastMove()">
+            <ion-icon name="play-forward"></ion-icon>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="toggleManualMode()">
+            <ion-icon :name="manualMode.value ? 'bug' : 'robot'"></ion-icon>
+            <span x-text="$t('position.mode-' + (manualMode.value ? 'manual' : 'engine'))"></span>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="hint()">
+            <ion-icon name="lightbulb"></ion-icon>
+            <span x-text="$t('position.hint')"></span>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="solve()">
+            <ion-icon name="help-circle"></ion-icon>
+            <span x-text="$t('position.solve')"></span>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="showClipboardDialog()">
+            <ion-icon name="copy"></ion-icon>
+            <span x-text="$t('position.clipboard.title')"></span>
+          </ion-button>
+          
+          <ion-button fill="outline" @click="lichessAnalysis()">
+            <ion-icon name="globe"></ion-icon>
+            <span x-text="$t('position.lichess')"></span>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Visual Feedback Overlay -->
+    <div x-show="visualFeedback.showSuccess" class="visual-feedback success">
+      <ion-icon name="checkmark-circle"></ion-icon>
+    </div>
+    <div x-show="visualFeedback.showIncorrect" class="visual-feedback incorrect">
+      <ion-icon name="close-circle"></ion-icon>
+    </div>
+    <div x-show="visualFeedback.showProgress" class="visual-feedback progress">
+      <ion-icon name="hourglass"></ion-icon>
+    </div>
+  </ion-content>
+</ion-app>
