@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "chess.js": "^1.4.0",
-    "chessground": "^9.2.1"
-  },
-  "devDependencies": {
-    "sass": "^1.90.0"
-  }
-}
