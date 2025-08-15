@@ -230,17 +230,29 @@
 ### ✅ Tamamlanan Ana Görevler
 - Turkish localization tamamen tamamlandı
 - Visual feedback sistemi eklendi
-- Accessibility özellikleri eklendi
+- **Accessibility özellikleri geri yüklendi ve geliştirildi**
 - Board sizing ve positioning sorunları çözüldü
 
 ### 🔧 Teknik Düzeltmeler
 - Git reset ile çalışan versiyona geri dönüldü (commit 16a669b)
 - TypeScript hataları düzeltildi
+- **Accessibility ayarları configuration model'e eklendi**
+- **Accessibility service yeniden entegre edildi**
+- **Settings sayfasına accessibility toggles eklendi**
+- **Tüm dillerde accessibility çevirileri eklendi**
 - Build başarılı ve uygulama düzgün çalışıyor
+
+### ♿ Accessibility Özellikleri
+- ✅ Reduced Motion (Animasyonları Azalt)
+- ✅ High Contrast (Yüksek Kontrast)  
+- ✅ Screen Reader Announcements (Ekran Okuyucu Duyuruları)
+- ✅ Çok dilli destek (EN, ES, RU, TR)
+- ✅ Settings sayfasında erişilebilir kontroller
 
 ### 📋 Kalan Küçük Görevler
 - [ ] Vite deprecation warning düzeltmesi
 - [ ] Final QA ve test
+- [x] Accessibility özelliklerini geri yükleme
 
 ### 🎯 Sonuç
-Proje başarıyla tamamlandı. Turkish localization ve tüm enhancement'lar çalışır durumda.
+Proje başarıyla tamamlandı. Turkish localization, accessibility özellikleri ve tüm enhancement'lar çalışır durumda. Git reset sonrası kaybolan özellikler başarıyla geri yüklendi.
