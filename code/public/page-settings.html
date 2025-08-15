@@ -60,6 +60,24 @@
       </template>
       </ion-item>
     </template>
+    <ion-item x-on:click="toggleLanguages()" button="true" detail="false">
+      <ion-label>Language / Dil / Язык / Idioma</ion-label>
+      <ion-note slot="end" x-text="getCurrentLanguageDisplay()"></ion-note>
+      <ion-icon slot="end" x-bind:data-name="showLanguages ? 'caret-down' : 'caret-forward'" color="medium"
+        class="aura"></ion-icon>
+    </ion-item>
+    <template x-if="showLanguages">
+      <ion-item x-on:click="setLanguage('auto')" button="true" detail="false"
+        x-bind:color="currentLanguage === 'auto' ? 'medium' : ''">
+        <ion-label>🌐 Auto</ion-label>
+      </ion-item>
+      <template x-for="language in availableLanguages" :key="language.code">
+        <ion-item x-on:click="setLanguage(language.code)" button="true" detail="false"
+          x-bind:color="currentLanguage === language.code ? 'medium' : ''">
+          <ion-label x-text="language.flag + ' ' + language.nativeName"></ion-label>
+        </ion-item>
+      </template>
+    </template>
     <ion-item>
       <ion-toggle id="toggleGotoFirstPosition" x-text="$t('settings.goto-first-position')" x-bind:aria-label="$t('settings.goto-first-position')" x-bind:checked="gotoFirstPosition" color="primary"></ion-toggle>
     </ion-item>
@@ -99,6 +117,21 @@
     <ion-item>
       <ion-toggle id="toggleUseSyzygy" x-text="$t('settings.use-syzygy')" x-bind:aria-label="$t('settings.use-syzygy')" x-bind:checked="useSyzygy" color="primary"></ion-toggle>
     </ion-item>
+    
+    <!-- Accessibility Section -->
+    <ion-item lines="none">
+      <ion-label class="ion-text-center">Accessibility / Erişilebilirlik</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-toggle id="toggleReducedMotion" x-text="$t('settings.reduced-motion')" x-bind:aria-label="$t('settings.reduced-motion')" x-bind:checked="reducedMotion" color="primary"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-toggle id="toggleHighContrast" x-text="$t('settings.high-contrast')" x-bind:aria-label="$t('settings.high-contrast')" x-bind:checked="highContrast" color="primary"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-toggle id="toggleScreenReaderAnnouncements" x-text="$t('settings.screen-reader-announcements')" x-bind:aria-label="$t('settings.screen-reader-announcements')" x-bind:checked="screenReaderAnnouncements" color="primary"></ion-toggle>
+    </ion-item>
+    
     <ion-item lines="none">
       <ion-label class="ion-text-center">Stockfish</ion-label>
     </ion-item>

@@ -1,0 +1,27 @@
+<ion-app>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title x-text="$t('app.title')"></ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="container">
+      <div class="home-content">
+        <h1 x-text="$t('home.welcome')"></h1>
+        <p x-text="$t('home.description')"></p>
+        
+        <div class="menu-buttons">
+          <ion-button expand="block" fill="outline href="/list/0/0">
+            <span x-text="$t('home.start-learning')"></span>
+          </ion-button>
+          <ion-button expand="block" fill="outline href="/about">
+            <span x-text="$t('home.about')"></span>
+          </ion-button>
+          <ion-button expand="block" fill="outline href="/settings">
+            <span x-text="$t('home.settings')"></span>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-app>

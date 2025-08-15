@@ -1,0 +1,389 @@
+/* Accessibility Styles for Chess Endgame Training */
+/* Only active when user explicitly enables them */
+
+/* Screen Reader Only Content */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Reduced Motion - Only when user enables it */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+
+/* Specifically target chessground animations */
+.reduced-motion .cg-board * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+.reduced-motion .cg-board piece {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+.reduced-motion .cg-board square {
+    transition: none !important;
+    animation: none !important;
+}
+
+.reduced-motion .cg-board .cg-piece {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Override chessground CSS variables and properties */
+.reduced-motion {
+    --cg-transition-duration: 0ms !important;
+}
+
+.reduced-motion .cg-board {
+    --cg-transition-duration: 0ms !important;
+}
+
+/* Force disable all chessground transitions */
+.reduced-motion cg-board,
+.reduced-motion cg-board *,
+.reduced-motion .cg-wrap,
+.reduced-motion .cg-wrap * {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Specific UI feedback animations */
+.reduced-motion .visual-feedback-overlay,
+.reduced-motion .feedback-icon,
+.reduced-motion .success-icon,
+.reduced-motion .incorrect-icon,
+.reduced-motion .feedback-spinner,
+.reduced-motion .feedback-success,
+.reduced-motion .feedback-error,
+.reduced-motion .feedback-progress,
+.reduced-motion .celebration-success,
+.reduced-motion .celebration-fireworks,
+.reduced-motion .celebration-stars,
+.reduced-motion .move-correct,
+.reduced-motion .move-incorrect,
+.reduced-motion .state-check,
+.reduced-motion .state-checkmate {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+}
+
+/* High Contrast Mode - Only when user enables it */
+.high-contrast {
+    --ion-color-primary: #0000ff !important;
+    --ion-color-secondary: #800080 !important;
+    --ion-color-success: #008000 !important;
+    --ion-color-warning: #ff8c00 !important;
+    --ion-color-danger: #ff0000 !important;
+    --ion-color-light: #ffffff !important;
+    --ion-color-medium: #808080 !important;
+    --ion-color-dark: #000000 !important;
+}
+
+.high-contrast * {
+    border-color: #000000 !important;
+}
+
+.high-contrast button,
+.high-contrast .btn {
+    border: 2px solid #000000 !important;
+    font-weight: bold !important;
+}
+
+.high-contrast .feedback-success,
+.high-contrast .move-correct {
+    background-color: #008000 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+}
+
+.high-contrast .feedback-error,
+.high-contrast .move-incorrect {
+    background-color: #ff0000 !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+}
+
+.high-contrast .feedback-progress {
+    background-color: #0000ff !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+}
+
+.high-contrast .state-check,
+.high-contrast .state-checkmate {
+    background-color: #ff8c00 !important;
+    color: #000000 !important;
+    border-color: #000000 !important;
+}
+
+/* High contrast chess board */
+.high-contrast .cg-board {
+    border: 3px solid #000000 !important;
+}
+
+.high-contrast .cg-board .square.light {
+    background-color: #ffffff !important;
+}
+
+.high-contrast .cg-board .square.dark {
+    background-color: #000000 !important;
+}
+
+.high-contrast .cg-board .square.move-correct {
+    background-color: #008000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+.high-contrast .cg-board .square.move-incorrect {
+    background-color: #ff0000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+.high-contrast .cg-board .square.state-check {
+    background-color: #ff8c00 !important;
+    border: 2px solid #000000 !important;
+}
+
+/* Enhanced Focus Indicators */
+button:focus,
+.btn:focus,
+ion-button:focus,
+ion-toggle:focus,
+ion-range:focus,
+ion-select:focus,
+.language-select:focus {
+    outline: 3px solid #0066cc !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.3) !important;
+}
+
+.high-contrast button:focus,
+.high-contrast .btn:focus,
+.high-contrast ion-button:focus,
+.high-contrast ion-toggle:focus,
+.high-contrast ion-range:focus,
+.high-contrast ion-select:focus,
+.high-contrast .language-select:focus {
+    outline: 4px solid #ffff00 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px #0000ff !important;
+}
+
+/* Enhanced Focus for Chess Board - Only show on keyboard focus */
+.cg-board square:focus-visible {
+    outline: 3px solid #0066cc !important;
+    outline-offset: -3px !important;
+    z-index: 10 !important;
+}
+
+.high-contrast .cg-board square:focus-visible {
+    outline: 4px solid #ffff00 !important;
+    outline-offset: -4px !important;
+    box-shadow: inset 0 0 0 2px #0000ff !important;
+}
+
+/* Skip Links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000000;
+    color: #ffffff;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+.skip-link:focus {
+    top: 6px;
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+}
+
+.high-contrast .skip-link {
+    background: #0000ff !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+
+.high-contrast .skip-link:focus {
+    outline: 4px solid #ffff00 !important;
+    outline-offset: 2px !important;
+}
+
+/* ARIA Live Region Styling */
+[aria-live] {
+    position: absolute !important;
+    left: -10000px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+}
+
+/* Accessible Button States */
+.btn[aria-pressed="true"],
+button[aria-pressed="true"] {
+    background-color: var(--ion-color-primary) !important;
+    color: var(--ion-color-primary-contrast) !important;
+    border-color: var(--ion-color-primary) !important;
+}
+
+.high-contrast .btn[aria-pressed="true"],
+.high-contrast button[aria-pressed="true"] {
+    background-color: #0000ff !important;
+    color: #ffffff !important;
+    border: 3px solid #ffffff !important;
+}
+
+/* Accessible Form Elements */
+ion-toggle[aria-checked="true"] {
+    --color-checked: var(--ion-color-success) !important;
+}
+
+.high-contrast ion-toggle[aria-checked="true"] {
+    --color-checked: #008000 !important;
+}
+
+ion-range {
+    --knob-background: var(--ion-color-primary) !important;
+    --bar-background-active: var(--ion-color-primary) !important;
+}
+
+.high-contrast ion-range {
+    --knob-background: #0000ff !important;
+    --bar-background-active: #0000ff !important;
+    --knob-border: 2px solid #000000 !important;
+}
+
+/* Accessible Text */
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-800,
+.high-contrast .text-gray-900 {
+    color: #000000 !important;
+}
+
+.high-contrast .text-white {
+    color: #ffffff !important;
+}
+
+/* Accessible Progress Indicators */
+.progress-indicator {
+    border: 1px solid var(--ion-color-medium) !important;
+}
+
+.high-contrast .progress-indicator {
+    border: 2px solid #000000 !important;
+}
+
+.high-contrast .progress-fill {
+    background-color: #0000ff !important;
+}
+
+/* Accessible Modal and Alert Styling */
+.high-contrast ion-modal,
+.high-contrast ion-alert {
+    --background: #ffffff !important;
+    --color: #000000 !important;
+    border: 3px solid #000000 !important;
+}
+
+.high-contrast ion-modal .modal-wrapper,
+.high-contrast ion-alert .alert-wrapper {
+    border: 3px solid #000000 !important;
+}
+
+/* Accessible Toast Messages */
+.high-contrast ion-toast {
+    --background: #000000 !important;
+    --color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+
+.high-contrast ion-toast.toast-success {
+    --background: #008000 !important;
+    --color: #ffffff !important;
+}
+
+.high-contrast ion-toast.toast-warning {
+    --background: #ff8c00 !important;
+    --color: #000000 !important;
+}
+
+.high-contrast ion-toast.toast-danger {
+    --background: #ff0000 !important;
+    --color: #ffffff !important;
+}
+
+/* Responsive Accessibility */
+@media (max-width: 768px) {
+
+    button:focus,
+    .btn:focus,
+    ion-button:focus {
+        outline-width: 4px !important;
+        outline-offset: 3px !important;
+    }
+
+    .high-contrast button:focus,
+    .high-contrast .btn:focus,
+    .high-contrast ion-button:focus {
+        outline-width: 5px !important;
+        outline-offset: 3px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .skip-link {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    button:focus,
+    .btn:focus,
+    ion-button:focus {
+        outline-width: 5px !important;
+        outline-offset: 4px !important;
+    }
+}
+
+/* Print Accessibility */
+@media print {
+    .reduced-motion * {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .high-contrast * {
+        color: #000000 !important;
+        background: #ffffff !important;
+    }
+
+    .skip-link,
+    [aria-live] {
+        display: none !important;
+    }
+}

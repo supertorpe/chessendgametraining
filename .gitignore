@@ -7,3 +7,8 @@ dev-dist/
 docs/
 twa/app/build/
 twa/*.apk
+
+# IDE and development environment files
+.kiro/
+.roo/
+.vscode/

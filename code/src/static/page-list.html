@@ -1,0 +1,60 @@
+<ion-app x-data="listInfo()">
+  <!-- DEBUG: Alpine.js bağlantı noktası kontrolü -->
+  <div x-show="false" x-text="'Alpine.js çalışıyor: ' + $el.tagName"></div>
+  
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button default-href="/home"></ion-back-button>
+      </ion-buttons>
+      <ion-title x-text="title"></ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <div class="container">
+      <!-- DEBUG: Veri yapısı kontrolü -->
+      <div x-show="false" x-text="'Kategori: ' + categoryName + ', Alt kategori: ' + subcategoryName"></div>
+      <div x-show="false" x-text="'Oyun sayısı: ' + games.length"></div>
+      
+      <div class="list-header">
+        <h2 x-text="$t(`category.${categoryName}`)"></h2>
+        <p x-text="subcategoryName"></p>
+        <div class="progress-info">
+          <span x-text="getSolvedCount() + ' / ' + games.length"></span>
+          <span x-text="getProgressPercentage() + '%'"></span>
+        </div>
+      </div>
+      
+      <div class="navigation-buttons">
+        <ion-button fill="outline" @click="showPrevious()" :disabled="!showNavPrev">
+          <ion-icon name="chevron-back"></ion-icon>
+        </ion-button>
+        <ion-button fill="outline" @click="showNext()" :disabled="!showNavNext">
+          <ion-icon name="chevron-forward"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="games-grid">
+        <!-- DEBUG: Oyun listesi render kontrolü -->
+        <div x-show="false" x-text="'Render edilecek oyunlar: ' + games.length"></div>
+        
+        <template x-for="(game, i) in games" :key="i">
+          <div class="game-item"
+               @click="openGame(i)"
+               :aria-label="$t('game.aria-label', { name: game.name, index: i + 1 })">
+            <div class="game-number" x-text="i + 1"></div>
+            <div class="game-name" x-text="game.name || $t('game.default-name', { index: i + 1 })"></div>
+            <div class="game-difficulty">
+              <template x-for="star in [].constructor(getDifficultyStars(game.record))">
+                <ion-icon name="star" color="warning"></ion-icon>
+              </template>
+              <template x-for="star in [].constructor(5 - getDifficultyStars(game.record))">
+                <ion-icon name="star-outline" color="medium"></ion-icon>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </ion-content>
+</ion-app>

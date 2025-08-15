@@ -1,0 +1,1921 @@
+/* Feedback Animation Framework */
+
+/* Chess Board and Pieces */
+.cg-wrap {
+  --cg-scale: 1;
+  --cg-square: calc(100% / 8);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+}
+
+/* Board squares container */
+.cg-wrap cg-board {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  line-height: 0;
+  background-size: cover;
+  z-index: 1;
+}
+
+/* Individual square - defer positioning to Chessground core */
+/* IMPORTANT: Using cg-board square to avoid overriding Chessground transforms */
+cg-board square {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  box-sizing: border-box;
+}
+
+/* Piece container - DO NOT override Chessground positioning */
+.cg-wrap piece {
+  /* Chessground controls all positioning via inline styles and transforms.
+     We only add performance hints and animation support. */
+  will-change: transform;
+  pointer-events: auto;
+  touch-action: none;
+  z-index: 2;
+  box-sizing: border-box;
+  /* Critical: Maintain Chessground's positioning system */
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Piece image */
+.cg-wrap piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  box-sizing: border-box;
+}
+
+/* Ensure pieces are visible */
+.cg-wrap piece.piece-reset {
+  transform: none !important;
+  -webkit-transform: none !important;
+  transition: none !important;
+  -webkit-transition: none !important;
+}
+
+/* Reset state for pieces */
+.cg-wrap piece.piece-reset {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Animation complete state */
+.cg-wrap piece.animation-complete {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Force hardware acceleration */
+.cg-wrap piece.animating {
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Keyframe Animations */
+@keyframes success-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes error-shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes progress-fill {
+    0% {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+}
+
+@keyframes celebration-bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Feedback Animation Classes */
+.feedback-success {
+    animation: success-pulse 0.6s ease-out both;
+}
+
+.feedback-error {
+    animation: error-shake 0.6s ease-out both;
+}
+
+.feedback-progress {
+    animation: progress-fill 0.6s ease-out both;
+}
+
+.feedback-neutral {
+    animation: none;
+}
+
+/* Enhanced feedback variants */
+.feedback-success:hover {
+    animation: success-pulse 0.6s ease-out both, success-pulse 0.6s ease-out 0.6s both;
+}
+
+.feedback-error:active {
+    animation: error-shake 0.6s ease-out both;
+}
+
+/* Progress bar specific styles */
+.progress-bar {
+    transform-origin: left;
+    animation: progress-fill 0.6s ease-out both;
+}
+
+/* Celebration animation for multiple elements */
+.celebration {
+    animation: celebration-bounce 0.6s ease-out both;
+}
+
+/* 5.2.2 Success Feedback Animations */
+
+/* Celebration Animation for Puzzle Completion */
+@keyframes celebration-success {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(1.1) rotate(5deg);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.2) rotate(-5deg);
+        opacity: 0.8;
+    }
+    75% {
+        transform: scale(1.1) rotate(3deg);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes celebration-firework {
+    0% {
+        transform: translate(0, 0) scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(var(--x-offset), var(--y-offset)) scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(calc(var(--x-offset) * 2), calc(var(--y-offset) * 2)) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes celebration-star {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes star-pulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Celebration Animation Classes */
+.celebration-success {
+    animation: celebration-success 0.8s ease-out both;
+}
+
+.celebration-fireworks {
+    position: relative;
+    overflow: hidden;
+}
+
+.celebration-fireworks::before,
+.celebration-fireworks::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #ff6b6b, #feca57);
+    border-radius: 50%;
+    animation: celebration-firework 1s ease-out infinite;
+}
+
+.celebration-fireworks::before {
+    --x-offset: 20px;
+    --y-offset: -20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -2px;
+    margin-top: -2px;
+}
+
+.celebration-fireworks::after {
+    --x-offset: -20px;
+    --y-offset: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -2px;
+    margin-top: -2px;
+    animation-delay: 0.3s;
+}
+
+.celebration-stars {
+    position: relative;
+    overflow: hidden;
+}
+
+.celebration-stars::before,
+.celebration-stars::after {
+    content: '⭐';
+    position: absolute;
+    font-size: 20px;
+    animation: celebration-star 1.5s ease-out infinite;
+}
+
+.celebration-stars::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.celebration-stars::after {
+    top: 60%;
+    right: 20%;
+    animation-delay: 0.5s;
+}
+
+/* Sound-Coordinated Visual Feedback */
+@keyframes sound-sync-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes visual-accent-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), 0 0 40px rgba(16, 185, 129, 0.4);
+    }
+}
+
+.feedback-sound-sync {
+    animation: sound-sync-pulse 0.3s ease-in-out infinite;
+}
+
+.feedback-visual-accent {
+    animation: visual-accent-glow 0.6s ease-in-out infinite;
+}
+
+/* Success State Animations */
+@keyframes success-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), 0 0 40px rgba(16, 185, 129, 0.4);
+    }
+}
+
+@keyframes success-particle {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes text-bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.success-glow {
+    animation: success-glow 1s ease-in-out infinite;
+}
+
+.success-particles {
+    position: relative;
+    overflow: hidden;
+}
+
+.success-particles::before,
+.success-particles::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: success-particle 1s ease-out infinite;
+}
+
+.success-particles::before {
+    bottom: 0;
+    left: 30%;
+    animation-delay: 0s;
+}
+
+.success-particles::after {
+    bottom: 0;
+    right: 30%;
+    animation-delay: 0.3s;
+}
+
+.success-text-bounce {
+    animation: text-bounce 0.6s ease-out both;
+    display: inline-block;
+}
+
+/* Enhanced success combinations */
+.celebration-complete {
+    animation: celebration-success 0.8s ease-out both, success-glow 1s ease-in-out 0.8s infinite;
+}
+
+.success-celebration {
+    animation: success-glow 1s ease-in-out infinite, celebration-success 0.8s ease-out 0.2s both;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .feedback-success,
+    .feedback-error,
+    .feedback-progress,
+    .feedback-neutral,
+    .progress-bar,
+    .celebration,
+    .celebration-success,
+    .celebration-fireworks,
+    .celebration-stars,
+    .feedback-sound-sync,
+    .feedback-visual-accent,
+    .success-glow,
+    .success-particles,
+    .success-text-bounce,
+    .celebration-complete,
+    .success-celebration {
+        animation: none !important;
+    }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .feedback-success,
+    .feedback-error,
+    .feedback-progress,
+    .celebration,
+    .celebration-success,
+    .celebration-fireworks,
+    .celebration-stars,
+    .feedback-sound-sync,
+    .feedback-visual-accent,
+    .success-glow,
+    .success-particles,
+    .success-text-bounce,
+    .celebration-complete,
+    .success-celebration {
+        animation-duration: 1s;
+    }
+    
+    .celebration-stars::before,
+    .celebration-stars::after {
+        font-size: 16px;
+    }
+    
+    .success-particles::before,
+    .success-particles::after {
+        width: 4px;
+        height: 4px;
+    }
+}
+
+/* Performance optimization */
+.celebration-fireworks,
+.celebration-stars,
+.success-particles {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* 5.2.3 Move Validation Visual Indicators */
+
+/* Visual Indicators for Correct Moves */
+@keyframes move-correct-light {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+@keyframes move-correct-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.3),
+                    0 0 10px rgba(16, 185, 129, 0.2),
+                    0 0 15px rgba(16, 185, 129, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.8),
+                    0 0 40px rgba(16, 185, 129, 0.4),
+                    0 0 60px rgba(16, 185, 129, 0.2);
+    }
+}
+
+@keyframes move-correct-check {
+    0% {
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(-45deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Visual Indicators for Incorrect Moves */
+@keyframes move-incorrect {
+    0%, 100% {
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+    50% {
+        background-color: rgba(239, 68, 68, 0.3);
+    }
+}
+
+@keyframes move-incorrect-shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes move-incorrect-x {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.3) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+/* Visual Feedback for Check and Checkmate States */
+@keyframes state-check {
+    0%, 100% {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+    50% {
+        background-color: rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.6);
+    }
+}
+
+@keyframes state-check-warning {
+    0%, 100% {
+        border-color: rgba(239, 68, 68, 0.3);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        border-color: rgba(239, 68, 68, 0.8);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
+}
+
+@keyframes state-checkmate {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes state-checkmate-celebration {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    25% {
+        transform: scale(1.2) rotate(90deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1) rotate(180deg);
+        opacity: 0.8;
+    }
+    75% {
+        transform: scale(1.1) rotate(270deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+/* Move Validation Animation Classes */
+.move-correct {
+    animation: move-correct-light 0.6s ease-out both;
+}
+
+.move-correct-glow {
+    animation: move-correct-glow 1s ease-in-out infinite;
+}
+
+.move-correct-check {
+    animation: move-correct-check 0.4s ease-out both;
+}
+
+.move-incorrect {
+    animation: move-incorrect 0.6s ease-in-out both;
+}
+
+.move-incorrect-shake {
+    animation: move-incorrect-shake 0.6s ease-in-out both;
+}
+
+.move-incorrect-x {
+    animation: move-incorrect-x 0.5s ease-out both;
+}
+
+.state-check {
+    animation: state-check 1s ease-in-out infinite;
+}
+
+.state-check-warning {
+    animation: state-check-warning 1.5s ease-in-out infinite;
+}
+
+.state-checkmate {
+    animation: state-checkmate 0.8s ease-in-out infinite;
+}
+
+.state-checkmate-celebration {
+    animation: state-checkmate-celebration 1s ease-in-out both;
+}
+
+/* Enhanced move validation combinations */
+.move-correct-success {
+    animation: move-correct-light 0.6s ease-out both, move-correct-glow 1s ease-in-out 0.6s infinite;
+}
+
+.move-incorrect-error {
+    animation: move-incorrect 0.6s ease-in-out both, move-incorrect-shake 0.6s ease-in-out 0.2s both;
+}
+
+.check-warning-combo {
+    animation: state-check 1s ease-in-out infinite, state-check-warning 1.5s ease-in-out 0.5s infinite;
+}
+
+/* Chessground integration styles - positioning handled by Chessground core */
+/* No additional positioning rules needed here */
+
+.cg-board .move-correct {
+    position: relative;
+}
+
+.cg-board .move-correct::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: move-correct-light 0.6s ease-out both;
+}
+
+.cg-board .move-incorrect::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: move-incorrect 0.6s ease-in-out both;
+}
+
+/* Position controller integration */
+.position-move-feedback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+    transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.position-move-indicator {
+    position: relative;
+    background: rgba(255, 255, 0, 0.9);
+    padding: 15px 30px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+    min-height: 60px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    pointer-events: none;
+}
+
+.position-move-indicator.move-correct {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    animation: move-correct-light 0.6s ease-out both, move-correct-glow 1s ease-in-out 0.6s infinite;
+}
+
+.position-move-indicator.move-incorrect {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    animation: move-incorrect 0.6s ease-in-out both, move-incorrect-shake 0.6s ease-in-out 0.2s both;
+}
+
+.position-move-indicator.state-check {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    animation: state-check 1s ease-in-out infinite;
+}
+
+.position-move-indicator.state-checkmate {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    animation: state-checkmate 0.8s ease-in-out infinite, state-checkmate-celebration 1s ease-in-out 0.8s both;
+}
+
+/* Alpine.js compatibility */
+[x-show].celebration-success,
+[x-show].celebration-fireworks,
+[x-show].celebration-stars,
+[x-show].feedback-sound-sync,
+[x-show].feedback-visual-accent,
+[x-show].success-glow,
+[x-show].success-particles,
+[x-show].success-text-bounce,
+[x-show].move-correct,
+[x-show].move-correct-glow,
+[x-show].move-correct-check,
+[x-show].move-incorrect,
+[x-show].move-incorrect-shake,
+[x-show].move-incorrect-x,
+[x-show].state-check,
+[x-show].state-check-warning,
+[x-show].state-checkmate,
+[x-show].state-checkmate-celebration {
+    display: block !important;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .move-correct,
+    .move-correct-glow,
+    .move-correct-check,
+    .move-incorrect,
+    .move-incorrect-shake,
+    .move-incorrect-x,
+    .state-check,
+    .state-check-warning,
+    .state-checkmate,
+    .state-checkmate-celebration,
+    .move-correct-success,
+    .move-incorrect-error,
+    .check-warning-combo,
+    .position-move-indicator.move-correct,
+    .position-move-indicator.move-incorrect,
+    .position-move-indicator.state-check,
+    .position-move-indicator.state-checkmate {
+        animation: none !important;
+    }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    .move-correct,
+    .move-correct-glow,
+    .move-correct-check,
+    .move-incorrect,
+    .move-incorrect-shake,
+    .move-incorrect-x,
+    .state-check,
+    .state-check-warning,
+    .state-checkmate,
+    .state-checkmate-celebration {
+        animation-duration: 0.8s;
+    }
+    
+    .position-move-indicator {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .cg-board .move-correct::after,
+    .cg-board .move-incorrect::after {
+        width: 80%;
+        height: 80%;
+    }
+}
+
+/* Performance optimization */
+.move-correct,
+.move-correct-glow,
+.move-correct-check,
+.move-incorrect,
+.move-incorrect-shake,
+.move-incorrect-x,
+.state-check,
+.state-check-warning,
+.state-checkmate,
+.state-checkmate-celebration,
+.position-move-indicator,
+.cg-board .move-correct::after,
+.cg-board .move-incorrect::after {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* 5.2.4 Progress Tracking Animations */
+
+/* Progress Bar Animations for Position Completion */
+@keyframes progress-fill-enhanced {
+    0% {
+        transform: scaleX(0);
+        transform-origin: left;
+        opacity: 0.8;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: left;
+        opacity: 1;
+    }
+}
+
+@keyframes progress-gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes progress-pulse-scale {
+    0%, 100% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scaleX(1.02);
+        opacity: 0.9;
+    }
+}
+
+@keyframes progress-complete-burst {
+    0% {
+        transform: scaleX(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scaleX(1.1) rotate(180deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scaleX(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+/* Progress Bar Animation Classes */
+.progress-fill-enhanced {
+    animation: progress-fill-enhanced 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.progress-gradient {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+    background-size: 200% 100%;
+    animation: progress-gradient-flow 2s linear infinite;
+}
+
+.progress-pulse {
+    animation: progress-pulse-scale 2s ease-in-out infinite;
+}
+
+.progress-complete {
+    animation: progress-complete-burst 0.8s ease-out both;
+}
+
+/* Streak Celebration Animations */
+@keyframes streak-fire-flicker {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1);
+    }
+    25% {
+        opacity: 0.9;
+        transform: scale(1.05) rotate(-2deg);
+        filter: brightness(1.2);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(0.95) rotate(2deg);
+        filter: brightness(0.9);
+    }
+    75% {
+        opacity: 0.95;
+        transform: scale(1.02) rotate(-1deg);
+        filter: brightness(1.1);
+    }
+}
+
+@keyframes streak-glow-pulse {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(251, 146, 60, 0.3),
+                    0 0 10px rgba(251, 146, 60, 0.2),
+                    0 0 15px rgba(251, 146, 60, 0.1);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(251, 146, 60, 0.8),
+                    0 0 40px rgba(251, 146, 60, 0.4),
+                    0 0 60px rgba(251, 146, 60, 0.2);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes streak-counter-bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    10% {
+        transform: translateY(-5px) scale(1.1);
+    }
+    30% {
+        transform: translateY(-3px) scale(1.05);
+    }
+    60% {
+        transform: translateY(-8px) scale(1.15);
+    }
+}
+
+@keyframes streak-break-shatter {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(0.9) rotate(-5deg);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+        opacity: 0.6;
+    }
+    75% {
+        transform: scale(0.8) rotate(-3deg);
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(0) rotate(10deg);
+        opacity: 0;
+    }
+}
+
+/* Streak Celebration Animation Classes */
+.streak-fire {
+    animation: streak-fire-flicker 0.6s ease-in-out infinite;
+    position: relative;
+}
+
+.streak-fire::before {
+    content: '🔥';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+    animation: streak-fire-flicker 0.6s ease-in-out infinite;
+}
+
+.streak-glow {
+    animation: streak-glow-pulse 1.5s ease-in-out infinite;
+    background: linear-gradient(45deg, #f97316, #fb923c);
+    color: white;
+    border-radius: 50%;
+}
+
+.streak-counter {
+    animation: streak-counter-bounce 1s ease-out both;
+    font-weight: bold;
+    color: #f97316;
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+}
+
+.streak-break {
+    animation: streak-break-shatter 0.8s ease-out both;
+    color: #ef4444;
+}
+
+/* Level-up Progression Effects */
+@keyframes level-up-glow-intense {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.4),
+                    0 0 40px rgba(139, 92, 246, 0.2),
+                    0 0 60px rgba(139, 92, 246, 0.1);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(139, 92, 246, 0.8),
+                    0 0 80px rgba(139, 92, 246, 0.4),
+                    0 0 120px rgba(139, 92, 246, 0.2);
+        transform: scale(1.1);
+    }
+}
+
+@keyframes level-up-stars-spin {
+    0% {
+        transform: rotate(0deg) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: rotate(180deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(360deg) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes level-up-text-bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    10% {
+        transform: translateY(-20px) scale(1.2);
+    }
+    30% {
+        transform: translateY(-10px) scale(1.1);
+    }
+    60% {
+        transform: translateY(-30px) scale(1.3);
+    }
+}
+
+@keyframes level-up-progress-fill {
+    0% {
+        width: 0%;
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+    }
+    100% {
+        width: 100%;
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa, #c4b5fd);
+    }
+}
+
+/* Level-up Progression Animation Classes */
+.level-up-glow {
+    animation: level-up-glow-intense 2s ease-in-out infinite;
+    background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+    color: white;
+    border-radius: 12px;
+}
+
+.level-up-stars {
+    position: relative;
+    display: inline-block;
+}
+
+.level-up-stars::before,
+.level-up-stars::after {
+    content: '⭐';
+    position: absolute;
+    font-size: 24px;
+    animation: level-up-stars-spin 2s ease-out infinite;
+}
+
+.level-up-stars::before {
+    top: -10px;
+    left: -10px;
+    animation-delay: 0s;
+}
+
+.level-up-stars::after {
+    top: -10px;
+    right: -10px;
+    animation-delay: 0.5s;
+}
+
+.level-up-text {
+    animation: level-up-text-bounce 1.5s ease-out both;
+    font-weight: bold;
+    color: #8b5cf6;
+    text-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
+.level-up-progress {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.level-up-progress-fill {
+    animation: level-up-progress-fill 2s ease-out both;
+    height: 100%;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.level-up-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: progress-gradient-flow 1.5s linear infinite;
+}
+
+/* Enhanced combinations */
+.progress-complete-celebration {
+    animation: progress-complete-burst 0.8s ease-out both,
+               level-up-glow-intense 2s ease-in-out 0.8s infinite;
+}
+
+.streak-fire-levelup {
+    animation: streak-fire-flicker 0.6s ease-in-out infinite,
+               level-up-glow-intense 2s ease-in-out 0.3s infinite;
+}
+
+.level-up-streak-counter {
+    animation: level-up-text-bounce 1.5s ease-out both,
+               streak-counter-bounce 1s ease-out 1.5s both;
+}
+
+/* Alpine.js compatibility for new animations */
+[x-show].progress-fill-enhanced,
+[x-show].progress-gradient,
+[x-show].progress-pulse,
+[x-show].progress-complete,
+[x-show].streak-fire,
+[x-show].streak-glow,
+[x-show].streak-counter,
+[x-show].streak-break,
+[x-show].level-up-glow,
+[x-show].level-up-stars,
+[x-show].level-up-text,
+[x-show].level-up-progress,
+[x-show].level-up-progress-fill,
+[x-show].progress-complete-celebration,
+[x-show].streak-fire-levelup,
+[x-show].level-up-streak-counter {
+    display: block !important;
+}
+
+/* Accessibility improvements for new animations */
+@media (prefers-reduced-motion: reduce) {
+    .progress-fill-enhanced,
+    .progress-gradient,
+    .progress-pulse,
+    .progress-complete,
+    .streak-fire,
+    .streak-glow,
+    .streak-counter,
+    .streak-break,
+    .level-up-glow,
+    .level-up-stars,
+    .level-up-text,
+    .level-up-progress,
+    .level-up-progress-fill,
+    .progress-complete-celebration,
+    .streak-fire-levelup,
+    .level-up-streak-counter {
+        animation: none !important;
+    }
+}
+
+/* Mobile optimization for new animations */
+@media (max-width: 768px) {
+    .progress-fill-enhanced,
+    .progress-complete {
+        animation-duration: 1.5s;
+    }
+    
+    .streak-fire::before {
+        font-size: 1em;
+    }
+    
+    .level-up-stars::before,
+    .level-up-stars::after {
+        font-size: 18px;
+    }
+    
+    .level-up-progress {
+        height: 6px;
+    }
+    
+    .level-up-progress-fill {
+        height: 100%;
+    }
+}
+
+/* Performance optimization for new animations */
+.progress-fill-enhanced,
+.progress-gradient,
+.progress-pulse,
+.progress-complete,
+.streak-fire,
+.streak-glow,
+.streak-counter,
+.streak-break,
+.level-up-glow,
+.level-up-stars,
+.level-up-text,
+.level-up-progress,
+.level-up-progress-fill,
+.progress-complete-celebration,
+.streak-fire-levelup,
+.level-up-streak-counter {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+.streak-fire::before,
+.level-up-stars::before,
+.level-up-stars::after {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* 5.2.6 Mobile Performance Optimizations - Enhanced Integration */
+
+/* Reduce Animation Complexity for Low-End Devices */
+/* Simplified keyframes for low-performance devices */
+@keyframes success-pulse-simple {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+}
+
+@keyframes error-shake-simple {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-2px);
+    }
+    75% {
+        transform: translateX(2px);
+    }
+}
+
+@keyframes progress-fill-simple {
+    0% {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+}
+
+@keyframes celebration-bounce-simple {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Simplified animation classes for low-performance devices */
+.feedback-success-simple {
+    animation: success-pulse-simple 0.8s ease-out both;
+}
+
+.feedback-error-simple {
+    animation: error-shake-simple 0.8s ease-out both;
+}
+
+.feedback-progress-simple {
+    animation: progress-fill-simple 0.8s ease-out both;
+}
+
+.celebration-simple {
+    animation: celebration-bounce-simple 0.8s ease-out both;
+}
+
+/* Hardware Acceleration for Smooth Animations */
+/* Enhanced GPU acceleration for all animated elements */
+.animated-element {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Hardware-accelerated animation classes */
+.feedback-success,
+.feedback-error,
+.feedback-progress,
+.celebration,
+.celebration-success,
+.move-correct,
+.move-incorrect,
+.state-check,
+.state-checkmate,
+.progress-fill-enhanced,
+.streak-fire,
+.streak-glow,
+.level-up-glow {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Performance Monitoring and Fallback Options */
+/* Detect low-performance devices */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Low-performance device detection and fallback */
+@media (max-width: 768px) and (hover: none) {
+    /* Simplified animations for touch devices */
+    .feedback-success,
+    .feedback-error,
+    .feedback-progress,
+    .celebration,
+    .celebration-success,
+    .move-correct,
+    .move-incorrect,
+    .state-check,
+    .state-checkmate {
+        animation-duration: 1.2s;
+        animation-timing-function: ease-out;
+    }
+    
+    /* Reduce complex animations */
+    .celebration-fireworks::before,
+    .celebration-fireworks::after,
+    .celebration-stars::before,
+    .celebration-stars::after,
+    .success-particles::before,
+    .success-particles::after {
+        display: none;
+    }
+}
+
+/* Very low performance devices (basic animations only) */
+@media (max-width: 480px) {
+    .complex-animation {
+        animation: none !important;
+    }
+    
+    .feedback-success-simple,
+    .feedback-error-simple,
+    .feedback-progress-simple,
+    .celebration-simple {
+        animation-duration: 1.5s;
+    }
+}
+
+/* Performance-optimized animation classes */
+.performance-optimized {
+    animation: none;
+    transition: all 0.3s ease;
+}
+
+.performance-optimized.animate-in {
+    animation: success-pulse-simple 0.6s ease-out both;
+}
+
+/* Mobile-specific performance optimizations */
+@media (max-width: 768px) {
+    /* Reduce animation complexity on mobile */
+    .celebration-fireworks,
+    .celebration-stars,
+    .success-particles {
+        display: none;
+    }
+    
+    /* Simplified mobile animations */
+    .feedback-success,
+    .feedback-error,
+    .feedback-progress,
+    .celebration {
+        animation-duration: 1s;
+    }
+    
+    /* Hardware acceleration for mobile */
+    .cg-board .square,
+    .position-move-indicator,
+    .progress-bar-enhanced {
+        will-change: transform;
+        transform: translateZ(0);
+    }
+}
+
+/* Ultra-low performance mode */
+@media (max-width: 360px) {
+    .heavy-animation {
+        display: none;
+    }
+    
+    .light-animation {
+        animation: none !important;
+    }
+    
+    .feedback-success-simple,
+    .feedback-error-simple {
+        animation-duration: 2s;
+    }
+}
+
+/* Enhanced Feedback Styles */
+.enhanced-feedback {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    min-height: 48px;
+    animation: feedback-appear 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.feedback-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.feedback-message {
+    font-size: 16px;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.feedback-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+/* Feedback Animations */
+@keyframes feedback-appear {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Feedback Type Styles */
+.feedback-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.feedback-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.feedback-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.feedback-progress {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.feedback-streak {
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.feedback-levelup {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Enhanced feedback animations */
+.feedback-success::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
+    animation: feedback-sweep 1.5s ease-out;
+}
+
+.feedback-error::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.2), transparent);
+    animation: feedback-sweep 1.5s ease-out;
+}
+
+@keyframes feedback-sweep {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Mobile optimization for enhanced feedback */
+@media (max-width: 768px) {
+    .enhanced-feedback {
+        padding: 10px 16px;
+        min-height: 40px;
+        gap: 8px;
+    }
+    
+    .feedback-icon {
+        font-size: 20px;
+    }
+    
+    .feedback-message {
+        font-size: 14px;
+    }
+    
+    .feedback-spinner {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .enhanced-feedback {
+        animation: none;
+    }
+    
+    .feedback-spinner {
+        animation: none;
+        border-top-color: #3498db;
+    }
+}
+
+/* Performance optimization */
+.enhanced-feedback {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+/* Enhanced Natural Animation Transitions */
+.feedback-success,
+.feedback-error,
+.feedback-warning,
+.feedback-progress,
+.feedback-streak,
+.feedback-levelup {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Smooth entrance and exit animations */
+@keyframes feedback-slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes feedback-slide-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(-10px) scale(0.95);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+}
+
+/* Enhanced bounce animations for celebrations */
+@keyframes natural-bounce {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(-15px) scale(1.05);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+@keyframes gentle-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.03);
+        opacity: 0.9;
+    }
+}
+
+/* Natural fire animation for streaks */
+@keyframes natural-fire {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1) hue-rotate(0deg);
+    }
+    25% {
+        transform: scale(1.05) rotate(-2deg);
+        filter: brightness(1.2) hue-rotate(10deg);
+    }
+    50% {
+        transform: scale(0.98) rotate(2deg);
+        filter: brightness(0.9) hue-rotate(-5deg);
+    }
+    75% {
+        transform: scale(1.02) rotate(-1deg);
+        filter: brightness(1.1) hue-rotate(5deg);
+    }
+}
+
+/* Smooth star rotation for level-ups */
+@keyframes natural-star-rotation {
+    0% {
+        transform: rotate(0deg) scale(0);
+        opacity: 0;
+    }
+    40% {
+        transform: rotate(180deg) scale(1.1);
+        opacity: 1;
+    }
+    60% {
+        transform: rotate(270deg) scale(0.95);
+        opacity: 0.8;
+    }
+    100% {
+        transform: rotate(360deg) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Apply enhanced animations */
+.feedback-success {
+    animation: feedback-slide-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), gentle-pulse 2s ease-in-out infinite;
+}
+
+.feedback-error {
+    animation: feedback-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), natural-bounce 0.6s ease-out;
+}
+
+.feedback-warning {
+    animation: feedback-slide-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-progress {
+    animation: feedback-slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-streak {
+    animation: feedback-slide-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), natural-fire 1.2s ease-in-out infinite;
+}
+
+.feedback-levelup {
+    animation: feedback-slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Enhanced exit animations */
+.feedback-exit {
+    animation: feedback-slide-out 0.3s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+}
+
+/* Improved spinner animation */
+@keyframes smooth-spin {
+    0% {
+        transform: rotate(0deg);
+        border-color: #f3f3f3;
+        border-top-color: #3b82f6;
+    }
+    25% {
+        border-color: #f3f3f3;
+        border-top-color: #3b82f6;
+    }
+    50% {
+        transform: rotate(180deg);
+        border-color: rgba(59, 130, 246, 0.3);
+        border-top-color: #3b82f6;
+    }
+    75% {
+        border-color: #f3f3f3;
+        border-top-color: #3b82f6;
+    }
+    100% {
+        transform: rotate(360deg);
+        border-color: #f3f3f3;
+        border-top-color: #3b82f6;
+    }
+}
+
+.feedback-spinner {
+    animation: smooth-spin 1.2s linear infinite;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Natural movement for icons */
+.feedback-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feedback-success:hover .feedback-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.feedback-error:hover .feedback-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* Enhanced glow effects */
+.feedback-success::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #10b981, #34d399, #10b981);
+    border-radius: 8px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.feedback-success:hover::after {
+    opacity: 0.3;
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
+}
+
+/* Mobile optimization for natural animations */
+@media (max-width: 768px) {
+    .feedback-success,
+    .feedback-error,
+    .feedback-warning,
+    .feedback-progress,
+    .feedback-streak,
+    .feedback-levelup {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes feedback-slide-in {
+        0% {
+            opacity: 0;
+            transform: translateY(-15px) scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .feedback-spinner {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .feedback-success,
+    .feedback-error,
+    .feedback-warning,
+    .feedback-progress,
+    .feedback-streak,
+    .feedback-levelup {
+        transition: none;
+        animation: none;
+    }
+    
+    .feedback-spinner {
+        animation: none;
+        border-top-color: #3b82f6;
+    }
+    
+    .feedback-icon {
+        transition: none;
+    }
+}

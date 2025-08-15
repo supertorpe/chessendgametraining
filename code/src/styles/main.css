@@ -1,0 +1,295 @@
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Russo One', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* Language selector styles */
+.language-selector {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
+}
+
+.language-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 120px;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 32px;
+}
+
+.language-select:hover {
+    border-color: #9ca3af;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.language-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.language-select:active {
+    border-color: #3b82f6;
+}
+
+/* Header styles */
+header {
+    background-color: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .flex {
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Button styles */
+button {
+    font-family: inherit;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Main content styles */
+main {
+    min-height: calc(100vh - 64px);
+}
+
+/* Card styles */
+.bg-white {
+    background-color: white;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Padding and margin utilities */
+.p-4 {
+    padding: 1rem;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.py-6 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.px-0 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.m-4 {
+    margin: 1rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+/* Text utilities */
+.text-center {
+    text-align: center;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-gray-600 {
+    color: #4b5563;
+}
+
+.text-gray-800 {
+    color: #1f2937;
+}
+
+.text-gray-900 {
+    color: #111827;
+}
+
+.text-white {
+    color: white;
+}
+
+/* Color utilities */
+.bg-gray-100 {
+    background-color: #f3f4f6;
+}
+
+.bg-gray-200 {
+    background-color: #e5e7eb;
+}
+
+.bg-blue-600 {
+    background-color: #2563eb;
+}
+
+.bg-blue-700 {
+    background-color: #1d4ed8;
+}
+
+.hover\:bg-blue-700:hover {
+    background-color: #1d4ed8;
+}
+
+.hover\:bg-gray-300:hover {
+    background-color: #d1d5db;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .language-select {
+        font-size: 12px;
+        padding: 6px 10px;
+        min-width: 100px;
+        padding-right: 28px;
+    }
+    
+    .text-xl {
+        font-size: 1.125rem;
+    }
+    
+    .text-2xl {
+        font-size: 1.25rem;
+    }
+    
+    .text-3xl {
+        font-size: 1.5rem;
+    }
+    
+    button {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .language-select {
+        min-width: 80px;
+        font-size: 11px;
+        padding: 4px 8px;
+        padding-right: 24px;
+    }
+}
+
+/* Focus styles for accessibility */
+button:focus,
+.language-select:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Animation for language change */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}

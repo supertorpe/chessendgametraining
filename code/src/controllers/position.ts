@@ -2,10 +2,13 @@
 
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, keyboardShortcutsService, routeService, soundService, stockfishService, syzygyService, accessibilityService } from '../services';
+import { requestWakeLock, releaseWakeLock } from '../services/wakelock-service';
+import { redrawIconImages } from '../services/ionic';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, queryParam, randomNumber, setupSEO } from '../commons';
 import { MoveItem, Position } from '../model';
-import { Chess, ChessInstance, PieceType, SQUARES, Square } from 'chess.js';
+import { Chess, SQUARES } from 'chess.js';
+import type { Square } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
 import { MoveMetadata, Color, Key } from 'chessground/types';
@@ -19,7 +22,7 @@ import { checkmateCatalog } from '../static';
 class PositionController extends BaseController {
 
   private seo!: string;
-  private chess: ChessInstance = Chess();
+  private chess = new Chess();
   private board!: Api;
   private boardConfig!: Config;
   private position!: Position | undefined;
@@ -58,6 +61,42 @@ class PositionController extends BaseController {
   // private stockfishWarmup = false;
   private stockfishWarningShowed = false;
   private stockfishWarnTimeout: number | null = null;
+  public visualFeedback = Alpine.reactive({
+    showSuccess: false,
+    showIncorrect: false,
+    showProgress: false,
+    successTimeout: null as number | null,
+    incorrectTimeout: null as number | null,
+    progressTimeout: null as number | null,
+  });
+
+  public showVisualFeedback(type: 'success' | 'incorrect' | 'progress') {
+    const feedback = this.visualFeedback;
+    feedback.showSuccess = type === 'success';
+    feedback.showIncorrect = type === 'incorrect';
+    feedback.showProgress = type === 'progress';
+
+    // Clear existing timeouts
+    if (feedback.successTimeout) clearTimeout(feedback.successTimeout);
+    if (feedback.incorrectTimeout) clearTimeout(feedback.incorrectTimeout);
+    if (feedback.progressTimeout) clearTimeout(feedback.progressTimeout);
+
+    // Set timeout to hide feedback
+    const timeout = 2000; // 2 seconds
+    if (type === 'success') {
+      feedback.successTimeout = window.setTimeout(() => {
+        feedback.showSuccess = false;
+      }, timeout) as unknown as number;
+    } else if (type === 'incorrect') {
+      feedback.incorrectTimeout = window.setTimeout(() => {
+        feedback.showIncorrect = false;
+      }, timeout) as unknown as number;
+    } else if (type === 'progress') {
+      feedback.progressTimeout = window.setTimeout(() => {
+        feedback.showProgress = false;
+      }, timeout) as unknown as number;
+    }
+  }
 
   constructor() {
     super();
@@ -88,7 +127,7 @@ class PositionController extends BaseController {
       infoWrapper.style.width = '100%';
       infoWrapper.style.height = `calc(100% - ${minSize + actionButtons.clientHeight + 2}px`;
     }
-    infoMoves.style.height = `${infoWrapper.clientHeight - + actionButtons.clientHeight}px`;
+    infoMoves.style.height = `${infoWrapper.clientHeight - actionButtons.clientHeight}px`;
     actionButtons.style.width = `${infoWrapper.clientWidth}px`;
   }
 
@@ -96,7 +135,7 @@ class PositionController extends BaseController {
     const dests = new Map();
     SQUARES.forEach(s => {
       const ms = this.chess.moves({ square: s, verbose: true });
-      if (ms.length) dests.set(s, ms.map(m => m.to));
+      if (ms.length) dests.set(s, ms.map((m: any) => m.to));
     });
     return dests;
   }
@@ -385,6 +424,68 @@ class PositionController extends BaseController {
     // prevent screen off
     requestWakeLock();
 
+    // Define and add keyboard shortcuts
+    const shortcuts = [
+      {
+        key: 'ArrowLeft',
+        description: 'Navigate to previous position',
+        action: () => self.showPreviousPosition.call(self)
+      },
+      {
+        key: 'ArrowRight',
+        description: 'Navigate to next position',
+        action: () => self.showNextPosition.call(self)
+      },
+      {
+        key: 'r',
+        description: 'Restart current position',
+        action: () => self.showRestartDialog.call(self)
+      },
+      {
+        key: 'Escape',
+        description: 'Stop thinking or exit',
+        action: () => {
+          if (self.solving.value || self.waitingForOpponent.value) {
+            self.stop.call(self);
+          }
+          // Additional escape logic can be added here for modals, etc.
+        }
+      },
+      {
+        key: 'h',
+        description: 'Get a hint',
+        action: () => self.hint.call(self)
+      },
+      {
+        key: 's',
+        description: 'Solve current position',
+        action: () => self.solve.call(self)
+      }
+    ];
+
+    shortcuts.forEach(shortcut => {
+      keyboardShortcutsService.addShortcut(shortcut);
+    });
+
+    // Start listening for keyboard events
+    keyboardShortcutsService.init();
+
+    // Cleanup on exit
+    this.onExit = () => {
+      keyboardShortcutsService.destroy();
+      // ... existing exit logic ...
+      return self.showExitDialog().then((result) => {
+        if (result) {
+          self.stopStockfish();
+          menuController.get(MAIN_MENU_ID).then(function (menu) {
+            if (menu) menu.swipeGesture = true;
+          });
+          releaseWakeLock();
+        }
+        return result;
+      });
+    };
+
     this.useSyzygy = configurationService.configuration.useSyzygy;
     this.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck;
     stockfishService.debug = (queryParam('debug') == 'true');
@@ -499,6 +600,7 @@ class PositionController extends BaseController {
       showNavNext: self.showNavNext,
       ariaDescriptionFromIcon: ariaDescriptionFromIcon,
       chess: this.chess,
+      visualFeedback: self.visualFeedback,
       toggleManualMode() {
         this.manualMode.value = !this.manualMode.value;
         toastController.create({
@@ -540,7 +642,7 @@ class PositionController extends BaseController {
         self.stop.call(self);
       },
       hint() {
-        self.getHint.call(self);
+        self.hint.call(self);
       },
       solve() {
         self.solve.call(self);
@@ -608,14 +710,26 @@ class PositionController extends BaseController {
       lichessAnalysis() {
         window.open(`https://lichess.org/analysis/${this.chess.fen()}`, '_blank');
       },
+      showVisualFeedback(type: 'success' | 'incorrect' | 'progress') {
+        self.showVisualFeedback(type);
+      },
       init() {
-        self.board = Chessground(document.getElementById('__chessboard__') as HTMLElement, self.boardConfig);
-        // resize the board on the next tick, when the DOM of the chessboard has been loaded
-        requestAnimationFrame(() => {
-          self.resizeBoard();
+        const chessboardElement = document.getElementById('__chessboard__');
+        if (chessboardElement) {
+          self.board = Chessground(chessboardElement, self.boardConfig);
+          // resize the board on the next tick, when the DOM of the chessboard has been loaded
+          requestAnimationFrame(() => {
+            self.resizeBoard();
+          });
+        }
+        
+        this.$nextTick().then(() => {
+          routeService.updatePageLinks();
         });
-        this.$nextTick().then(() => { routeService.updatePageLinks(); });
-        if (self.player.value != this.chess.turn()) self.getOpponentMove.call(self);
+        
+        if (self.player.value != this.chess.turn()) {
+          self.getOpponentMove.call(self);
+        }
         ['manualMode'].forEach((item) => {
           this.$watch(item, (_value) => {
             redrawIconImages();
@@ -648,7 +762,7 @@ class PositionController extends BaseController {
             case 'threeFoldRepetitionCheck': self.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck; break;
           }
         });
-      }
+      },
     }));
   }
 
@@ -773,7 +887,7 @@ class PositionController extends BaseController {
       return !(whiteHasOtherPieces && blackHasOtherPieces);
     }
   */
-  private async registerMove(source: Square, target: Square, promotion: Exclude<PieceType, "p" | "k"> | undefined) {
+  private async registerMove(source: Square, target: Square, promotion: 'q' | 'r' | 'b' | 'n' | undefined) {
     // if (this.stockfishWarmup) {
     //   await stockfishService.stopWarmup().then(() => this.stockfishWarmup = false);
     // }
@@ -806,6 +920,8 @@ class PositionController extends BaseController {
 
     if (!this.checkEnding()) {
       soundService.playAudio('move');
+      // Show progress feedback while opponent is thinking
+      (this as any).showVisualFeedback('progress'); 
       const isTrivial = this.isTrivialPosition();
       const autoSolve = configurationService.configuration.solveTrivialPosition;
       if (isTrivial && autoSolve) {
@@ -837,8 +953,10 @@ class PositionController extends BaseController {
 
       if (goalAchieved) {
         soundService.playAudio('success');
+        (this as any).showVisualFeedback('success'); // Show success feedback
       } else {
         soundService.playAudio('fail');
+        // (this as any).showVisualFeedback('incorrect'); // Optionally show incorrect feedback for game over
       }
 
       // update database status
@@ -917,7 +1035,7 @@ class PositionController extends BaseController {
     return result;
   }
 
-  private getHint() {
+  public hint() {
     this.askingForHint.value = true;
     this.getOpponentMove();
   }
@@ -1008,8 +1126,23 @@ class PositionController extends BaseController {
     if (!this.solvingTrivial && (this.askingForHint.value || this.solving.value)) this.assistanceUsed = true;
     redrawIconImages();
     if (this.askingForHint.value) {
-      this.board.setShapes([{ orig: from as Key, dest: to as Key, brush: 'blue' }]);
+      // Show the hint move on the board
+      this.board.move(from as Key, to as Key);
       this.askingForHint.value = false;
+      // Show hint feedback
+      (this as any).showVisualFeedback('progress');
+      setTimeout(() => {
+        // Revert the move and show the current position
+        this.board.set({
+          fen: this.chess.fen(),
+          turnColor: this.chess.turn() == 'w' ? 'white' : 'black',
+          viewOnly: false,
+          movable: {
+            color: this.chess.turn() == 'w' ? 'white' : 'black',
+            dests: this.toDests()
+          }
+        });
+      }, 1000);
       return;
     }
     const promo = (promotion == 'r' || promotion == 'n' || promotion == 'b' || promotion == 'q') ? promotion : undefined;
@@ -1035,42 +1168,23 @@ class PositionController extends BaseController {
       const isTrivial = this.isTrivialPosition();
       const autoSolve = configurationService.configuration.solveTrivialPosition;
       if (this.solving.value) {
+        (this as any).showVisualFeedback('progress'); // Show progress while solving continues
         this.getOpponentMove();
       } 
       else if (isTrivial && autoSolve) {
+        (this as any).showVisualFeedback('progress');
         this.solveTrivialPosition();
       }
       else if (isTrivial && autoSolve === null && !this.trivialPositionInvitationShown) {
         await this.showTrivialPositionAlert(() => {}, () => this.solveTrivialPosition());
       } else if (this.mateDistance != 0) {
         if (this.player.value == 'w' && this.mateDistance > 0 || this.player.value == 'b' && this.mateDistance < 0) {
-          toastController.create({
-            message: window.AlpineI18n.t('position.mate-in', { moves: Math.abs(this.mateDistance) }),
-            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-            positionAnchor: '__chessboard__',
-            animated: false,
-            color: 'medium',
-            duration: 1000
-          }).then(toast => toast.present());
+          this.showEngineMessage('mate-in', { moves: Math.abs(this.mateDistance) });
         } else {
-          toastController.create({
-            message: window.AlpineI18n.t('position.receive-mate-in', { moves: Math.abs(this.mateDistance) }),
-            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-            positionAnchor: '__chessboard__',
-            animated: false,
-            color: 'warning',
-            duration: 1000
-          }).then(toast => toast.present());
+          this.showEngineMessage('receive-mate-in', { moves: Math.abs(this.mateDistance) });
         }
       } else if (this.unfeasibleMate && (this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition()) && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
-        toastController.create({
-          message: window.AlpineI18n.t('position.unfeasible-mate'),
-          position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-          positionAnchor: '__chessboard__',
-          animated: false,
-          color: 'warning',
-          duration: 1000
-        }).then(toast => toast.present());
+        this.showEngineMessage('unfeasible-mate');
       }
     }
   }
@@ -1089,15 +1203,21 @@ class PositionController extends BaseController {
         // otherwise, annotate the candidates reported by syzygy and query stockfish
         let move;
         // if it's a winning position and all the moves come with DTM informed, take the first one (syzygy returns them in order)
-        if (data.category == 'win' && data.moves.filter((move: any) => move.category === "loss" && move.dtm == null).length == 0) {
+        if (data.category == 'win' && data.moves.filter((move: any) => {
+          return move.category === "loss" && move.dtm == null;
+        }).length == 0) {
           move = data.moves[0];
         }
         else {
           // otherwise get the candidates
           if (data.category == 'win') {
-            this.syzygyCandidates = data.moves.filter((move: any) => move.category == 'loss');
+            this.syzygyCandidates = data.moves.filter((move: any) => {
+              return move.category == 'loss';
+            });
           } else if (data.category == 'draw') {
-            this.syzygyCandidates = data.moves.filter((move: any) => move.category == 'draw');
+            this.syzygyCandidates = data.moves.filter((move: any) => {
+              return move.category == 'draw';
+            });
           }
           // if there is only one candidate, use it
           if (this.syzygyCandidates.length == 1) {
@@ -1154,7 +1274,7 @@ class PositionController extends BaseController {
     // }
     const history = this.chess.history({ verbose: true });
     let moves = '';
-    history.forEach(move => moves += ` ${move.from}${move.to}${move.promotion || ''}`);
+    history.forEach((move: any) => moves += ` ${move.from}${move.to}${move.promotion || ''}`);
     const command = `position fen ${this.fen.value} ${moves ? 'moves ' + moves : ''}`;
     stockfishService.postMessage(command);
     this.waitingForOpponent.value = true;
@@ -1193,7 +1313,9 @@ class PositionController extends BaseController {
       let promotion = (match[3] == 'r' || match[3] == 'n' || match[3] == 'b' || match[3] == 'q') ? match[3] : undefined;
       // check if there are syzygy candidates. If so, make sure that stockfish suggestion is within them
       if (this.syzygyCandidates.length > 0) {
-        const item = this.syzygyCandidates.filter((move: any) => { return move.uci == (promotion == undefined ? `${from}${to}` : `${from}${to}${promotion}`) });
+        const item = this.syzygyCandidates.filter((move: any) => {
+          return move.uci == (promotion == undefined ? `${from}${to}` : `${from}${to}${promotion}`);
+        });
         if (item.length == 0) {
           match = this.syzygyBestCandidate.uci.match(/^([a-h][1-8])([a-h][1-8])([qrbn])?/);
           from = match[1];
@@ -1332,6 +1454,67 @@ class PositionController extends BaseController {
       return result;
     });
 
+  }
+
+  // Enhanced visual feedback for engine messages
+  public showEngineMessage(messageType: string, data?: any) {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'engine-message-overlay';
+    
+    let messageText = '';
+    let messageClass = '';
+    let icon = '';
+    
+    switch (messageType) {
+      case 'mate-in':
+        messageText = window.AlpineI18n.t('position.mate-in', { moves: data.moves });
+        messageClass = 'engine-message-success';
+        icon = '♔';
+        break;
+      case 'receive-mate-in':
+        messageText = window.AlpineI18n.t('position.receive-mate-in', { moves: data.moves });
+        messageClass = 'engine-message-warning';
+        icon = '⚠️';
+        break;
+      case 'unfeasible-mate':
+        messageText = window.AlpineI18n.t('position.unfeasible-mate');
+        messageClass = 'engine-message-info';
+        icon = 'ℹ️';
+        break;
+    }
+    
+    messageElement.innerHTML = `
+      <div class="engine-message-content ${messageClass}">
+        <div class="engine-message-icon">${icon}</div>
+        <div class="engine-message-text">${messageText}</div>
+      </div>
+    `;
+    
+    // Add to board container
+    const boardContainer = document.querySelector('#__chessboard__')?.parentElement;
+    if (boardContainer) {
+      boardContainer.appendChild(messageElement);
+      
+      // Animate in
+      setTimeout(() => {
+        messageElement.classList.add('engine-message-show');
+      }, 50);
+      
+      // Remove after delay
+      setTimeout(() => {
+        messageElement.classList.remove('engine-message-show');
+        setTimeout(() => {
+          if (boardContainer && boardContainer.contains(messageElement)) {
+            boardContainer.removeChild(messageElement);
+          }
+        }, 300);
+      }, 4000);
+    }
+    
+    // Also announce for screen readers
+    if (accessibilityService) {
+      accessibilityService.announceEngineMessage?.(messageType, data);
+    }
   }
 
 }

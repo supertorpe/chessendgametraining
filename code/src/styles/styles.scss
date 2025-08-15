@@ -175,3 +175,358 @@ ion-alert {
     padding-left: 0;
     padding-right: 0;
 }
+
+/* Visual Feedback Styles */
+.visual-feedback-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10; /* Ensure it's above the chessboard */
+    pointer-events: none; /* Allow clicks to pass through */
+    border-radius: inherit; /* Match the chessboard's border radius if any */
+}
+
+.feedback-icon {
+    font-size: 5rem; /* Adjust size as needed */
+    opacity: 0.9;
+}
+
+.success-icon {
+    color: var(--ion-color-success);
+    animation: pulse-success 1.5s ease-in-out infinite;
+}
+
+.incorrect-icon {
+    color: var(--ion-color-danger);
+    animation: shake-incorrect 0.6s ease-in-out;
+}
+
+.feedback-spinner {
+    font-size: 3rem; /* Adjust size as needed */
+    color: var(--ion-color-primary);
+}
+
+/* Animations */
+@keyframes pulse-success {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+}
+
+@keyframes shake-incorrect {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Optional: Add a subtle glow effect for success feedback */
+.success-feedback::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: radial-gradient(circle, rgba(52, 199, 89, 0.3) 0%, rgba(52, 199, 89, 0) 70%);
+    border-radius: inherit;
+    z-index: -1;
+    animation: glow-success 1.5s ease-in-out infinite;
+}
+
+@keyframes glow-success {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* List Page Specific Styles */
+.progress-info {
+    font-size: 0.8em;
+    color: var(--ion-color-medium);
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.button-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+}
+
+.difficulty-stars {
+    display: flex;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.difficulty-stars ion-icon {
+    font-size: 0.8em;
+    color: var(--ion-color-warning);
+}
+
+.star-filled {
+    color: var(--ion-color-warning); /* Filled star color */
+}
+
+.star-empty {
+    color: var(--ion-color-light-shade); /* Empty star color, adjust as needed */
+}
+/* Enhanced Engine Message Overlay */
+.engine-message-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.engine-message-overlay.engine-message-show {
+    opacity: 1;
+}
+
+.engine-message-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 2px solid;
+    min-width: 280px;
+    max-width: 400px;
+    animation: engineMessagePulse 0.6s ease-out;
+}
+
+.engine-message-success {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(56, 142, 60, 0.95));
+    border-color: #4CAF50;
+    color: white;
+}
+
+.engine-message-warning {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.95), rgba(245, 124, 0, 0.95));
+    border-color: #FF9800;
+    color: white;
+}
+
+.engine-message-info {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.95), rgba(25, 118, 210, 0.95));
+    border-color: #2196F3;
+    color: white;
+}
+
+.engine-message-icon {
+    font-size: 2rem;
+    margin-right: 12px;
+    animation: engineMessageIconBounce 0.8s ease-out;
+}
+
+.engine-message-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes engineMessagePulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes engineMessageIconBounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-8px);
+    }
+    60% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .engine-message-content {
+        min-width: 240px;
+        max-width: calc(100vw - 32px);
+        padding: 12px 20px;
+    }
+    
+    .engine-message-icon {
+        font-size: 1.5rem;
+        margin-right: 8px;
+    }
+    
+    .engine-message-text {
+        font-size: 1rem;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .engine-message-overlay {
+        transition: opacity 0.1s ease;
+    }
+    
+    .engine-message-content {
+        animation: none;
+    }
+    
+    .engine-message-icon {
+        animation: none;
+    }
+}
+
+/* High contrast mode support */
+.high-contrast .engine-message-content {
+    border-width: 3px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+}
+
+.high-contrast .engine-message-success {
+    background: #4CAF50;
+    border-color: #ffffff;
+}
+
+.high-contrast .engine-message-warning {
+    background: #FF9800;
+    border-color: #ffffff;
+}
+
+.high-contrast .engine-message-info {
+    background: #2196F3;
+    border-color: #ffffff;
+}
+
+// Enhanced Engine Message Overlay Styles
+.engine-message-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.engine-message-overlay.engine-message-show {
+  opacity: 1;
+}
+
+.engine-message-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  min-width: 200px;
+  animation: engineMessagePulse 0.6s ease-out;
+}
+
+.engine-message-success {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.9), rgba(56, 142, 60, 0.9));
+  color: white;
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.engine-message-warning {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.9), rgba(245, 124, 0, 0.9));
+  color: white;
+  border-color: rgba(255, 152, 0, 0.5);
+}
+
+.engine-message-info {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.9), rgba(25, 118, 210, 0.9));
+  color: white;
+  border-color: rgba(33, 150, 243, 0.5);
+}
+
+.engine-message-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.engine-message-text {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+}
+
+@keyframes engineMessagePulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .engine-message-overlay {
+    transition: opacity 0.1s ease-in-out;
+  }
+  
+  .engine-message-content {
+    animation: none;
+  }
+  
+  @keyframes engineMessagePulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}

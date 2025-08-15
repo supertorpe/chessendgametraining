@@ -1,6 +1,10 @@
 // This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
 
 import './styles';
+import { defineCustomElements } from '@ionic/core/loader';
+
+// Define custom elements
+defineCustomElements(window);
 
 import { services_initialize, routeService } from './services';
 import { ROUTE_MAP } from './routes';
