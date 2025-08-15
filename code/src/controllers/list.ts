@@ -25,14 +25,14 @@ class ListController extends BaseController {
         const categories = endgameDatabase.categories;
         this.idxCategory = parseInt($routeParams['idxCategory']);
         this.idxSubcategory = parseInt($routeParams['idxSubcategory']);
-        this.category = categories[this.idxCategory];
-        this.subcategory = this.category.subcategories[this.idxSubcategory];
-        this.idxLastSubcategory = this.category.count - 1;
-        this.gameCount = this.subcategory.games.length;
+        this.category = (categories as any[])[this.idxCategory];
+        this.subcategory = (this.category as any).subcategories[this.idxSubcategory];
+        this.idxLastSubcategory = (this.category as any).count - 1;
+        this.gameCount = (this.subcategory as any).games.length;
         this.rows = Math.ceil(this.gameCount / 6);
 
-        this.title = `${window.AlpineI18n.t(`category.${this.category.name}`)} [ ${this.idxSubcategory + 1} / ${this.idxLastSubcategory + 1} ]`;
-        this.seo = `${window.AlpineI18n.t(`category.${this.category.name}`)} (${this.subcategory.name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
+        this.title = `${window.AlpineI18n.t(`category.${(this.category as any).name}`)} [ ${this.idxSubcategory + 1} / ${this.idxLastSubcategory + 1} ]`;
+        this.seo = `${window.AlpineI18n.t(`category.${(this.category as any).name}`)} (${(this.subcategory as any).name}) ${this.idxSubcategory + 1}/${this.idxLastSubcategory + 1}`;
 
         Alpine.data('info', () => ({
             title: self.title,
@@ -47,7 +47,7 @@ class ListController extends BaseController {
             rows: self.rows,
             // Calculate progress for the current subcategory
             getSolvedCount() {
-                return this.subcategory.games.filter((game: any) => game.record !== null && game.record >= 0).length;
+                return (this.subcategory as any).games.filter((game: any) => game.record !== null && game.record >= 0).length;
             },
             getProgressPercentage() {
                 if (this.gameCount === 0) return 0;
@@ -73,8 +73,8 @@ class ListController extends BaseController {
                         this.idxLastSubcategory = this.idxSubcategory;
                         this.category = (endgameDatabase.categories as any[])[this.idxCategory];
                     }
-                    this.subcategory = (this.category.subcategories as any[])[this.idxSubcategory];
-                    this.gameCount = this.subcategory.games.length;
+                    this.subcategory = ((this.category as any).subcategories as any[])[this.idxSubcategory];
+                    this.gameCount = (this.subcategory as any).games.length;
                     this.rows = Math.ceil(this.gameCount / 6);
                     this.showNavPrev = this.idxSubcategory > 0 || this.idxCategory > 0;
                     this.showNavNext = true;
@@ -95,8 +95,8 @@ class ListController extends BaseController {
                         this.idxLastSubcategory = (endgameDatabase.categories as any[])[this.idxCategory].count - 1;
                         this.category = (endgameDatabase.categories as any[])[this.idxCategory];
                     }
-                    this.subcategory = (this.category.subcategories as any[])[this.idxSubcategory];
-                    this.gameCount = this.subcategory.games.length;
+                    this.subcategory = ((this.category as any).subcategories as any[])[this.idxSubcategory];
+                    this.gameCount = (this.subcategory as any).games.length;
                     this.rows = Math.ceil(this.gameCount / 6);
                     this.showNavPrev = true;
                     this.showNavNext = !(this.idxCategory === (endgameDatabase as any).count - 1 && this.idxSubcategory === this.idxLastSubcategory);
@@ -112,7 +112,7 @@ class ListController extends BaseController {
             init() {
                 endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener((database: EndgameDatabase) => {
                     const categories = database.categories;
-                    this.category = clone(categories[self.idxCategory]);
+                    this.category = clone((categories as any[])[self.idxCategory]);
                     this.subcategory = clone((this.category as any).subcategories[self.idxSubcategory]);
                 });
             }
