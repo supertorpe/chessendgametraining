@@ -6,7 +6,8 @@ import { boardThemeSwitcherService, themeSwitcherService } from '../services';
 export type ConfigurationField =
 
     'useSyzygy' | 'threeFoldRepetitionCheck' | 'stockfishDepth' | 'stockfishMovetime' | 'automaticShowFirstPosition' | 'automaticShowNextPosition' |
-    'solveTrivialPosition' | 'preventScreenOff' | 'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive';
+    'solveTrivialPosition' | 'preventScreenOff' | 'colorTheme' | 'playSounds' | 'fullScreen' | 'highlightSquares' | 'pieceTheme' | 'boardTheme' | 'syncGoogleDrive' | 'language' |
+    'reducedMotion' | 'highContrast' | 'screenReaderAnnouncements';
 
 export type ConfigurationChangedEvent = { config: Configuration, field: ConfigurationField };
 
@@ -30,7 +31,11 @@ export class Configuration {
         private _pieceTheme: string,
         private _boardTheme: string,
         private _syncGoogleDrive: boolean,
-        private _changelog: string
+        private _changelog: string,
+        private _language: string,
+        private _reducedMotion: boolean,
+        private _highContrast: boolean,
+        private _screenReaderAnnouncements: boolean
     ) { }
 
     public serialize() {
@@ -50,7 +55,11 @@ export class Configuration {
             pieceTheme: this._pieceTheme,
             boardTheme: this._boardTheme,
             syncGoogleDrive: this._syncGoogleDrive,
-            changelog: this._changelog
+            changelog: this._changelog,
+            language: this._language,
+            reducedMotion: this._reducedMotion,
+            highContrast: this._highContrast,
+            screenReaderAnnouncements: this._screenReaderAnnouncements
         };
     }
 
@@ -105,6 +114,18 @@ export class Configuration {
     get changelog(): string { return this._changelog; }
     set changelog(value: string) { this._changelog = value; }
 
+    get language(): string { return this._language; }
+    set language(value: string) { this._language = value; this._configurationChangedEmitter.notify({ config: this, field: 'language' }); }
+
+    get reducedMotion(): boolean { return this._reducedMotion; }
+    set reducedMotion(value: boolean) { this._reducedMotion = value; this._configurationChangedEmitter.notify({ config: this, field: 'reducedMotion' }); }
+
+    get highContrast(): boolean { return this._highContrast; }
+    set highContrast(value: boolean) { this._highContrast = value; this._configurationChangedEmitter.notify({ config: this, field: 'highContrast' }); }
+
+    get screenReaderAnnouncements(): boolean { return this._screenReaderAnnouncements; }
+    set screenReaderAnnouncements(value: boolean) { this._screenReaderAnnouncements = value; this._configurationChangedEmitter.notify({ config: this, field: 'screenReaderAnnouncements' }); }
+
 }
 
 export const DEFAULT_CONFIG = new Configuration(
@@ -123,5 +144,9 @@ export const DEFAULT_CONFIG = new Configuration(
     PIECE_THEMES[0],
     BOARD_THEMES[0].name,
     false,
-    ''
+    '',
+    'auto',
+    false, // reducedMotion
+    false, // highContrast
+    false  // screenReaderAnnouncements
 );

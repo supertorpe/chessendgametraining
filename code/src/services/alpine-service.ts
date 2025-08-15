@@ -3,6 +3,7 @@
 import AlpineI18n from 'alpinejs-i18n';
 import Alpine from 'alpinejs';
 import { i18nJson } from '../static';
+import { languageService } from './language-service';
 
 class AlpineService {
 
@@ -13,32 +14,18 @@ class AlpineService {
 
     private i18n() {
         document.addEventListener('alpine-i18n:ready', () => {
-            const browserLang = navigator.language;
-            let candidate = '';
-            let created = false;
-            Object.keys(i18nJson).forEach((key) => {
-                if (!window.AlpineI18n.fallbackLocale) {
-                    window.AlpineI18n.fallbackLocale = key;
-                }
-                if (!created) {
-                    if (key == browserLang) {
-                        window.AlpineI18n.create(key, i18nJson);
-                        created = true;
-                        document.documentElement.lang = key;
-                    } else if (!candidate && browserLang.startsWith(key)) {
-                        candidate = key;
-                    }
-                }
-            });
-            if (!created) {
-                if (candidate) {
-                    window.AlpineI18n.create(candidate, i18nJson);
-                    document.documentElement.lang = candidate;
-                } else {
-                    window.AlpineI18n.create(window.AlpineI18n.fallbackLocale, i18nJson);
-                    document.documentElement.lang = window.AlpineI18n.fallbackLocale;
-                }
-            }
+            // Set fallback locale to English
+            window.AlpineI18n.fallbackLocale = 'en';
+            
+            // Get the current language from language service
+            const currentLanguage = languageService.getCurrentLanguage();
+            
+            // Create Alpine i18n with the determined language
+            window.AlpineI18n.create(currentLanguage, i18nJson);
+            document.documentElement.lang = currentLanguage;
+            
+            // Initialize language service
+            languageService.initializeLanguage();
         });
     }
 
