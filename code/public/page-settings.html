@@ -117,6 +117,21 @@
     <ion-item>
       <ion-toggle id="toggleUseSyzygy" x-text="$t('settings.use-syzygy')" x-bind:aria-label="$t('settings.use-syzygy')" x-bind:checked="useSyzygy" color="primary"></ion-toggle>
     </ion-item>
+    
+    <!-- Accessibility Section -->
+    <ion-item lines="none">
+      <ion-label class="ion-text-center">Accessibility / Erişilebilirlik</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-toggle id="toggleReducedMotion" x-text="$t('settings.reduced-motion')" x-bind:aria-label="$t('settings.reduced-motion')" x-bind:checked="reducedMotion" color="primary"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-toggle id="toggleHighContrast" x-text="$t('settings.high-contrast')" x-bind:aria-label="$t('settings.high-contrast')" x-bind:checked="highContrast" color="primary"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-toggle id="toggleScreenReaderAnnouncements" x-text="$t('settings.screen-reader-announcements')" x-bind:aria-label="$t('settings.screen-reader-announcements')" x-bind:checked="screenReaderAnnouncements" color="primary"></ion-toggle>
+    </ion-item>
+    
     <ion-item lines="none">
       <ion-label class="ion-text-center">Stockfish</ion-label>
     </ion-item>

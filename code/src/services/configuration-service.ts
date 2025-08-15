@@ -35,6 +35,9 @@ class ConfigurationService {
                     if (config.syncGoogleDrive === undefined) config.syncGoogleDrive = DEFAULT_CONFIG.syncGoogleDrive;
                     if (config.changelog === undefined) config.changelog = DEFAULT_CONFIG.changelog;
                     if (config.language === undefined) config.language = DEFAULT_CONFIG.language;
+                    if (config.reducedMotion === undefined) config.reducedMotion = DEFAULT_CONFIG.reducedMotion;
+                    if (config.highContrast === undefined) config.highContrast = DEFAULT_CONFIG.highContrast;
+                    if (config.screenReaderAnnouncements === undefined) config.screenReaderAnnouncements = DEFAULT_CONFIG.screenReaderAnnouncements;
                     this._configuration = new Configuration(
                         config.useSyzygy,
                         config.threeFoldRepetitionCheck,
@@ -52,7 +55,10 @@ class ConfigurationService {
                         config.boardTheme,
                         config.syncGoogleDrive,
                         config.changelog,
-                        config.language
+                        config.language,
+                        config.reducedMotion,
+                        config.highContrast,
+                        config.screenReaderAnnouncements
                     );
                     this._configuration.configurationChangedEmitter.addEventListener((event: ConfigurationChangedEvent) => this.configurationChanged(event));
                     if (this._configuration.syncGoogleDrive) {
