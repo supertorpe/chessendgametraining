@@ -3,35 +3,35 @@ import i18nData from '../static/i18n.json';
 export default {
     currentLanguage: 'tr', // Varsayılan dil Türkçe
     data: i18nData,
-    
+
     init() {
         // Tarayıcı dilini kontrol et
         const browserLang = navigator.language.split('-')[0];
         const supportedLanguages = Object.keys(this.data);
-        
+
         // Eğer tarayıcı dili destekleniyorsa onu kullan
         if (supportedLanguages.includes(browserLang)) {
             this.currentLanguage = browserLang;
         }
-        
+
         // Local storage'dan dil tercihini yükle
         const savedLang = localStorage.getItem('language');
         if (savedLang && supportedLanguages.includes(savedLang)) {
             this.currentLanguage = savedLang;
         }
     },
-    
+
     setLanguage(lang) {
         if (this.data[lang]) {
             this.currentLanguage = lang;
             localStorage.setItem('language', lang);
         }
     },
-    
+
     t(key, params = {}) {
         const keys = key.split('.');
         let value = this.data[this.currentLanguage];
-        
+
         for (const k of keys) {
             if (value && typeof value === 'object' && k in value) {
                 value = value[k];
@@ -48,14 +48,14 @@ export default {
                 break;
             }
         }
-        
+
         if (typeof value === 'string') {
             // Replace parameters in the string
             return value.replace(/\{(\w+)\}/g, (match, param) => {
                 return params[param] || match;
             });
         }
-        
+
         return key;
     }
 };

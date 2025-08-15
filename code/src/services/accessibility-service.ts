@@ -142,6 +142,26 @@ class AccessibilityService {
         this.announce(`Hint: ${hint}`);
     }
 
+    public announceEngineMessage(messageType: string, data?: any): void {
+        if (!configurationService.configuration.screenReaderAnnouncements) return;
+        
+        let announcement = '';
+        switch (messageType) {
+            case 'mate-in':
+                announcement = `You can achieve mate in ${data.moves} moves`;
+                break;
+            case 'receive-mate-in':
+                announcement = `You will receive mate in ${data.moves} moves or less`;
+                break;
+            case 'unfeasible-mate':
+                announcement = 'Mate is unfeasible in this position';
+                break;
+            default:
+                announcement = messageType;
+        }
+        this.announce(announcement);
+    }
+
     private announce(message: string): void {
         if (!this.ariaLiveRegion || !configurationService.configuration.screenReaderAnnouncements) return;
         

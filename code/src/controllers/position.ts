@@ -2,7 +2,9 @@
 
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
-import { configurationService, endgameDatabaseService, keyboardShortcutsService, redrawIconImages, releaseWakeLock, requestWakeLock, routeService, soundService, stockfishService, syzygyService } from '../services';
+import { configurationService, endgameDatabaseService, keyboardShortcutsService, routeService, soundService, stockfishService, syzygyService, accessibilityService } from '../services';
+import { requestWakeLock, releaseWakeLock } from '../services/wakelock-service';
+import { redrawIconImages } from '../services/ionic';
 import { MAIN_MENU_ID, ariaDescriptionFromIcon, isBot, pieceCount, pieceTotalCount, queryParam, randomNumber, setupSEO } from '../commons';
 import { MoveItem, Position } from '../model';
 import { Chess, SQUARES } from 'chess.js';
@@ -1177,33 +1179,12 @@ class PositionController extends BaseController {
         await this.showTrivialPositionAlert(() => {}, () => this.solveTrivialPosition());
       } else if (this.mateDistance != 0) {
         if (this.player.value == 'w' && this.mateDistance > 0 || this.player.value == 'b' && this.mateDistance < 0) {
-          toastController.create({
-            message: window.AlpineI18n.t('position.mate-in', { moves: Math.abs(this.mateDistance) }),
-            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-            positionAnchor: '__chessboard__',
-            animated: false,
-            color: 'medium',
-            duration: 1000
-          }).then(toast => toast.present());
+          this.showEngineMessage('mate-in', { moves: Math.abs(this.mateDistance) });
         } else {
-          toastController.create({
-            message: window.AlpineI18n.t('position.receive-mate-in', { moves: Math.abs(this.mateDistance) }),
-            position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-            positionAnchor: '__chessboard__',
-            animated: false,
-            color: 'warning',
-            duration: 1000
-          }).then(toast => toast.present());
+          this.showEngineMessage('receive-mate-in', { moves: Math.abs(this.mateDistance) });
         }
       } else if (this.unfeasibleMate && (this.threeFoldRepetitionCheck || !this.chess.in_threefold_repetition()) && this.target.value == 'checkmate' && this.move.value.startsWith(this.player.value)) {
-        toastController.create({
-          message: window.AlpineI18n.t('position.unfeasible-mate'),
-          position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
-          positionAnchor: '__chessboard__',
-          animated: false,
-          color: 'warning',
-            duration: 1000
-        }).then(toast => toast.present());
+        this.showEngineMessage('unfeasible-mate');
       }
     }
   }
@@ -1473,6 +1454,67 @@ class PositionController extends BaseController {
       return result;
     });
 
+  }
+
+  // Enhanced visual feedback for engine messages
+  public showEngineMessage(messageType: string, data?: any) {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'engine-message-overlay';
+    
+    let messageText = '';
+    let messageClass = '';
+    let icon = '';
+    
+    switch (messageType) {
+      case 'mate-in':
+        messageText = window.AlpineI18n.t('position.mate-in', { moves: data.moves });
+        messageClass = 'engine-message-success';
+        icon = '♔';
+        break;
+      case 'receive-mate-in':
+        messageText = window.AlpineI18n.t('position.receive-mate-in', { moves: data.moves });
+        messageClass = 'engine-message-warning';
+        icon = '⚠️';
+        break;
+      case 'unfeasible-mate':
+        messageText = window.AlpineI18n.t('position.unfeasible-mate');
+        messageClass = 'engine-message-info';
+        icon = 'ℹ️';
+        break;
+    }
+    
+    messageElement.innerHTML = `
+      <div class="engine-message-content ${messageClass}">
+        <div class="engine-message-icon">${icon}</div>
+        <div class="engine-message-text">${messageText}</div>
+      </div>
+    `;
+    
+    // Add to board container
+    const boardContainer = document.querySelector('#__chessboard__')?.parentElement;
+    if (boardContainer) {
+      boardContainer.appendChild(messageElement);
+      
+      // Animate in
+      setTimeout(() => {
+        messageElement.classList.add('engine-message-show');
+      }, 50);
+      
+      // Remove after delay
+      setTimeout(() => {
+        messageElement.classList.remove('engine-message-show');
+        setTimeout(() => {
+          if (boardContainer && boardContainer.contains(messageElement)) {
+            boardContainer.removeChild(messageElement);
+          }
+        }, 300);
+      }, 4000);
+    }
+    
+    // Also announce for screen readers
+    if (accessibilityService) {
+      accessibilityService.announceEngineMessage?.(messageType, data);
+    }
   }
 
 }
