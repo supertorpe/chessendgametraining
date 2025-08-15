@@ -82,6 +82,22 @@ class SettingsController extends BaseController {
                 const lang = this.availableLanguages.find(l => l.code === this.currentLanguage);
                 return lang?.nativeName || 'English';
             },
+            // accessibility
+            reducedMotion: configurationService.configuration.reducedMotion,
+            highContrast: configurationService.configuration.highContrast,
+            screenReaderAnnouncements: configurationService.configuration.screenReaderAnnouncements,
+            reducedMotionChanged(value: boolean) {
+                this.reducedMotion = value;
+                configurationService.configuration.reducedMotion = value;
+            },
+            highContrastChanged(value: boolean) {
+                this.highContrast = value;
+                configurationService.configuration.highContrast = value;
+            },
+            screenReaderAnnouncementsChanged(value: boolean) {
+                this.screenReaderAnnouncements = value;
+                configurationService.configuration.screenReaderAnnouncements = value;
+            },
             // goto first position
             gotoFirstPosition: configurationService.configuration.automaticShowFirstPosition,
             gotoFirstPositionChanged(checked: boolean) {
@@ -255,6 +271,22 @@ class SettingsController extends BaseController {
                     if (typeof stockfishMovetimeRange.value ===  'number') this.changeStockfishMovetime(stockfishMovetimeRange.value);
                 });
 
+                // Accessibility toggles
+                const toggleReducedMotion = document.getElementById('toggleReducedMotion') as IonToggle;
+                if (toggleReducedMotion) {
+                    toggleReducedMotion.addEventListener('ionChange', () => { this.reducedMotionChanged(toggleReducedMotion.checked); });
+                }
+                
+                const toggleHighContrast = document.getElementById('toggleHighContrast') as IonToggle;
+                if (toggleHighContrast) {
+                    toggleHighContrast.addEventListener('ionChange', () => { this.highContrastChanged(toggleHighContrast.checked); });
+                }
+                
+                const toggleScreenReaderAnnouncements = document.getElementById('toggleScreenReaderAnnouncements') as IonToggle;
+                if (toggleScreenReaderAnnouncements) {
+                    toggleScreenReaderAnnouncements.addEventListener('ionChange', () => { this.screenReaderAnnouncementsChanged(toggleScreenReaderAnnouncements.checked); });
+                }
+
                 ['showThemes', 'showPieceThemes', 'showBoardThemes', 'showLanguages'].forEach((item) => {
                     this.$watch(item, (_value) => {
                         redrawIconImages();
@@ -275,6 +307,9 @@ class SettingsController extends BaseController {
                         case 'boardTheme' : this.currentBoardTheme = event.config.boardTheme; break;
                         case 'syncGoogleDrive' : this.syncGoogleDrive = event.config.syncGoogleDrive; break;
                         case 'language' : this.currentLanguage = event.config.language; break;
+                        case 'reducedMotion' : this.reducedMotion = event.config.reducedMotion; break;
+                        case 'highContrast' : this.highContrast = event.config.highContrast; break;
+                        case 'screenReaderAnnouncements' : this.screenReaderAnnouncements = event.config.screenReaderAnnouncements; break;
                     }
                 });
             }

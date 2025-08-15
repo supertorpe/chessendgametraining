@@ -174,7 +174,10 @@
                 "message": "All your records will be lost !!!",
                 "cancel": "Cancel",
                 "continue": "Continue"
-            }
+            },
+            "reduced-motion": "Reduce animations",
+            "high-contrast": "High contrast",
+            "screen-reader-announcements": "Screen reader announcements"
         },
         "about": {
             "seo": {
@@ -386,7 +389,10 @@
                 "message": "¡Se perderán todos tus records!",
                 "cancel": "Cancelar",
                 "continue": "Continuar"
-            }
+            },
+            "reduced-motion": "Reducir animaciones",
+            "high-contrast": "Alto contraste",
+            "screen-reader-announcements": "Anuncios para lectores de pantalla"
         },
         "about": {
             "seo": {
@@ -597,7 +603,10 @@
                 "message": "Все ваши записи будут потеряны!!!",
                 "cancel": "Отмена",
                 "continue": "Продолжать"
-            }
+            },
+            "reduced-motion": "Уменьшить анимации",
+            "high-contrast": "Высокий контраст",
+            "screen-reader-announcements": "Объявления для программ чтения с экрана"
         },
         "about": {
             "seo": {
@@ -1052,7 +1061,10 @@
                 "message": "Tüm rekorlarınız kaybolacak !!!",
                 "cancel": "İptal",
                 "continue": "Devam et"
-            }
+            },
+            "reduced-motion": "Animasyonları azalt",
+            "high-contrast": "Yüksek kontrast",
+            "screen-reader-announcements": "Ekran okuyucu duyuruları"
         },
         "about": {
             "seo": {
