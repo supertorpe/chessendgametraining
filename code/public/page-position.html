@@ -53,6 +53,8 @@
         <div class="container">
             <div x-bind:class="[boardTheme, pieceTheme]" style="position: relative;">
                 <div id="__chessboard__"></div>
+                <canvas id="fireworks-canvas" class="fireworks-canvas" width="400" height="400" style="position: absolute; top: 0; left: 0; z-index: 10; display: none;"></canvas>
+                <div class="tooltip" x-data="{ show: false, text: '' }" x-show="show" x-text="text"></div>
                 <!-- Visual Feedback Overlay -->
                 <div x-show="visualFeedback.showSuccess" 
                      x-transition:enter="transition ease-out duration-300"
