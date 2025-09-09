@@ -52,6 +52,49 @@ class SettingsController extends BaseController {
                 this.showBoardThemes = !this.showBoardThemes;
                 this.showThemes = false;
                 this.showPieceThemes = false;
+            },
+            setBoardTheme(boardTheme: string) {
+                configurationService.configuration.boardTheme = boardTheme;
+            },
+            // language
+            showLanguages: false,
+            currentLanguage: configurationService.configuration.language,
+            availableLanguages: languageService.getSupportedLanguages(),
+            getCurrentLanguageDisplay() {
+                const lang = this.currentLanguage;
+                if (lang === 'auto') return 'Auto';
+                const language = languageService.getSupportedLanguages().find(l => l.code === lang);
+                return language ? language.flag + ' ' + language.nativeName : lang;
+            },
+            toggleLanguages() {
+                this.showLanguages = !this.showLanguages;
+                this.showThemes = false;
+                this.showPieceThemes = false;
+                this.showBoardThemes = false;
+            },
+            setLanguage(languageCode: string) {
+                configurationService.configuration.language = languageCode;
+                this.currentLanguage = languageCode;
+                configurationService.save();
+                window.location.reload();
+            },
+            togglePieceThemes() {
+                this.showPieceThemes = !this.showPieceThemes;
+                this.showThemes = false;
+                this.showBoardThemes = false;
+            },
+            setPieceTheme(pieceTheme: string) {
+                this.currentPieceTheme = pieceTheme;
+                configurationService.configuration.pieceTheme = pieceTheme;
+            },
+            // board theme
+            showBoardThemes: false,
+            boardThemes: BOARD_THEMES,
+            currentBoardTheme: configurationService.configuration.boardTheme,
+            toggleBoardThemes() {
+                this.showBoardThemes = !this.showBoardThemes;
+                this.showThemes = false;
+                this.showPieceThemes = false;
 
             },
             setBoardTheme(boardTheme: string) {
