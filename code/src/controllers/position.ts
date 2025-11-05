@@ -1207,7 +1207,8 @@ class PositionController extends BaseController {
     } else if (match = message.match(/^info .*\bscore (\w+) (-?\d+)/)) {
       const score = parseInt(match[2]) * (this.chess.turn() == this.player.value ? 1 : -1);
       if (match[1] == 'mate') {
-        if (this.mateDistance == 0 || Math.abs(score) < this.mateDistance) this.mateDistance = score;
+        if (this.mateDistance == 0 || Math.abs(score) < this.mateDistance)
+          this.mateDistance = score * (this.chess.turn() == this.player.value ? -1 : 1) * (this.player.value == 'b' ? -1 : 1);
       } else if (this.target.value == 'checkmate' && this.syzygyCandidates.length == 0) { // only set unfeasibleMate if it hasn't been previously set by syzygy
         this.unfeasibleMate = (score < 15);
       }
