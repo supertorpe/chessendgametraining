@@ -236,6 +236,30 @@ class PositionController extends BaseController {
     }
   }
 
+  private showRandomPosition() {
+    this.showExitDialog().then(value => {
+      if (value) {
+        const endgameDatabase = endgameDatabaseService.endgameDatabase;
+        const categories = endgameDatabase.categories;
+        const randomPosition = endgameDatabaseService.getRandomPosition();
+        this.idxCategory.value = randomPosition.idxCategory;
+        this.idxSubcategory.value = randomPosition.idxSubcategory;
+        this.idxGame.value = randomPosition.idxGame;
+        this.idxLastSubcategory.value = categories[this.idxCategory.value].count - 1;
+        this.idxLastGame.value = categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].count - 1;
+        this.showNavPrev.value = this.idxSubcategory.value > 0 || this.idxCategory.value > 0 || this.idxGame.value > 0;
+        this.showNavNext.value = !(this.idxCategory.value === endgameDatabase.count - 1 && this.idxSubcategory.value === this.idxLastSubcategory.value && this.idxGame.value === this.idxLastGame.value);
+        this.position = categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].games[this.idxGame.value];
+        this.target.value = this.position.target;
+        this.fen.value = this.position.fen;
+        this.seo = `${window.AlpineI18n.t(`category.${categories[this.idxCategory.value].name}`)} (${categories[this.idxCategory.value].subcategories[this.idxSubcategory.value].name}) ${this.idxGame.value + 1}/${this.idxLastGame.value + 1}`;
+        setupSEO('page-list.html', this.getSEOParams());
+        window.history.replaceState(this.seo, this.seo, `/position/${this.idxCategory.value}/${this.idxSubcategory.value}/${this.idxGame.value}`);
+        this.resetPosition(true);
+      }
+    });
+  }
+
   private showPruneDialog(idx: number) {
     if (this.solving.value || this.waitingForOpponent.value) return;
     const prefix = (idx == this.moveList[this.variantPointer.value].length - 1 ? 'position.confirm-prune-one' : 'position.confirm-prune');
@@ -514,6 +538,9 @@ class PositionController extends BaseController {
       },
       showNextPosition() {
         self.showNextPosition.call(self);
+      },
+      showRandomPosition() {
+        self.showRandomPosition.call(self);
       },
       showRestartDialog() {
         self.showRestartDialog.call(self);

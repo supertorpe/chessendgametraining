@@ -3,7 +3,7 @@
 import { EndgameDatabase, Position, endgameDatabase, isEndgameDatabase } from '../model';
 import { configurationService } from './configuration-service';
 import { storageService } from './storage-service';
-import { EventEmitter, GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, textToImages, urlIcon, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE } from '../commons';
+import { EventEmitter, GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, textToImages, urlIcon, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, randomNumber } from '../commons';
 import { themeSwitcherService } from './theme-switcher-service';
 import { googleDriveService } from './google-drive-service';
 import { showToast } from './toast-service';
@@ -78,13 +78,13 @@ class EndgameDatabaseService {
                                 } else {
                                     googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, { timestamp: localDatabase.timestamp })
                                     googleDriveService.putFile<EndgameDatabase>(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, localDatabase)
-                                    .then(() => {
-                                        showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-                                    })
-                                    .catch((error) => {
-                                        console.log(error);
-                                        //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
-                                    })
+                                        .then(() => {
+                                            showToast('app.database-sync-google-drive', 'top', 'success', 2000);
+                                        })
+                                        .catch((error) => {
+                                            console.log(error);
+                                            //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
+                                        })
                                 }
                             }
                         }
@@ -124,19 +124,19 @@ class EndgameDatabaseService {
                 promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, this._endgameDatabase));
             }
             Promise.all(promises)
-            .then(() => {
-                resolve(this._endgameDatabase);
-                if (configurationService.configuration.syncGoogleDrive) {
-                    showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                resolve(this._endgameDatabase);
-                if (configurationService.configuration.syncGoogleDrive) {
-                    //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
-                }
-            });
+                .then(() => {
+                    resolve(this._endgameDatabase);
+                    if (configurationService.configuration.syncGoogleDrive) {
+                        showToast('app.database-sync-google-drive', 'top', 'success', 2000);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    resolve(this._endgameDatabase);
+                    if (configurationService.configuration.syncGoogleDrive) {
+                        //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
+                    }
+                });
         });
     }
 
@@ -226,6 +226,15 @@ class EndgameDatabaseService {
         });
         this._endgameDatabase = defaultDatabase;
         this.save();
+    }
+
+    public getRandomPosition(): { idxCategory: number, idxSubcategory: number, idxGame: number } {
+        const idxCategory = randomNumber(0, this._endgameDatabase.categories.length - 1);
+        const category = this._endgameDatabase.categories[idxCategory];
+        const idxSubcategory = randomNumber(0, category.subcategories.length - 1);
+        const subcategory = category.subcategories[idxSubcategory];
+        const idxGame = randomNumber(0, subcategory.games.length - 1);
+        return { idxCategory, idxSubcategory, idxGame };
     }
 }
 

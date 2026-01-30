@@ -33,6 +33,10 @@ class AppController extends BaseController {
             showAbout() {
                 routeService.openModal('about', 'page-about.html', aboutController, true, false);
             },
+            showRandomPosition() {
+                const randomPosition = endgameDatabaseService.getRandomPosition();
+                routeService.navigate(`/position/${randomPosition.idxCategory}/${randomPosition.idxSubcategory}/${randomPosition.idxGame}`);
+            },
             exit() {
                 window.close();
             },

@@ -31,19 +31,28 @@
                 </ion-buttons>
             </template>
             <template x-if="!customFen && !checkmatePattern">
-                <ion-buttons slot="end">
-                    <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value"
-                        x-on:click="showNextPosition()">
-                        <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
-                    </ion-button>
-                </ion-buttons>
-            </template>
-            <template x-if="!customFen && !checkmatePattern">
                 <ion-buttons style="display: flex; justify-content: center; align-items: center">
                     <ion-button expand="block" x-bind:href="'list/' + idxCategory.value + '/' + idxSubcategory.value"
                         data-navigo>
                         <ion-label class="responsive-text"
                             x-text="' [ ' + (idxGame.value + 1) + ' / ' + (idxLastGame.value + 1) + ' ]'"></ion-label>
+                    </ion-button>
+                    <ion-button aria-label="Random position" x-on:click="showRandomPosition()">
+                        <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
+                            <div class="thumbnail">
+                                <div style="width: 32px; height: 32px;"
+                                    x-bind:class="color == 'b' ? 'aura tabler--dice-5' : 'aura tabler--dice-5-filled'">
+                                </div>
+                            </div>
+                        </div>
+                    </ion-button>
+                </ion-buttons>
+            </template>
+            <template x-if="!customFen && !checkmatePattern">
+                <ion-buttons slot="end">
+                    <ion-button aria-label="Next position" x-bind:disabled="!showNavNext.value"
+                        x-on:click="showNextPosition()">
+                        <ion-icon slot="icon-only" class="aura" data-name="arrow-forward"></ion-icon>
                     </ion-button>
                 </ion-buttons>
             </template>
@@ -56,8 +65,8 @@
             </div>
             <div class="info_wrapper">
                 <ion-buttons class="nav_buttons">
-                    <ion-button size="small" color="dark" aria-label="rewind"
-                        x-bind:disabled="movePointer.value == -1" x-on:click="gotoMove(-1)">
+                    <ion-button size="small" color="dark" aria-label="rewind" x-bind:disabled="movePointer.value == -1"
+                        x-on:click="gotoMove(-1)">
                         <ion-icon class="aura rotated" data-name="play-forward"></ion-icon>
                     </ion-button>
                     <ion-button size="small" color="dark" aria-label="previous"
@@ -65,11 +74,13 @@
                         <ion-icon class="aura rotated" data-name="play"></ion-icon>
                     </ion-button>
                     <ion-button size="small" color="dark" aria-label="next"
-                        x-bind:disabled="movePointer.value >= moveList[variantPointer.value].length - 1" x-on:click="gotoNextMove()">
+                        x-bind:disabled="movePointer.value >= moveList[variantPointer.value].length - 1"
+                        x-on:click="gotoNextMove()">
                         <ion-icon class="aura" data-name="play"></ion-icon>
                     </ion-button>
                     <ion-button size="small" color="dark" aria-label="fast forward"
-                        x-bind:disabled="movePointer.value >= moveList[variantPointer.value].length - 1" x-on:click="gotoLastMove()">
+                        x-bind:disabled="movePointer.value >= moveList[variantPointer.value].length - 1"
+                        x-on:click="gotoLastMove()">
                         <ion-icon class="aura" data-name="play-forward"></ion-icon>
                     </ion-button>
                 </ion-buttons>

@@ -42,7 +42,13 @@
                             </template>
                         </span>
                     </template>
-
+                    <ion-item lines="none" button="true" detail="false"
+                        x-on:click="$event.stopPropagation(); showRandomPosition()">
+                        <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
+                            <div class="thumbnail"><div style="width: 32px; height: 32px;" x-bind:class="color == 'b' ? 'aura tabler--dice-5' : 'aura tabler--dice-5-filled'"></div></div>
+                        </div>
+                        <ion-label x-text="$t('app.random-position')"></ion-label>
+                    </ion-item>
                     <ion-item lines="none" button="true" detail="false"
                         x-on:click="$event.stopPropagation(); selectCategory('checkmate-patterns')">
                         <div slot="start" style="display: flex; flex-direction: row; flex-wrap: nowrap">
