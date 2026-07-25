@@ -1,0 +1,5 @@
+# Working files of calc_mate_distance.py: tablebase responses and computed results, kept so
+# an interrupted run resumes. Regenerable, and the tablebase cache runs to several MB.
+.mate-distance-cache.json
+.mate-distance-results.json
+__pycache__/
