@@ -1102,6 +1102,15 @@ class PositionController extends BaseController {
     }
   }
 
+  /**
+   * Syzygy reports distance to mate in plies, stockfish's `score mate` in moves. Both end up
+   * in mateDistance and are announced with the same position.mate-in message, so syzygy's
+   * figure is converted to keep the two sources saying the same thing.
+   */
+  private static dtmToMoves(dtm: number): number {
+    return Math.sign(dtm) * Math.ceil(Math.abs(dtm) / 2);
+  }
+
   private getSyzygyMove() {
     this.waitingForOpponent.value = true;
     this.syzygyCandidates = [];
@@ -1158,7 +1167,7 @@ class PositionController extends BaseController {
         const from = match[1];
         const to = match[2];
         const promotion = match[3];
-        if (move.dtm) this.mateDistance = move.dtm * (this.chess.turn() == this.player.value ? -1 : 1) * (this.player.value == 'b' ? -1 : 1);
+        if (move.dtm) this.mateDistance = PositionController.dtmToMoves(move.dtm) * (this.chess.turn() == this.player.value ? -1 : 1) * (this.player.value == 'b' ? -1 : 1);
         this.processOpponentMove(from, to, promotion);
       })
       ).catch((_err) => {
