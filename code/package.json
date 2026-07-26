@@ -1,5 +1,5 @@
 {
-  "version": "3.0.28",
+  "version": "3.0.29",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build --emptyOutDir",
