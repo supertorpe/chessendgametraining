@@ -7128,7 +7128,7 @@
                             "target": "checkmate"
                         },
                         {
-                            "fen": "2K5/8/3p2R1/5p1k/8/8/8/8 w - - dm 40 0 1",
+                            "fen": "2K5/8/3p2R1/5p1k/8/8/8/8 w - - 0 1",
                             "target": "checkmate"
                         },
                         {
@@ -9680,7 +9680,7 @@
                             "target": "checkmate"
                         },
                         {
-                            "fen": "8/6r1/1R6/3B4/8/8/8/3K2k1 w - -0 0 1",
+                            "fen": "8/6r1/1R6/3B4/8/8/8/3K2k1 w - - 0 1",
                             "target": "checkmate"
                         },
                         {
