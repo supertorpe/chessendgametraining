@@ -85,6 +85,12 @@ class SettingsController extends BaseController {
                     value === "yes";
                 configurationService.configuration.solveTrivialPosition = setting;
             },
+            // show mate distance when the position opens
+            showMateDistance: configurationService.configuration.showMateDistance,
+            showMateDistanceChanged(checked: boolean) {
+                this.showMateDistance = checked;
+                configurationService.configuration.showMateDistance = checked;
+            },
             // play sounds
             playSounds: configurationService.configuration.playSounds,
             playSoundsChanged(checked: boolean) {
@@ -210,6 +216,9 @@ class SettingsController extends BaseController {
                     this.autoSolveTrivialChanged(autoSolveTrivial.value)
                 });
                 
+                const toggleShowMateDistance = document.getElementById('toggleShowMateDistance') as IonToggle;
+                toggleShowMateDistance.addEventListener('ionChange', () => { this.showMateDistanceChanged(toggleShowMateDistance.checked); });
+
                 const toggleGotoNextPosition = document.getElementById('toggleGotoNextPosition') as IonToggle;
                 toggleGotoNextPosition.addEventListener('ionChange', () => { this.gotoNextPositionChanged(toggleGotoNextPosition.checked); });
 
@@ -250,6 +259,7 @@ class SettingsController extends BaseController {
                         case 'pieceTheme' : this.currentPieceTheme = event.config.pieceTheme; break;
                         case 'boardTheme' : this.currentBoardTheme = event.config.boardTheme; break;
                         case 'syncGoogleDrive' : this.syncGoogleDrive = event.config.syncGoogleDrive; break;
+                        case 'showMateDistance' : this.showMateDistance = event.config.showMateDistance; break;
                     }
                 });
             }

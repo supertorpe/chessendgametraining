@@ -150,6 +150,7 @@ class PositionController extends BaseController {
     this.trivialPositionInvitationShown = this.isTrivialPosition();
     this.manualMode.value = false;
     this.mustShowExitDialog = true;
+    this.showInitialMateDistance();
     if (this.player.value != this.chess.turn()) this.getOpponentMove();
   }
 
@@ -675,6 +676,9 @@ class PositionController extends BaseController {
             case 'threeFoldRepetitionCheck': self.threeFoldRepetitionCheck = configurationService.configuration.threeFoldRepetitionCheck; break;
           }
         });
+        // onEnter builds the position itself instead of going through resetPosition, so the
+        // first position of a visit needs its own call.
+        self.showInitialMateDistance();
       }
     }));
   }
@@ -1109,6 +1113,39 @@ class PositionController extends BaseController {
    */
   private static dtmToMoves(dtm: number): number {
     return Math.sign(dtm) * Math.ceil(Math.abs(dtm) / 2);
+  }
+
+  /**
+   * Announce the length of the win when the position opens (#14, #27). The mate-in-N
+   * challenges already advertise their target in the toolbar; the endgame database
+   * positions did not, so there was no way to tell a clean win from a long grind before
+   * playing it out.
+   *
+   * The distance is precalculated into the database by tools/calc_mate_distance.py, so this
+   * costs nothing and works offline. Positions no tablebase covers simply carry no value and
+   * stay quiet, as do custom FENs. Off by default: for some players the number is a spoiler.
+   */
+  private showInitialMateDistance() {
+    if (!configurationService.configuration.showMateDistance) return;
+    if (this.checkmateMoves.value > 0) return; // already shown in the header
+    const mateIn = this.position?.mateIn;
+    if (!mateIn) return;
+    // The stored distance belongs to whoever is to move in the starting position. `?player=`
+    // can hand the player the other side, and telling the side that is being mated it can
+    // mate would be worse than saying nothing.
+    if (this.player.value != this.chess.turn()) return;
+    toastController.create({
+      // Stockfish's estimate is not a proven shortest mate, so it is announced as such.
+      message: window.AlpineI18n.t(
+        this.position?.mateInApprox ? 'position.mate-in-approx' : 'position.mate-in',
+        { moves: mateIn }
+      ),
+      position: window.matchMedia("(orientation: portrait)").matches ? 'top' : 'bottom',
+      positionAnchor: '__chessboard__',
+      animated: false,
+      color: 'medium',
+      duration: 2000
+    }).then(toast => toast.present());
   }
 
   private getSyzygyMove() {

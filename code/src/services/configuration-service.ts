@@ -34,6 +34,7 @@ class ConfigurationService {
                     if (config.boardTheme === undefined) config.boardTheme = DEFAULT_CONFIG.boardTheme;
                     if (config.syncGoogleDrive === undefined) config.syncGoogleDrive = DEFAULT_CONFIG.syncGoogleDrive;
                     if (config.changelog === undefined) config.changelog = DEFAULT_CONFIG.changelog;
+                    if (config.showMateDistance === undefined) config.showMateDistance = DEFAULT_CONFIG.showMateDistance;
                     this._configuration = new Configuration(
                         config.useSyzygy,
                         config.threeFoldRepetitionCheck,
@@ -50,7 +51,8 @@ class ConfigurationService {
                         config.pieceTheme,
                         config.boardTheme,
                         config.syncGoogleDrive,
-                        config.changelog
+                        config.changelog,
+                        config.showMateDistance
                     );
                     this._configuration.configurationChangedEmitter.addEventListener((event: ConfigurationChangedEvent) => this.configurationChanged(event));
                     if (this._configuration.syncGoogleDrive) {
@@ -107,6 +109,7 @@ class ConfigurationService {
                     if ('boardTheme' in remoteConfig) self._configuration.boardTheme = remoteConfig.boardTheme;
                     if ('syncGoogleDrive' in remoteConfig) self._configuration.syncGoogleDrive = remoteConfig.syncGoogleDrive;
                     if ('changelog' in remoteConfig) self._configuration.changelog = remoteConfig.changelog;
+                    if ('showMateDistance' in remoteConfig) self._configuration.showMateDistance = remoteConfig.showMateDistance;
                     self.loadingFromGoogleDrive = false;
                     storageService.set('CONFIGURATION', this._configuration.serialize());
                     resolve(remoteConfig);
