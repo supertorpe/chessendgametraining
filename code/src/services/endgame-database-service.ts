@@ -116,26 +116,28 @@ class EndgameDatabaseService {
 
     public save(): Promise<EndgameDatabase> {
         return new Promise<EndgameDatabase>((resolve) => {
-            const promises: Promise<any>[] = [];
             this._endgameDatabase.timestamp = Date.now();
-            promises.push(storageService.set('ENDGAME_DATABASE', this._endgameDatabase));
             if (configurationService.configuration.syncGoogleDrive) {
-                promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, { timestamp: this._endgameDatabase.timestamp }));
-                promises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, this._endgameDatabase));
-            }
-            Promise.all(promises)
-                .then(() => {
-                    resolve(this._endgameDatabase);
-                    if (configurationService.configuration.syncGoogleDrive) {
+                const syncPromises: Promise<any>[] = [];
+                syncPromises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_TIMESTAMP_FILE, { timestamp: this._endgameDatabase.timestamp }));
+                syncPromises.push(googleDriveService.putFile(GOOGLE_DRIVE_FOLDER, GOOGLE_DRIVE_DATABASE_FILE, this._endgameDatabase));
+                Promise.all(syncPromises)
+                    .then(() => {
                         showToast('app.database-sync-google-drive', 'top', 'success', 2000);
-                    }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
+                    });
+            }
+            storageService.set('ENDGAME_DATABASE', this._endgameDatabase)
+                .then(() => {
+                    this._endgameDatabaseChangedEmitter.notify(this._endgameDatabase);
+                    resolve(this._endgameDatabase);
                 })
                 .catch((error) => {
                     console.log(error);
                     resolve(this._endgameDatabase);
-                    if (configurationService.configuration.syncGoogleDrive) {
-                        //showToast('app.database-sync-google-drive-ko', 'top', 'warning', 2000);
-                    }
                 });
         });
     }
@@ -155,7 +157,6 @@ class EndgameDatabaseService {
     public importData(data: EndgameDatabase): Promise<EndgameDatabase> {
         if (isEndgameDatabase(data)) {
             this._endgameDatabase = data;
-            this._endgameDatabaseChangedEmitter.notify(this._endgameDatabase);
             return this.save();
         } else {
             throw new Error('Invalid data');

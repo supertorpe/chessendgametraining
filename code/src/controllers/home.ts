@@ -3,15 +3,27 @@
 import Alpine from 'alpinejs';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, routeService } from '../services';
+import { getCategoryProgress } from '../commons';
+import type { EndgameDatabase } from '../model';
 
 class HomeController extends BaseController {
     private firstPositionShowed = false;
+    private _scope: any;
+    private _onEndgameDatabaseChanged = (_database: EndgameDatabase) => {
+        if (this._scope) {
+            this._scope.categories = endgameDatabaseService.endgameDatabase.categories;
+        }
+    };
 
     onEnter(_$routeParams?: any): void {
         const self = this;
         Alpine.data('info', () => ({
             categories: endgameDatabaseService.endgameDatabase.categories,
+            getCategoryProgress: getCategoryProgress,
             init() {
+                const scope = this;
+                self._scope = scope;
+                endgameDatabaseService.endgameDatabaseChangedEmitter.addEventListener(self._onEndgameDatabaseChanged);
                 if (!self.firstPositionShowed && configurationService.configuration.automaticShowFirstPosition) {
                     self.firstPositionShowed = true;
                     for (const [idxCategory, category] of endgameDatabaseService.endgameDatabase.categories.entries()) {
@@ -28,6 +40,11 @@ class HomeController extends BaseController {
                 }
             }
         }));
+    }
+
+    onExit(): Promise<boolean> {
+        endgameDatabaseService.endgameDatabaseChangedEmitter.removeEventListener(this._onEndgameDatabaseChanged);
+        return super.onExit();
     }
 }
 

@@ -24,6 +24,11 @@
                                     </template>
                                 </div>
                                 <ion-label x-text="$t('category.' + category.name)"></ion-label>
+                                <ion-note slot="end" class="category-count">
+                                    <span class="count-fraction"><span x-text="getCategoryProgress(category).solved"></span>/<span x-text="getCategoryProgress(category).total"></span></span>
+                                    <span class="count-percent"
+                                        x-text="getCategoryProgress(category).total ? Math.round(getCategoryProgress(category).solved / getCategoryProgress(category).total * 100) + '%' : '0%'"></span>
+                                </ion-note>
                                 <ion-icon slot="end"
                                     x-bind:data-name="categorySelected == category.name ? 'caret-down' : 'caret-forward'"
                                     color="medium" class="aura"></ion-icon>
@@ -37,6 +42,11 @@
                                             <img width="32" height="32" class="medium-thumbnail aura"
                                                 x-bind:src="imageUrl" alt="ariaDescriptionFromIcon(imageUrl)" />
                                         </template>
+                                        <ion-label class="subcategory-progress">
+                                            <span class="count-fraction"><span x-text="getSubcategoryProgress(subcategory).solved"></span>/<span x-text="getSubcategoryProgress(subcategory).total"></span></span>
+                                            <span class="count-percent"
+                                                x-text="getSubcategoryProgress(subcategory).total ? Math.round(getSubcategoryProgress(subcategory).solved / getSubcategoryProgress(subcategory).total * 100) + '%' : '0%'"></span>
+                                        </ion-label>
                                     </ion-item>
                                 </template>
                             </template>

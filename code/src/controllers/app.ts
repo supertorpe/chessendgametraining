@@ -6,7 +6,7 @@ import { version } from '../../package.json';
 import { BaseController } from './controller';
 import { configurationService, endgameDatabaseService, redrawIconImages, routeService, themeSwitcherService } from '../services';
 import { EndgameDatabase } from '../model';
-import { ariaDescriptionFromIcon, clone, isAndroid } from '../commons';
+import { ariaDescriptionFromIcon, clone, getCategoryProgress, getSubcategoryProgress, isAndroid } from '../commons';
 import { settingsController } from './settings';
 import { aboutController } from './about';
 
@@ -27,6 +27,8 @@ class AppController extends BaseController {
                 }
             },
             ariaDescriptionFromIcon: ariaDescriptionFromIcon,
+            getCategoryProgress: getCategoryProgress,
+            getSubcategoryProgress: getSubcategoryProgress,
             showSettings() {
                 routeService.openModal('settings', 'page-settings.html', settingsController, true, false);
             },

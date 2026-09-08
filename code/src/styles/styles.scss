@@ -175,3 +175,111 @@ ion-alert {
     padding-left: 0;
     padding-right: 0;
 }
+
+.category-count {
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.subcategory-progress {
+    margin-left: auto;
+    text-align: right;
+    color: var(--ion-color-medium);
+}
+
+.subcategory-progress .count-fraction,
+.subcategory-progress .count-percent {
+    color: var(--ion-color-medium);
+}
+
+.count-fraction {
+    display: inline;
+    font-size: 14px;
+}
+
+.count-percent {
+    display: none;
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    .category-count,
+    .subcategory-progress {
+        font-size: 10px;
+    }
+
+    .count-fraction {
+        display: none;
+    }
+
+    .count-percent {
+        display: inline;
+        font-size: 10px;
+    }
+
+    ion-menu ion-item {
+        --padding-start: 8px;
+        --padding-end: 8px;
+    }
+
+    ion-menu .medium-thumbnail {
+        max-width: 24px;
+    }
+}
+
+.category-button {
+    position: relative;
+}
+
+.category-button::part(native) {
+    padding: 0;
+}
+
+.category-button-inner {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 20px;
+}
+
+.category-button-icons {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.category-bar-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.category-progress-bar {
+    display: block;
+    width: 100%;
+    height: 20px;
+    border-radius: 0 0 8px 8px;
+    --progress-background: var(--ion-color-dark);
+    --background: var(--ion-color-light);
+}
+
+.category-progress-pct {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--ion-text-color);
+    background-color: rgba(var(--ion-background-color-rgb, 255, 255, 255), .7);
+    background-color: color-mix(in srgb, var(--ion-background-color, #fff) 70%, transparent);
+    border-radius: 8px;
+    padding: 1px 6px;
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+}

@@ -1,5 +1,7 @@
 // This project has been carried out as part of the Final Degree Project in the Bachelor's Degree in Computer Engineering at UNIR
 
+import type { Category, Position, Subcategory } from '../model';
+
 export const textToImages = (text: string) => {
     const result: string[] = [];
     const words = text.split(" ");
@@ -162,4 +164,22 @@ export const queryParam = (param: string) : string | null => {
 export const randomNumber = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export const getProgress = (games: Position[]): { solved: number; total: number } => {
+    const total = games.length;
+    const solved = games.filter(g => g.record > 0).length;
+    return { solved, total };
+};
+
+export const getCategoryProgress = (category: Category): { solved: number; total: number } =>
+    category.subcategories.reduce(
+        (acc, sub) => {
+            const p = getProgress(sub.games);
+            return { solved: acc.solved + p.solved, total: acc.total + p.total };
+        },
+        { solved: 0, total: 0 }
+    );
+
+export const getSubcategoryProgress = (subcategory: Subcategory): { solved: number; total: number } =>
+    getProgress(subcategory.games);
 

@@ -19,12 +19,22 @@
           <ion-row>
             <template x-for="j in 2">
               <ion-col size="6">
-                <ion-button color="light" size="default" expand="full" x-bind:aria-label="categories[(i-1)*2+j-1].name"
-                  x-bind:href="'list/' + ((i-1)*2+j-1) + '/0'" data-navigo>
-                  <template x-for="iconUrl in categories[(i-1)*2+j-1].iconUrls">
-                    <img slot="start" x-bind:src="iconUrl" width="32" height="32" class="thumbnail aura"
-                      x-bind:alt="categories[(i-1)*2+j-1].name" />
-                  </template>
+                <ion-button color="light" class="category-button" size="default" expand="full" x-bind:aria-label="categories[(i-1)*2+j-1].name"
+                    x-bind:href="'list/' + ((i-1)*2+j-1) + '/0'" data-navigo>
+                    <div class="category-button-inner">
+                        <div class="category-button-icons">
+                            <template x-for="iconUrl in categories[(i-1)*2+j-1].iconUrls">
+                                <img x-bind:src="iconUrl" width="32" height="32" class="thumbnail aura"
+                                    x-bind:alt="categories[(i-1)*2+j-1].name" />
+                            </template>
+                        </div>
+                    </div>
+                    <div class="category-bar-wrap">
+                        <ion-progress-bar class="category-progress-bar"
+                            x-bind:value="getCategoryProgress(categories[(i-1)*2+j-1]).total ? getCategoryProgress(categories[(i-1)*2+j-1]).solved / getCategoryProgress(categories[(i-1)*2+j-1]).total : 0"></ion-progress-bar>
+                        <span class="category-progress-pct"
+                            x-text="getCategoryProgress(categories[(i-1)*2+j-1]).total ? Math.round(getCategoryProgress(categories[(i-1)*2+j-1]).solved / getCategoryProgress(categories[(i-1)*2+j-1]).total * 100) + '%' : '0%'"></span>
+                    </div>
                 </ion-button>
               </ion-col>
             </template>
