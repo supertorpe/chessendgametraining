@@ -22,7 +22,7 @@ plugins {
 
 def twaManifest = [
     applicationId: 'com.supertorpe.chessendgametraining',
-    hostName: 'chess-endgame-trainer.mooo.com', // The domain being opened in the TWA.
+    hostName: 'chess-endgame-training.pages.dev', // The domain being opened in the TWA.
     launchUrl: '/?fullscreen=true', // The start path for the TWA. Must be relative to the domain.
     name: 'Chess Endgame Training', // The application name.
     launcherName: 'Chess Endgame Training', // The name shown on the Android Launcher.
@@ -51,13 +51,14 @@ def twaManifest = [
 ]
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 36
+    namespace "com.supertorpe.chessendgametraining"
     defaultConfig {
         applicationId "com.supertorpe.chessendgametraining"
-        minSdkVersion 19
-        targetSdkVersion 34
-        versionCode 36
-        versionName "3.0.15"
+        minSdkVersion 21
+        targetSdkVersion 37
+        versionCode 45
+        versionName "45"
 
         // The name for the application
         resValue "string", "appName", twaManifest.name
@@ -70,15 +71,17 @@ android {
         resValue "string", "launchUrl", launchUrl
 
         
+
+        
             // The URL the Web Manifest for the Progressive Web App that the TWA points to. This
             // is used by Chrome OS and Meta Quest to open the Web version of the PWA instead of
             // the TWA, as it will probably give a better user experience for non-mobile devices.
-            resValue "string", "webManifestUrl", 'https://chess-endgame-trainer.mooo.com/manifest.json'
+            resValue "string", "webManifestUrl", 'https://chess-endgame-training.pages.dev/manifest.json'
         
 
         
             // This is used by Meta Quest.
-            resValue "string", "fullScopeUrl", 'https://chess-endgame-trainer.mooo.com/'
+            resValue "string", "fullScopeUrl", 'https://chess-endgame-training.pages.dev/'
         
 
         
@@ -144,6 +147,8 @@ android {
 
         resValue "bool", "enableSiteSettingsShortcut", twaManifest.enableSiteSettingsShortcut
         resValue "string", "orientation", twaManifest.orientation
+
+        
     }
     buildTypes {
         release {
@@ -203,6 +208,6 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     
-        implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+        implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.6.2'
     
 }

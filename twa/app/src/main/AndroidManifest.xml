@@ -62,10 +62,17 @@
         
 
         
-            <activity android:name="com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity">
-            <meta-data
-                android:name="android.support.customtabs.trusted.MANAGE_SPACE_URL"
-                android:value="@string/launchUrl" />
+            <activity android:name="com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity"
+                android:exported="false"
+                android:enabled="true"
+                android:excludeFromRecents="true">
+                <meta-data
+                    android:name="android.support.customtabs.trusted.MANAGE_SPACE_URL"
+                    android:value="@string/launchUrl" />
+                <intent-filter>
+                    <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
             </activity>
         
 
@@ -79,6 +86,8 @@
             <meta-data
                 android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
                 android:resource="@color/colorPrimary" />
+
+            
 
             <meta-data
                 android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR_DARK"
@@ -131,6 +140,8 @@
 
             
 
+            
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -141,8 +152,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"
-                    android:host="@string/hostName"/>
+                    android:host="@string/hostName"
+                
+                />
             </intent-filter>
+
+            
 
             
         </activity>

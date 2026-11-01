@@ -38,22 +38,22 @@ Chess Endgame Training is a web application to practice a variety of well organi
 
 * Button to open position analysis on Lichess.
 
-It is distributed in both [Android App](https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining) and [Progressive Web App](https://chess-endgame-trainer.mooo.com). The Web App allows to open an arbitrary position from a FEN string indicating the objective to achieve (checkmate or draw) : https://chess-endgame-trainer.mooo.com/fen/FEN_STRING/TARGET
+It is distributed in both [Android App](https://play.google.com/store/apps/details?id=com.supertorpe.chessendgametraining) and [Progressive Web App](https://chess-endgame-training.pages.dev). The Web App allows to open an arbitrary position from a FEN string indicating the objective to achieve (checkmate or draw) : https://chess-endgame-training.pages.dev/fen/FEN_STRING/TARGET
 
 TARGET is checkmate by default. Examples:
 
-[https://chess-endgame-trainer.mooo.com/fen/8/4p1p1/8/7k/2qN3B/4P1P1/2B4K/8 w - - 0 1](https://chess-endgame-trainer.mooo.com/fen/8/4p1p1/8/7k/2qN3B/4P1P1/2B4K/8%20w%20-%20-%200%201)
+[https://chess-endgame-training.pages.dev/fen/8/4p1p1/8/7k/2qN3B/4P1P1/2B4K/8 w - - 0 1](https://chess-endgame-training.pages.dev/fen/8/4p1p1/8/7k/2qN3B/4P1P1/2B4K/8%20w%20-%20-%200%201)
 
-[https://chess-endgame-trainer.mooo.com/fen/8/5qpB/5P2/4B2N/8/p7/P2k4/K7 w - - 0 1/draw](https://chess-endgame-trainer.mooo.com/fen/8/5qpB/5P2/4B2N/8/p7/P2k4/K7%20w%20-%20-%200%201/draw)
+[https://chess-endgame-training.pages.dev/fen/8/5qpB/5P2/4B2N/8/p7/P2k4/K7 w - - 0 1/draw](https://chess-endgame-training.pages.dev/fen/8/5qpB/5P2/4B2N/8/p7/P2k4/K7%20w%20-%20-%200%201/draw)
 
 Optionally, you can change roles and play with the opponent pieces:
 
-[http://chess-endgame-trainer.mooo.com/fen/8/3k4/8/3K4/3P4/8/8/8 b - - 0 1?player=w](http://chess-endgame-trainer.mooo.com/fen/8/3k4/8/3K4/3P4/8/8/8%20b%20-%20-%200%201?player=w)
+[http://chess-endgame-training.pages.dev/fen/8/3k4/8/3K4/3P4/8/8/8 b - - 0 1?player=w](http://chess-endgame-training.pages.dev/fen/8/3k4/8/3K4/3P4/8/8/8%20b%20-%20-%200%201?player=w)
 
 
 You can also play random positions to achieve checkmate in 1 to 10 moves. 
 
-[http://chess-endgame-trainer.mooo.com/checkmate/3](http://chess-endgame-trainer.mooo.com/checkmate/3)
+[http://chess-endgame-training.pages.dev/checkmate/3](http://chess-endgame-training.pages.dev/checkmate/3)
 
 
 ## Screenshots
@@ -117,7 +117,7 @@ If you don't want to use Docker, you can install Node.js (latest LTS) and a pack
 
 A TWA has been generated with [bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap):
 ```
-bubblewrap init --manifest https://chess-endgame-trainer.mooo.com/manifest.json
+bubblewrap init --manifest https://chess-endgame-training.pages.dev/manifest.json
 ```
 Building:
 ```

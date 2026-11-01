@@ -1,6 +1,6 @@
 {
   "packageId": "com.supertorpe.chessendgametraining",
-  "host": "chess-endgame-trainer.mooo.com",
+  "host": "chess-endgame-training.pages.dev",
   "name": "Chess Endgame Training",
   "launcherName": "Chess Endgame Training",
   "display": "fullscreen",
@@ -13,19 +13,19 @@
   "backgroundColor": "#000000",
   "enableNotifications": true,
   "startUrl": "/?fullscreen=true",
-  "iconUrl": "https://chess-endgame-trainer.mooo.com/assets/icons/pwa-512x512.png",
-  "maskableIconUrl": "https://chess-endgame-trainer.mooo.com/assets/icons/pwa-maskable-icon-336x336.png",
-  "monochromeIconUrl": "https://chess-endgame-trainer.mooo.com/assets/icons/pwa-maskable-icon-336x336.png",
+  "iconUrl": "https://chess-endgame-training.pages.dev/assets/icons/pwa-512x512.png",
+  "maskableIconUrl": "https://chess-endgame-training.pages.dev/assets/icons/pwa-maskable-icon-336x336.png",
+  "monochromeIconUrl": "https://chess-endgame-training.pages.dev/assets/icons/pwa-maskable-icon-336x336.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "/home/linux/proyectos/chessendgametraining.github/my-release-key.keystore",
     "alias": "my-key-alias"
   },
-  "appVersionName": "3.0.15",
-  "appVersionCode": 36,
+  "appVersionName": "45",
+  "appVersionCode": 45,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://chess-endgame-trainer.mooo.com/manifest.json",
+  "webManifestUrl": "https://chess-endgame-training.pages.dev/manifest.json",
   "fallbackType": "customtabs",
   "features": {},
   "alphaDependencies": {
@@ -34,11 +34,12 @@
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://chess-endgame-trainer.mooo.com/",
-  "minSdkVersion": 19,
+  "fullScopeUrl": "https://chess-endgame-training.pages.dev/",
+  "minSdkVersion": 21,
   "orientation": "natural",
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "3.0.15"
+  "displayOverride": [],
+  "appVersion": "45"
 }
